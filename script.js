@@ -23,24 +23,27 @@ const DEMO_DATA = {
 
   environment: [
     1100,
-    1150,
+    1140,
     1180,
-    1200,
-    1210,
+    1170,
     1190,
+    1210,
     1200
   ],
 
   performance: [
     235,
     238,
-    240,
-    242,
-    244,
     241,
+    239,
+    243,
+    245,
     240
   ]
 };
+
+
+const BASELINE_CO2 = 1200;
 
 
 /* =========================================================
@@ -50,124 +53,110 @@ const DEMO_DATA = {
 const SCENARIOS = {
 
   baseline: {
-    name: "Baseline",
     co2: 1200,
-    performance: 240,
     status: "Nominal Baseline",
-    statusClass: "safe-text",
-    interpretationTitle: "Baseline environmental condition",
-    interpretationText:
-      "This demonstration represents a baseline environmental condition. The simulated performance value is an interface reference and is not a validated physiological model."
+    performance: 240,
+    title: "Baseline environmental condition",
+    text:
+      "This demonstration shows a baseline environmental measurement. " +
+      "In the final project, the value should come from a verified " +
+      "dataset and be interpreted using documented scientific evidence."
   },
 
   elevated: {
-    name: "Elevated",
     co2: 2500,
-    performance: 275,
     status: "Elevated Demonstration",
-    statusClass: "",
-    interpretationTitle: "Elevated demonstration condition",
-    interpretationText:
-      "The simulator represents a higher environmental measurement. The associated performance value is illustrative and should not be interpreted as evidence of a physiological effect."
+    performance: 285,
+    title: "Elevated demonstration condition",
+    text:
+      "The selected value represents an elevated demonstration condition. " +
+      "The associated performance value is simulated and should not be " +
+      "interpreted as a validated physiological response."
   },
 
   high: {
-    name: "High",
     co2: 4000,
-    performance: 330,
     status: "High Demonstration",
-    statusClass: "",
-    interpretationTitle: "High demonstration condition",
-    interpretationText:
-      "This scenario represents a substantially elevated demonstration value. A validated dataset and documented scientific model would be required before drawing conclusions about human performance."
+    performance: 340,
+    title: "High demonstration condition",
+    text:
+      "The selected value represents a high demonstration condition. " +
+      "The simulated performance indicator is provided for interface " +
+      "testing and does not establish a clinical or physiological effect."
   }
 
 };
 
 
 /* =========================================================
-   APPLICATION STATE
+   GLOBAL STATE
    ========================================================= */
 
-const state = {
+let environmentChart = null;
+let performanceChart = null;
 
-  activeScenario: "baseline",
-
-  currentCO2: 1200,
-
-  customDataset: null,
-
-  pvt: {
-    running: false,
-    ready: false,
-    startTime: null,
-    timer: null,
-    trials: [],
-    lapses: 0
-  },
-
-  charts: {
-    environment: null,
-    performance: null
-  }
-
+let activeData = {
+  labels: [...DEMO_DATA.labels],
+  environment: [...DEMO_DATA.environment],
+  performance: [...DEMO_DATA.performance]
 };
+
+let customDatasetLoaded = false;
+
+
+/* PVT STATE */
+
+let pvtTimer = null;
+let pvtStartTime = null;
+let pvtReady = false;
+
+let pvtScores = [];
 
 
 /* =========================================================
-   DOM HELPERS
+   DOM READY
    ========================================================= */
 
-function $(selector) {
-  return document.querySelector(selector);
-}
+document.addEventListener("DOMContentLoaded", () => {
 
-function $all(selector) {
-  return document.querySelectorAll(selector);
-}
+  initializeNavigation();
 
-function setText(id, value) {
+  initializeSimulator();
 
-  const element = document.getElementById(id);
+  initializeCharts();
 
-  if (element) {
-    element.textContent = value;
-  }
+  initializeCSVUpload();
 
-}
+  initializePVT();
 
-function formatNumber(value) {
+  initializeExport();
 
-  return Number(value).toLocaleString("en-US", {
-    maximumFractionDigits: 2
-  });
+  updateDashboard();
 
-}
+});
 
 
 /* =========================================================
    NAVIGATION
    ========================================================= */
 
-function setupNavigation() {
+function initializeNavigation() {
 
-  const buttons = $all(".nav-btn");
+  const buttons = document.querySelectorAll(".nav-btn");
+  const sections = document.querySelectorAll(".section");
 
-  buttons.forEach(button => {
+  buttons.forEach((button) => {
 
     button.addEventListener("click", () => {
 
-      const sectionId = button.dataset.section;
+      const targetId = button.dataset.section;
 
-      if (!sectionId) {
-        return;
-      }
-
-      buttons.forEach(btn => {
+      buttons.forEach((btn) => {
 
         const active = btn === button;
 
         btn.classList.toggle("active", active);
+
         btn.setAttribute(
           "aria-selected",
           String(active)
@@ -176,9 +165,10 @@ function setupNavigation() {
       });
 
 
-      $all(".section").forEach(section => {
+      sections.forEach((section) => {
 
-        const active = section.id === sectionId;
+        const active =
+          section.id === targetId;
 
         section.hidden = !active;
 
@@ -190,20 +180,57 @@ function setupNavigation() {
       });
 
 
-      if (sectionId === "analysis") {
-        updateAnalysis();
+      /*
+       * Chart.js sometimes needs a resize after a
+       * previously hidden container becomes visible.
+       */
+
+      setTimeout(() => {
+
+        if (environmentChart) {
+          environmentChart.resize();
+        }
+
+        if (performanceChart) {
+          performanceChart.resize();
+        }
+
+      }, 50);
+
+    });
+
+  });
+
+
+  /* Keyboard navigation */
+
+  buttons.forEach((button, index) => {
+
+    button.addEventListener("keydown", (event) => {
+
+      let nextIndex = index;
+
+      if (event.key === "ArrowRight") {
+        nextIndex = (index + 1) % buttons.length;
       }
 
-      if (sectionId === "data") {
-        updateDatasetInformation();
+      if (event.key === "ArrowLeft") {
+        nextIndex =
+          (index - 1 + buttons.length) %
+          buttons.length;
       }
 
-      resizeCharts();
+      if (
+        event.key === "ArrowRight" ||
+        event.key === "ArrowLeft"
+      ) {
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+        event.preventDefault();
+
+        buttons[nextIndex].focus();
+        buttons[nextIndex].click();
+
+      }
 
     });
 
@@ -213,267 +240,238 @@ function setupNavigation() {
 
 
 /* =========================================================
-   SCENARIOS
+   SIMULATOR
    ========================================================= */
 
-function setupScenarios() {
+function initializeSimulator() {
 
-  $all(".scenario-btn").forEach(button => {
+  const slider =
+    document.getElementById("co2-slider");
 
-    button.addEventListener("click", () => {
+  if (!slider) {
+    return;
+  }
 
-      const scenarioName = button.dataset.scenario;
 
-      if (!SCENARIOS[scenarioName]) {
-        return;
-      }
+  slider.addEventListener("input", () => {
 
-      state.activeScenario = scenarioName;
+    const value =
+      Number(slider.value);
 
-      $all(".scenario-btn").forEach(btn => {
-        btn.classList.toggle(
-          "active",
-          btn === button
-        );
-      });
-
-      applyScenario(SCENARIOS[scenarioName]);
-
-    });
+    updateSimulation(value);
 
   });
+
+
+  document
+    .querySelectorAll(".scenario-btn")
+    .forEach((button) => {
+
+      button.addEventListener("click", () => {
+
+        const scenarioName =
+          button.dataset.scenario;
+
+        const scenario =
+          SCENARIOS[scenarioName];
+
+        if (!scenario) {
+          return;
+        }
+
+
+        document
+          .querySelectorAll(".scenario-btn")
+          .forEach((btn) => {
+
+            btn.classList.toggle(
+              "active",
+              btn === button
+            );
+
+          });
+
+
+        slider.value =
+          scenario.co2;
+
+        updateSimulation(
+          scenario.co2,
+          scenario
+        );
+
+      });
+
+    });
 
 }
 
 
-function applyScenario(scenario) {
+function updateSimulation(
+  co2,
+  scenarioOverride = null
+) {
 
-  state.currentCO2 = scenario.co2;
+  const scenario =
+    scenarioOverride ||
+    getScenarioForCO2(co2);
 
-  const slider = $("#co2-slider");
 
-  if (slider) {
-    slider.value = scenario.co2;
-  }
+  const performance =
+    calculatePerformance(co2);
+
 
   setText(
     "co2-slider-value",
-    `${formatNumber(scenario.co2)} ppm`
+    `${formatNumber(co2)} ppm`
   );
+
 
   setText(
     "environment-value",
-    formatNumber(scenario.co2)
+    formatNumber(co2)
   );
 
-  setText(
-    "environment-unit",
-    "ppm CO₂"
-  );
 
   setText(
     "environment-status",
     scenario.status
   );
 
-  const status = $("#environment-status");
-
-  if (status) {
-
-    status.classList.remove("safe-text");
-
-    if (scenario.statusClass) {
-      status.classList.add(
-        scenario.statusClass
-      );
-    }
-
-  }
-
 
   setText(
     "performance-value",
-    formatNumber(scenario.performance)
-  );
-
-  setText(
-    "performance-status",
-    "Demonstration reference"
+    Math.round(performance)
   );
 
 
-  const baselineDifference =
-    ((scenario.performance -
-      SCENARIOS.baseline.performance) /
+  const change =
+    ((performance - SCENARIOS.baseline.performance) /
       SCENARIOS.baseline.performance) *
     100;
 
+
   setText(
     "change-value",
-    `${baselineDifference >= 0 ? "+" : ""}${baselineDifference.toFixed(1)}%`
+    `${change >= 0 ? "+" : ""}${change.toFixed(1)}%`
   );
+
 
   setText(
     "change-status",
-    baselineDifference === 0
+    change === 0
       ? "No change"
-      : "Demonstration difference"
+      : "Demonstration change"
   );
 
 
   setText(
     "science-title",
-    scenario.interpretationTitle
+    scenario.title
   );
+
 
   setText(
     "science-text",
-    scenario.interpretationText
+    scenario.text
   );
 
 
-  updateEnvironmentChartForScenario();
-  updateAnalysis();
+  updateStatusClasses(co2);
 
-}
-
-
-/* =========================================================
-   SLIDER
-   ========================================================= */
-
-function setupSlider() {
-
-  const slider = $("#co2-slider");
-
-  if (!slider) {
-    return;
-  }
-
-  slider.addEventListener("input", () => {
-
-    const value = Number(slider.value);
-
-    state.currentCO2 = value;
-
-    setText(
-      "co2-slider-value",
-      `${formatNumber(value)} ppm`
-    );
-
-    setText(
-      "environment-value",
-      formatNumber(value)
-    );
-
-    updateFromSlider(value);
-
-  });
-
-}
-
-
-function updateFromSlider(value) {
-
-  let performance;
-
-  if (value <= 1200) {
-
-    performance = 240 -
-      ((value - 400) / 800) * 5;
-
-  } else {
-
-    performance =
-      240 +
-      ((value - 1200) / 3800) * 110;
-
-  }
-
-  performance = Math.round(
-    Math.max(220, Math.min(360, performance))
-  );
-
-
-  setText(
-    "performance-value",
-    formatNumber(performance)
-  );
-
-
-  const baselineDifference =
-    ((performance -
-      SCENARIOS.baseline.performance) /
-      SCENARIOS.baseline.performance) *
-    100;
-
-
-  setText(
-    "change-value",
-    `${baselineDifference >= 0 ? "+" : ""}${baselineDifference.toFixed(1)}%`
-  );
-
-
-  if (value <= 1500) {
-
-    setText(
-      "environment-status",
-      "Nominal Demonstration"
-    );
-
-  } else if (value <= 3000) {
-
-    setText(
-      "environment-status",
-      "Elevated Demonstration"
-    );
-
-  } else {
-
-    setText(
-      "environment-status",
-      "High Demonstration"
-    );
-
-  }
-
-
-  setText(
-    "science-title",
-    "Interactive environmental adjustment"
-  );
-
-  setText(
-    "science-text",
-    "The slider changes the demonstration environmental value and a simulated performance indicator. These relationships are illustrative and are not validated physiological predictions."
-  );
 
   updateAnalysis();
 
 }
 
 
+function calculatePerformance(co2) {
+
+  /*
+   * Demonstration-only relationship.
+   * This is intentionally NOT a physiological model.
+   */
+
+  if (co2 <= BASELINE_CO2) {
+    return 240;
+  }
+
+  const difference =
+    co2 - BASELINE_CO2;
+
+  return 240 + difference * 0.04;
+}
+
+
+function getScenarioForCO2(co2) {
+
+  if (co2 < 1800) {
+    return SCENARIOS.baseline;
+  }
+
+  if (co2 < 3200) {
+    return SCENARIOS.elevated;
+  }
+
+  return SCENARIOS.high;
+}
+
+
+function updateStatusClasses(co2) {
+
+  const environmentStatus =
+    document.getElementById(
+      "environment-status"
+    );
+
+  const changeStatus =
+    document.getElementById(
+      "change-status"
+    );
+
+
+  environmentStatus.classList.remove(
+    "safe-text"
+  );
+
+  changeStatus.classList.remove(
+    "safe-text"
+  );
+
+
+  if (co2 < 1800) {
+
+    environmentStatus.classList.add(
+      "safe-text"
+    );
+
+    changeStatus.classList.add(
+      "safe-text"
+    );
+
+  }
+
+}
+
+
 /* =========================================================
-   CHART CREATION
+   CHARTS
    ========================================================= */
 
-function createCharts() {
+function initializeCharts() {
 
   if (
     typeof Chart === "undefined"
   ) {
 
-    const error = $("#chart-error");
-
-    if (error) {
-      error.classList.remove("hidden");
-    }
+    showChartError();
 
     return;
   }
 
 
   createEnvironmentChart();
+
   createPerformanceChart();
 
 }
@@ -481,251 +479,280 @@ function createCharts() {
 
 function createEnvironmentChart() {
 
-  const canvas = $("#environmentChart");
+  const canvas =
+    document.getElementById(
+      "environmentChart"
+    );
 
   if (!canvas) {
     return;
   }
 
-  try {
 
-    state.charts.environment =
-      new Chart(canvas, {
+  const ctx =
+    canvas.getContext("2d");
 
-        type: "line",
 
-        data: {
-          labels: DEMO_DATA.labels,
+  environmentChart =
+    new Chart(ctx, {
 
-          datasets: [{
+      type: "line",
+
+      data: {
+
+        labels: activeData.labels,
+
+        datasets: [
+
+          {
             label: "CO₂",
-            data: DEMO_DATA.environment,
-            borderColor: "#51d7e8",
-            backgroundColor: "rgba(81, 215, 232, 0.10)",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.35,
+
+            data: activeData.environment,
+
+            borderWidth: 3,
+
             pointRadius: 4,
-            pointHoverRadius: 6
-          }]
+
+            pointHoverRadius: 6,
+
+            tension: 0.35,
+
+            fill: true,
+
+            backgroundColor:
+              "rgba(69, 215, 255, 0.10)",
+
+            borderColor:
+              "#45d7ff",
+
+            pointBackgroundColor:
+              "#45d7ff"
+          }
+
+        ]
+
+      },
+
+      options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        interaction: {
+          intersect: false,
+          mode: "index"
         },
 
-        options: {
+        plugins: {
 
-          responsive: true,
-
-          maintainAspectRatio: false,
-
-          interaction: {
-            intersect: false,
-            mode: "index"
+          legend: {
+            display: false
           },
 
-          plugins: {
-            legend: {
-              labels: {
-                color: "#edf4ff"
+          tooltip: {
+            callbacks: {
+
+              label: (context) => {
+
+                return (
+                  ` CO₂: ${formatNumber(
+                    context.parsed.y
+                  )} ppm`
+                );
+
               }
+
             }
-          },
+          }
 
-          scales: {
+        },
 
-            x: {
-              ticks: {
-                color: "#8f9caf"
-              },
+        scales: {
 
-              grid: {
-                color: "rgba(255,255,255,0.06)"
-              }
+          x: {
+
+            grid: {
+              color:
+                "rgba(255,255,255,0.06)"
             },
 
-            y: {
-              ticks: {
-                color: "#8f9caf"
-              },
+            ticks: {
+              color: "#9ba8ba"
+            }
 
-              grid: {
-                color: "rgba(255,255,255,0.06)"
-              }
+          },
+
+          y: {
+
+            grid: {
+              color:
+                "rgba(255,255,255,0.06)"
+            },
+
+            ticks: {
+
+              color: "#9ba8ba",
+
+              callback: (value) =>
+                `${value} ppm`
+
             }
 
           }
 
         }
 
-      });
+      }
 
-  } catch (error) {
-
-    console.error(
-      "Environment chart error:",
-      error
-    );
-
-    showChartError();
-
-  }
+    });
 
 }
 
 
 function createPerformanceChart() {
 
-  const canvas = $("#performanceChart");
+  const canvas =
+    document.getElementById(
+      "performanceChart"
+    );
 
   if (!canvas) {
     return;
   }
 
-  if (
-    typeof Chart === "undefined"
-  ) {
-    return;
-  }
 
-  try {
+  const ctx =
+    canvas.getContext("2d");
 
-    state.charts.performance =
-      new Chart(canvas, {
 
-        type: "line",
+  performanceChart =
+    new Chart(ctx, {
 
-        data: {
-          labels: DEMO_DATA.labels,
+      type: "line",
 
-          datasets: [{
-            label: "Reaction Time",
-            data: DEMO_DATA.performance,
-            borderColor: "#4ea1ff",
-            backgroundColor: "rgba(78, 161, 255, 0.10)",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.35,
+      data: {
+
+        labels: activeData.labels,
+
+        datasets: [
+
+          {
+            label: "Reaction time",
+
+            data: activeData.performance,
+
+            borderWidth: 3,
+
             pointRadius: 4,
-            pointHoverRadius: 6
-          }]
+
+            tension: 0.35,
+
+            borderColor:
+              "#9b8cff",
+
+            backgroundColor:
+              "rgba(155, 140, 255, 0.10)",
+
+            fill: true
+          }
+
+        ]
+
+      },
+
+      options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+          legend: {
+            display: false
+          }
+
         },
 
-        options: {
+        scales: {
 
-          responsive: true,
+          x: {
 
-          maintainAspectRatio: false,
-
-          plugins: {
-            legend: {
-              labels: {
-                color: "#edf4ff"
-              }
-            }
-          },
-
-          scales: {
-
-            x: {
-              ticks: {
-                color: "#8f9caf"
-              },
-
-              grid: {
-                color: "rgba(255,255,255,0.06)"
-              }
+            grid: {
+              color:
+                "rgba(255,255,255,0.06)"
             },
 
-            y: {
-              ticks: {
-                color: "#8f9caf"
-              },
+            ticks: {
+              color: "#9ba8ba"
+            }
 
-              grid: {
-                color: "rgba(255,255,255,0.06)"
-              }
+          },
+
+          y: {
+
+            grid: {
+              color:
+                "rgba(255,255,255,0.06)"
+            },
+
+            ticks: {
+
+              color: "#9ba8ba",
+
+              callback: (value) =>
+                `${value} ms`
+
             }
 
           }
 
         }
 
-      });
+      }
 
-  } catch (error) {
-
-    console.error(
-      "Performance chart error:",
-      error
-    );
-
-  }
+    });
 
 }
 
 
-/* =========================================================
-   CHART UPDATE
-   ========================================================= */
+function updateCharts() {
 
-function updateEnvironmentChartForScenario() {
+  if (environmentChart) {
 
-  const chart = state.charts.environment;
+    environmentChart.data.labels =
+      activeData.labels;
 
-  if (!chart) {
-    return;
+    environmentChart.data.datasets[0].data =
+      activeData.environment;
+
+    environmentChart.update();
+
   }
 
 
-  const scenario = SCENARIOS[state.activeScenario];
+  if (performanceChart) {
 
-  if (!scenario) {
-    return;
+    performanceChart.data.labels =
+      activeData.labels;
+
+    performanceChart.data.datasets[0].data =
+      activeData.performance;
+
+    performanceChart.update();
+
   }
-
-
-  const base = scenario.co2;
-
-  const offsets = [
-    -100,
-    -50,
-    -20,
-    0,
-    10,
-    -10,
-    0
-  ];
-
-
-  chart.data.datasets[0].data =
-    offsets.map(offset =>
-      Math.max(0, base + offset)
-    );
-
-
-  chart.update();
-
-}
-
-
-function resizeCharts() {
-
-  setTimeout(() => {
-
-    if (state.charts.environment) {
-      state.charts.environment.resize();
-    }
-
-    if (state.charts.performance) {
-      state.charts.performance.resize();
-    }
-
-  }, 100);
 
 }
 
 
 function showChartError() {
 
-  const error = $("#chart-error");
+  const error =
+    document.getElementById(
+      "chart-error"
+    );
 
   if (error) {
     error.classList.remove("hidden");
@@ -735,83 +762,94 @@ function showChartError() {
 
 
 /* =========================================================
-   STATISTICS
+   ANALYSIS
    ========================================================= */
 
-function calculateStatistics(values) {
+function updateDashboard() {
 
-  if (!values.length) {
+  updateSimulation(
+    Number(
+      document.getElementById(
+        "co2-slider"
+      )?.value || 1200
+    )
+  );
 
-    return {
-      mean: 0,
-      min: 0,
-      max: 0,
-      count: 0
-    };
+  updateStatistics();
 
-  }
-
-
-  const sum =
-    values.reduce(
-      (total, value) =>
-        total + value,
-      0
-    );
-
-
-  return {
-
-    mean: sum / values.length,
-
-    min: Math.min(...values),
-
-    max: Math.max(...values),
-
-    count: values.length
-
-  };
+  updateAnalysis();
 
 }
 
 
-function updateStatistics(values) {
+function updateStatistics() {
 
-  const stats =
-    calculateStatistics(values);
+  const values =
+    activeData.environment
+      .filter(Number.isFinite);
+
+
+  if (!values.length) {
+    return;
+  }
+
+
+  const mean =
+    values.reduce(
+      (sum, value) =>
+        sum + value,
+      0
+    ) / values.length;
+
+
+  const peak =
+    Math.max(...values);
+
+
+  const minimum =
+    Math.min(...values);
 
 
   setText(
     "mean-co2",
-    `${formatNumber(stats.mean)} ppm`
+    `${Math.round(mean).toLocaleString()} ppm`
   );
+
 
   setText(
     "peak-co2",
-    `${formatNumber(stats.max)} ppm`
+    `${peak.toLocaleString()} ppm`
   );
+
 
   setText(
     "min-co2",
-    `${formatNumber(stats.min)} ppm`
+    `${minimum.toLocaleString()} ppm`
   );
+
 
   setText(
     "data-points",
-    String(stats.count)
+    values.length
+  );
+
+
+  setText(
+    "dataset-rows",
+    values.length
   );
 
 }
 
 
-/* =========================================================
-   ANALYSIS
-   ========================================================= */
+function updateAnalysis() {
 
-function calculateTrend(values) {
+  const values =
+    activeData.environment;
+
 
   if (values.length < 2) {
-    return "Insufficient data";
+    return;
   }
 
 
@@ -821,40 +859,21 @@ function calculateTrend(values) {
   const last =
     values[values.length - 1];
 
+
   const difference =
     last - first;
 
 
-  const threshold =
-    Math.max(
-      1,
-      Math.abs(first) * 0.01
-    );
+  let trend = "Stable";
 
 
-  if (difference > threshold) {
-    return "Increasing";
+  if (difference > 50) {
+    trend = "Increasing";
   }
 
-  if (difference < -threshold) {
-    return "Decreasing";
+  else if (difference < -50) {
+    trend = "Decreasing";
   }
-
-  return "Stable";
-
-}
-
-
-function updateAnalysis() {
-
-  const values =
-    state.customDataset
-      ? state.customDataset.values
-      : DEMO_DATA.environment;
-
-
-  const trend =
-    calculateTrend(values);
 
 
   setText(
@@ -863,28 +882,24 @@ function updateAnalysis() {
   );
 
 
-  const difference =
-    ((state.currentCO2 -
-      SCENARIOS.baseline.co2) /
-      SCENARIOS.baseline.co2) *
+  const current =
+    Number(
+      document.getElementById(
+        "co2-slider"
+      )?.value || BASELINE_CO2
+    );
+
+
+  const baselineDifference =
+    ((current - BASELINE_CO2) /
+      BASELINE_CO2) *
     100;
 
 
   setText(
     "baseline-result",
-    `${difference >= 0 ? "+" : ""}${difference.toFixed(1)}%`
+    `${baselineDifference >= 0 ? "+" : ""}${baselineDifference.toFixed(1)}%`
   );
-
-
-  setText(
-    "analysis-result",
-    state.customDataset
-      ? "User dataset"
-      : "Exploratory"
-  );
-
-
-  updateStatistics(values);
 
 }
 
@@ -893,214 +908,254 @@ function updateAnalysis() {
    CSV UPLOAD
    ========================================================= */
 
-function setupCSV() {
+function initializeCSVUpload() {
 
-  const browse =
-    $("#browse-csv-btn");
+  const fileInput =
+    document.getElementById(
+      "csv-file-input"
+    );
 
-  const input =
-    $("#csv-file-input");
+  const browseButton =
+    document.getElementById(
+      "browse-csv-btn"
+    );
 
-  const clear =
-    $("#clear-csv-btn");
+  const clearButton =
+    document.getElementById(
+      "clear-csv-btn"
+    );
 
   const dropZone =
-    $("#drop-zone");
+    document.getElementById(
+      "drop-zone"
+    );
 
 
-  if (!browse || !input) {
+  if (
+    !fileInput ||
+    !browseButton ||
+    !clearButton ||
+    !dropZone
+  ) {
     return;
   }
 
 
-  browse.addEventListener(
+  browseButton.addEventListener(
     "click",
-    () => input.click()
+    () => fileInput.click()
   );
 
 
-  input.addEventListener(
+  fileInput.addEventListener(
     "change",
-    event => {
+    () => {
 
       const file =
-        event.target.files?.[0];
+        fileInput.files?.[0];
 
       if (file) {
-        processCSV(file);
+        processCSVFile(file);
       }
 
     }
   );
 
 
-  if (clear) {
-
-    clear.addEventListener(
-      "click",
-      clearDataset
-    );
-
-  }
+  clearButton.addEventListener(
+    "click",
+    clearCustomDataset
+  );
 
 
-  if (dropZone) {
-
-    [
-      "dragenter",
-      "dragover"
-    ].forEach(eventName => {
-
-      dropZone.addEventListener(
-        eventName,
-        event => {
-
-          event.preventDefault();
-
-          dropZone.classList.add(
-            "drag-active"
-          );
-
-        }
-      );
-
-    });
-
-
-    [
-      "dragleave",
-      "drop"
-    ].forEach(eventName => {
-
-      dropZone.addEventListener(
-        eventName,
-        event => {
-
-          event.preventDefault();
-
-          dropZone.classList.remove(
-            "drag-active"
-          );
-
-        }
-      );
-
-    });
-
+  [
+    "dragenter",
+    "dragover"
+  ].forEach((eventName) => {
 
     dropZone.addEventListener(
-      "drop",
-      event => {
+      eventName,
+      (event) => {
 
-        const file =
-          event.dataTransfer.files?.[0];
+        event.preventDefault();
 
-        if (!file) {
-          return;
-        }
-
-        if (
-          !file.name
-            .toLowerCase()
-            .endsWith(".csv")
-        ) {
-
-          setFileStatus(
-            "Please upload a CSV file."
-          );
-
-          return;
-
-        }
-
-        processCSV(file);
+        dropZone.classList.add(
+          "drag-over"
+        );
 
       }
     );
 
-  }
+  });
+
+
+  [
+    "dragleave",
+    "drop"
+  ].forEach((eventName) => {
+
+    dropZone.addEventListener(
+      eventName,
+      (event) => {
+
+        event.preventDefault();
+
+        dropZone.classList.remove(
+          "drag-over"
+        );
+
+      }
+    );
+
+  });
+
+
+  dropZone.addEventListener(
+    "drop",
+    (event) => {
+
+      const file =
+        event.dataTransfer.files?.[0];
+
+      if (!file) {
+        return;
+      }
+
+
+      if (
+        !file.name
+          .toLowerCase()
+          .endsWith(".csv")
+      ) {
+
+        setFileStatus(
+          "Please select a CSV file."
+        );
+
+        return;
+      }
+
+
+      processCSVFile(file);
+
+    }
+  );
 
 }
 
 
-function processCSV(file) {
-
-  if (
-    !file.name
-      .toLowerCase()
-      .endsWith(".csv")
-  ) {
-
-    setFileStatus(
-      "Invalid file. Please select a CSV file."
-    );
-
-    return;
-
-  }
-
+function processCSVFile(file) {
 
   const reader =
     new FileReader();
 
 
-  reader.onload = event => {
+  setFileStatus(
+    `Reading ${file.name}...`
+  );
+
+
+  reader.onload = (event) => {
 
     try {
 
       const text =
-        event.target.result;
+        String(
+          event.target.result || ""
+        );
+
 
       const parsed =
         parseCSV(text);
 
 
-      if (!parsed.success) {
+      if (
+        !parsed.rows.length
+      ) {
 
-        setFileStatus(
-          parsed.message
+        throw new Error(
+          "No valid rows were found."
         );
 
-        return;
+      }
+
+
+      const columnInfo =
+        detectColumns(
+          parsed.headers,
+          parsed.rows
+        );
+
+
+      if (
+        !columnInfo.co2Column
+      ) {
+
+        throw new Error(
+          "No numeric CO₂/environment column could be identified."
+        );
 
       }
 
 
-      state.customDataset = {
-        name: file.name,
-        values: parsed.values,
-        labels: parsed.labels,
-        co2Column: parsed.co2Column,
-        timeColumn: parsed.timeColumn
-      };
+      const extracted =
+        extractDataset(
+          parsed,
+          columnInfo
+        );
 
 
-      updateDatasetInformation();
-      updateCustomCharts();
+      if (
+        extracted.environment.length < 2
+      ) {
+
+        throw new Error(
+          "At least two valid numeric CO₂ values are required."
+        );
+
+      }
+
+
+      activeData =
+        extracted;
+
+
+      customDatasetLoaded =
+        true;
+
+
+      updateDatasetInformation(
+        file,
+        parsed,
+        columnInfo
+      );
+
+
+      document
+        .getElementById(
+          "clear-csv-btn"
+        )
+        .disabled = false;
+
+
+      setFileStatus(
+        `Loaded ${file.name} successfully. ` +
+        `${extracted.environment.length} valid data points detected.`
+      );
+
+
+      updateStatistics();
+
       updateAnalysis();
 
+      updateCharts();
 
-      const clear =
-        $("#clear-csv-btn");
+    }
 
-      if (clear) {
-        clear.disabled = false;
-      }
-
+    catch (error) {
 
       setFileStatus(
-        `Loaded ${file.name}: ${parsed.values.length} valid CO₂ values detected.`
-      );
-
-    } catch (error) {
-
-      console.error(
-        "CSV processing error:",
-        error
-      );
-
-      setFileStatus(
-        "The CSV could not be processed. Check its formatting."
+        `Could not load dataset: ${error.message}`
       );
 
     }
@@ -1123,226 +1178,10 @@ function processCSV(file) {
 
 
 /* =========================================================
-   CSV PARSER
+   SIMPLE CSV PARSER
    ========================================================= */
 
 function parseCSV(text) {
-
-  const rows =
-    parseCSVRows(text);
-
-
-  if (rows.length < 2) {
-
-    return {
-      success: false,
-      message:
-        "The CSV must contain a header row and at least one data row."
-    };
-
-  }
-
-
-  const headers =
-    rows[0].map(
-      header =>
-        header.trim()
-    );
-
-
-  const normalizedHeaders =
-    headers.map(
-      header =>
-        header
-          .toLowerCase()
-          .replace(/[^a-z0-9]/g, "")
-    );
-
-
-  const co2Keywords = [
-    "co2",
-    "carbon dioxide",
-    "carbon_dioxide",
-    "co2ppm",
-    "co2concentration",
-    "environment"
-  ];
-
-
-  let co2Index = -1;
-
-
-  for (
-    let i = 0;
-    i < normalizedHeaders.length;
-    i++
-  ) {
-
-    const header =
-      normalizedHeaders[i];
-
-    if (
-      co2Keywords.some(
-        keyword =>
-          header.includes(
-            keyword
-              .toLowerCase()
-              .replace(/[^a-z0-9]/g, "")
-          )
-      )
-    ) {
-
-      co2Index = i;
-      break;
-
-    }
-
-  }
-
-
-  if (co2Index === -1) {
-
-    for (
-      let i = 0;
-      i < normalizedHeaders.length;
-      i++
-    ) {
-
-      if (
-        normalizedHeaders[i]
-          .includes("carbon")
-      ) {
-
-        co2Index = i;
-        break;
-
-      }
-
-    }
-
-  }
-
-
-  if (co2Index === -1) {
-
-    return {
-      success: false,
-      message:
-        "No CO₂ measurement column was detected. Try a column named CO2, carbon_dioxide, CO2_ppm, or environment."
-    };
-
-  }
-
-
-  let timeIndex =
-    normalizedHeaders.findIndex(
-      header =>
-        header.includes("time") ||
-        header.includes("date") ||
-        header.includes("timestamp") ||
-        header.includes("label")
-    );
-
-
-  const values = [];
-  const labels = [];
-
-
-  for (
-    let rowIndex = 1;
-    rowIndex < rows.length;
-    rowIndex++
-  ) {
-
-    const row =
-      rows[rowIndex];
-
-
-    if (!row.length) {
-      continue;
-    }
-
-
-    const rawValue =
-      row[co2Index];
-
-
-    const value =
-      parseFloat(
-        String(rawValue)
-          .replace(/,/g, "")
-          .trim()
-      );
-
-
-    if (
-      !Number.isFinite(value)
-    ) {
-      continue;
-    }
-
-
-    values.push(value);
-
-
-    if (
-      timeIndex >= 0 &&
-      row[timeIndex]
-    ) {
-
-      labels.push(
-        row[timeIndex]
-      );
-
-    } else {
-
-      labels.push(
-        `Row ${values.length}`
-      );
-
-    }
-
-  }
-
-
-  if (!values.length) {
-
-    return {
-      success: false,
-      message:
-        "A CO₂ column was found, but no valid numeric values were detected."
-    };
-
-  }
-
-
-  return {
-
-    success: true,
-
-    values,
-
-    labels,
-
-    co2Column:
-      headers[co2Index],
-
-    timeColumn:
-      timeIndex >= 0
-        ? headers[timeIndex]
-        : "Not detected"
-
-  };
-
-}
-
-
-/* =========================================================
-   SIMPLE CSV ROW PARSER
-   Handles quoted commas.
-   ========================================================= */
-
-function parseCSVRows(text) {
 
   const rows = [];
 
@@ -1371,9 +1210,10 @@ function parseCSVRows(text) {
     ) {
 
       cell += '"';
-      i++;
-      continue;
 
+      i++;
+
+      continue;
     }
 
 
@@ -1383,7 +1223,6 @@ function parseCSVRows(text) {
         !insideQuotes;
 
       continue;
-
     }
 
 
@@ -1392,17 +1231,16 @@ function parseCSVRows(text) {
       !insideQuotes
     ) {
 
-      row.push(cell);
+      row.push(cell.trim());
+
       cell = "";
 
       continue;
-
     }
 
 
     if (
-      (char === "\n" ||
-       char === "\r") &&
+      (char === "\n" || char === "\r") &&
       !insideQuotes
     ) {
 
@@ -1414,12 +1252,14 @@ function parseCSVRows(text) {
       }
 
 
-      row.push(cell);
+      row.push(cell.trim());
+
+      cell = "";
+
 
       if (
         row.some(
-          value =>
-            value.trim() !== ""
+          value => value !== ""
         )
       ) {
 
@@ -1427,11 +1267,10 @@ function parseCSVRows(text) {
 
       }
 
+
       row = [];
-      cell = "";
 
       continue;
-
     }
 
 
@@ -1445,12 +1284,11 @@ function parseCSVRows(text) {
     row.length
   ) {
 
-    row.push(cell);
+    row.push(cell.trim());
 
     if (
       row.some(
-        value =>
-          value.trim() !== ""
+        value => value !== ""
       )
     ) {
 
@@ -1461,7 +1299,288 @@ function parseCSVRows(text) {
   }
 
 
-  return rows;
+  if (!rows.length) {
+
+    return {
+      headers: [],
+      rows: []
+    };
+
+  }
+
+
+  const headers =
+    rows[0].map(
+      header =>
+        header.trim()
+    );
+
+
+  const dataRows =
+    rows
+      .slice(1)
+      .map((values) => {
+
+        const object = {};
+
+        headers.forEach(
+          (header, index) => {
+
+            object[header] =
+              values[index] ?? "";
+
+          }
+        );
+
+        return object;
+
+      });
+
+
+  return {
+    headers,
+    rows: dataRows
+  };
+
+}
+
+
+/* =========================================================
+   COLUMN DETECTION
+   ========================================================= */
+
+function detectColumns(
+  headers,
+  rows
+) {
+
+  const normalized =
+    headers.map(
+      header => ({
+        original: header,
+
+        normalized:
+          header
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "")
+      })
+    );
+
+
+  const co2Keywords = [
+    "co2",
+    "carbon dioxide",
+    "carbondioxide",
+    "co2ppm",
+    "carbon"
+  ];
+
+
+  let co2Column = null;
+
+
+  for (
+    const keyword of co2Keywords
+  ) {
+
+    const normalizedKeyword =
+      keyword
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+
+
+    const match =
+      normalized.find(
+        item =>
+          item.normalized.includes(
+            normalizedKeyword
+          )
+      );
+
+
+    if (match) {
+
+      co2Column =
+        match.original;
+
+      break;
+
+    }
+
+  }
+
+
+  if (!co2Column) {
+
+    for (
+      const item of normalized
+    ) {
+
+      const numericCount =
+        rows.filter(
+          row =>
+            Number.isFinite(
+              parseNumber(
+                row[item.original]
+              )
+            )
+        ).length;
+
+
+      if (
+        numericCount >=
+        Math.max(
+          2,
+          Math.ceil(rows.length * 0.5)
+        )
+      ) {
+
+        co2Column =
+          item.original;
+
+        break;
+
+      }
+
+    }
+
+  }
+
+
+  const timeKeywords = [
+    "time",
+    "date",
+    "datetime",
+    "timestamp",
+    "label",
+    "elapsed"
+  ];
+
+
+  let timeColumn = null;
+
+
+  for (
+    const keyword of timeKeywords
+  ) {
+
+    const normalizedKeyword =
+      keyword
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+
+
+    const match =
+      normalized.find(
+        item =>
+          item.normalized.includes(
+            normalizedKeyword
+          )
+      );
+
+
+    if (match) {
+
+      timeColumn =
+        match.original;
+
+      break;
+
+    }
+
+  }
+
+
+  return {
+    co2Column,
+    timeColumn
+  };
+
+}
+
+
+/* =========================================================
+   EXTRACT DATA
+   ========================================================= */
+
+function extractDataset(
+  parsed,
+  columnInfo
+) {
+
+  const labels = [];
+  const environment = [];
+
+
+  parsed.rows.forEach(
+    (row, index) => {
+
+      const value =
+        parseNumber(
+          row[columnInfo.co2Column]
+        );
+
+
+      if (
+        Number.isFinite(value)
+      ) {
+
+        const label =
+          columnInfo.timeColumn
+            ? row[columnInfo.timeColumn]
+            : `Point ${index + 1}`;
+
+
+        labels.push(
+          label || `Point ${index + 1}`
+        );
+
+        environment.push(value);
+
+      }
+
+    }
+  );
+
+
+  /*
+   * Performance values are kept as demonstration
+   * references unless the uploaded dataset contains
+   * a suitable performance column.
+   */
+
+  const performance =
+    environment.map(
+      () => 240
+    );
+
+
+  return {
+    labels,
+    environment,
+    performance
+  };
+
+}
+
+
+function parseNumber(value) {
+
+  if (
+    value === null ||
+    value === undefined
+  ) {
+    return NaN;
+  }
+
+
+  const cleaned =
+    String(value)
+      .replace(/,/g, "")
+      .replace(/[^\d.-]/g, "");
+
+
+  return Number(cleaned);
 
 }
 
@@ -1470,61 +1589,53 @@ function parseCSVRows(text) {
    DATASET INFORMATION
    ========================================================= */
 
-function updateDatasetInformation() {
+function updateDatasetInformation(
+  file,
+  parsed,
+  columnInfo
+) {
 
-  if (!state.customDataset) {
+  setText(
+    "dataset-name",
+    file.name
+  );
 
-    setText(
-      "dataset-badge",
-      "DEMONSTRATION"
+
+  setText(
+    "dataset-rows",
+    parsed.rows.length
+  );
+
+
+  setText(
+    "dataset-co2-column",
+    columnInfo.co2Column ||
+      "Detected numeric column"
+  );
+
+
+  setText(
+    "dataset-time-column",
+    columnInfo.timeColumn ||
+      "Generated labels"
+  );
+
+
+  setText(
+    "dataset-validation",
+    "Browser formatting check passed"
+  );
+
+
+  const validation =
+    document.getElementById(
+      "dataset-validation"
     );
 
-    setText(
-      "dataset-name",
-      "Built-in demonstration data"
-    );
 
-    setText(
-      "dataset-rows",
-      "7"
-    );
-
-    setText(
-      "dataset-co2-column",
-      "environment"
-    );
-
-    setText(
-      "dataset-time-column",
-      "labels"
-    );
-
-    setText(
-      "dataset-validation",
-      "Demonstration dataset"
-    );
-
-    const validation =
-      $("#dataset-validation");
-
-    if (validation) {
-      validation.classList.add(
-        "safe-text"
-      );
-    }
-
-    setText(
-      "statistics-source",
-      "Demonstration dataset"
-    );
-
-    return;
-
-  }
-
-
-  const dataset =
-    state.customDataset;
+  validation.classList.add(
+    "safe-text"
+  );
 
 
   setText(
@@ -1532,225 +1643,102 @@ function updateDatasetInformation() {
     "CUSTOM DATA"
   );
 
-  setText(
-    "dataset-name",
-    dataset.name
-  );
-
-  setText(
-    "dataset-rows",
-    String(dataset.values.length)
-  );
-
-  setText(
-    "dataset-co2-column",
-    dataset.co2Column
-  );
-
-  setText(
-    "dataset-time-column",
-    dataset.timeColumn
-  );
-
-  setText(
-    "dataset-validation",
-    "Format validated locally"
-  );
-
-  const validation =
-    $("#dataset-validation");
-
-  if (validation) {
-    validation.classList.add(
-      "safe-text"
-    );
-  }
 
   setText(
     "statistics-source",
-    "Custom local dataset"
+    "Custom browser dataset"
   );
 
 }
 
 
-/* =========================================================
-   CUSTOM CHARTS
-   ========================================================= */
+function clearCustomDataset() {
 
-function updateCustomCharts() {
-
-  const dataset =
-    state.customDataset;
-
-
-  if (!dataset) {
-    return;
-  }
+  activeData = {
+    labels: [...DEMO_DATA.labels],
+    environment: [...DEMO_DATA.environment],
+    performance: [...DEMO_DATA.performance]
+  };
 
 
-  if (state.charts.environment) {
+  customDatasetLoaded =
+    false;
 
-    state.charts.environment.data.labels =
-      dataset.labels;
-
-    state.charts.environment.data.datasets[0].data =
-      dataset.values;
-
-    state.charts.environment.update();
-
-  }
-
-
-  if (state.charts.performance) {
-
-    const estimatedReference =
-      dataset.values.map(
-        value => {
-
-          const relative =
-            (value - 1200) /
-            1200;
-
-          return Math.round(
-            240 +
-            relative * 70
-          );
-
-        }
-      );
-
-
-    state.charts.performance.data.labels =
-      dataset.labels;
-
-    state.charts.performance.data.datasets[0].data =
-      estimatedReference;
-
-    state.charts.performance.update();
-
-  }
-
-
-  state.currentCO2 =
-    dataset.values[
-      dataset.values.length - 1
-    ];
 
   setText(
-    "environment-value",
-    formatNumber(state.currentCO2)
-  );
-
-  setText(
-    "co2-slider-value",
-    `${formatNumber(state.currentCO2)} ppm`
+    "dataset-name",
+    "Built-in demonstration data"
   );
 
 
-  const slider =
-    $("#co2-slider");
+  setText(
+    "dataset-rows",
+    "7"
+  );
 
-  if (slider) {
 
-    slider.value =
-      Math.min(
-        Number(slider.max),
-        Math.max(
-          Number(slider.min),
-          state.currentCO2
-        )
-      );
+  setText(
+    "dataset-co2-column",
+    "environment"
+  );
 
+
+  setText(
+    "dataset-time-column",
+    "labels"
+  );
+
+
+  setText(
+    "dataset-validation",
+    "Demonstration dataset"
+  );
+
+
+  setText(
+    "dataset-badge",
+    "DEMONSTRATION"
+  );
+
+
+  setText(
+    "statistics-source",
+    "Demonstration dataset"
+  );
+
+
+  const fileInput =
+    document.getElementById(
+      "csv-file-input"
+    );
+
+
+  if (fileInput) {
+    fileInput.value = "";
   }
 
-}
+
+  const clearButton =
+    document.getElementById(
+      "clear-csv-btn"
+    );
 
 
-/* =========================================================
-   CLEAR DATASET
-   ========================================================= */
-
-function clearDataset() {
-
-  state.customDataset = null;
-
-  const input =
-    $("#csv-file-input");
-
-  if (input) {
-    input.value = "";
-  }
-
-
-  const clear =
-    $("#clear-csv-btn");
-
-  if (clear) {
-    clear.disabled = true;
+  if (clearButton) {
+    clearButton.disabled = true;
   }
 
 
   setFileStatus(
-    "Custom dataset cleared. Demonstration dataset restored."
+    "No custom dataset loaded."
   );
 
 
-  updateDatasetInformation();
-
-
-  if (state.charts.environment) {
-
-    state.charts.environment.data.labels =
-      DEMO_DATA.labels;
-
-    state.charts.environment.data.datasets[0].data =
-      DEMO_DATA.environment;
-
-    state.charts.environment.update();
-
-  }
-
-
-  if (state.charts.performance) {
-
-    state.charts.performance.data.labels =
-      DEMO_DATA.labels;
-
-    state.charts.performance.data.datasets[0].data =
-      DEMO_DATA.performance;
-
-    state.charts.performance.update();
-
-  }
-
-
-  state.currentCO2 =
-    SCENARIOS[state.activeScenario].co2;
-
-
-  applyScenario(
-    SCENARIOS[state.activeScenario]
-  );
-
+  updateStatistics();
 
   updateAnalysis();
 
-}
-
-
-/* =========================================================
-   FILE STATUS
-   ========================================================= */
-
-function setFileStatus(message) {
-
-  const element =
-    $("#file-status-msg");
-
-  if (element) {
-    element.textContent = message;
-  }
+  updateCharts();
 
 }
 
@@ -1759,16 +1747,23 @@ function setFileStatus(message) {
    PVT TEST
    ========================================================= */
 
-function setupPVT() {
+function initializePVT() {
 
   const startButton =
-    $("#pvt-start-btn");
+    document.getElementById(
+      "pvt-start-btn"
+    );
 
-  const box =
-    $("#pvt-box");
+  const pvtBox =
+    document.getElementById(
+      "pvt-box"
+    );
 
 
-  if (!startButton || !box) {
+  if (
+    !startButton ||
+    !pvtBox
+  ) {
     return;
   }
 
@@ -1779,15 +1774,15 @@ function setupPVT() {
   );
 
 
-  box.addEventListener(
+  pvtBox.addEventListener(
     "click",
-    handlePVTClick
+    handlePVTResponse
   );
 
 
-  box.addEventListener(
+  pvtBox.addEventListener(
     "keydown",
-    event => {
+    (event) => {
 
       if (
         event.key === "Enter" ||
@@ -1796,7 +1791,7 @@ function setupPVT() {
 
         event.preventDefault();
 
-        handlePVTClick();
+        handlePVTResponse();
 
       }
 
@@ -1808,290 +1803,205 @@ function setupPVT() {
 
 function startPVT() {
 
-  const pvt =
-    state.pvt;
-
-
-  if (pvt.running) {
-    return;
-  }
-
-
-  pvt.running = true;
-  pvt.ready = false;
-  pvt.startTime = null;
-
-
   const box =
-    $("#pvt-box");
+    document.getElementById(
+      "pvt-box"
+    );
 
   const button =
-    $("#pvt-start-btn");
-
-
-  if (box) {
-
-    box.classList.remove(
-      "ready",
-      "false-start"
+    document.getElementById(
+      "pvt-start-btn"
     );
 
-    box.textContent =
-      "Wait for green...";
 
-  }
-
-
-  if (button) {
-    button.disabled = true;
-  }
-
-
-  const delay =
-    1200 +
-    Math.random() * 3000;
-
-
-  pvt.timer =
-    setTimeout(
-      makePVTReady,
-      delay
-    );
-
-}
-
-
-function makePVTReady() {
-
-  const pvt =
-    state.pvt;
-
-
-  if (!pvt.running) {
+  if (!box || !button) {
     return;
   }
 
 
-  pvt.ready = true;
-
-  pvt.startTime =
-    performance.now();
+  clearTimeout(pvtTimer);
 
 
-  const box =
-    $("#pvt-box");
+  pvtReady = false;
+
+  pvtStartTime = null;
 
 
-  if (box) {
+  box.classList.remove(
+    "ready"
+  );
 
-    box.classList.add(
-      "ready"
-    );
-
-    box.textContent =
-      "CLICK NOW";
-
-  }
-
-}
-
-
-function handlePVTClick() {
-
-  const pvt =
-    state.pvt;
-
-
-  if (!pvt.running) {
-    return;
-  }
-
-
-  if (!pvt.ready) {
-
-    if (pvt.timer) {
-      clearTimeout(pvt.timer);
-    }
-
-
-    pvt.running = false;
-    pvt.ready = false;
-
-
-    pvt.lapses++;
-
-
-    const box =
-      $("#pvt-box");
-
-
-    if (box) {
-
-      box.classList.add(
-        "false-start"
-      );
-
-      box.textContent =
-        "False start — press Start Test";
-
-    }
-
-
-    const button =
-      $("#pvt-start-btn");
-
-    if (button) {
-      button.disabled = false;
-    }
-
-
-    updatePVTResults();
-
-    return;
-
-  }
-
-
-  const reactionTime =
-    Math.round(
-      performance.now() -
-      pvt.startTime
-    );
-
-
-  pvt.trials.push(
-    reactionTime
+  box.classList.add(
+    "waiting"
   );
 
 
-  if (reactionTime > 500) {
-    pvt.lapses++;
-  }
+  box.textContent =
+    "Wait for green...";
 
 
-  pvt.running = false;
-  pvt.ready = false;
+  button.disabled = true;
 
+
+  const delay =
+    1500 +
+    Math.random() * 3500;
+
+
+  pvtTimer =
+    setTimeout(() => {
+
+      pvtReady = true;
+
+      pvtStartTime =
+        performance.now();
+
+
+      box.classList.remove(
+        "waiting"
+      );
+
+      box.classList.add(
+        "ready"
+      );
+
+
+      box.textContent =
+        "CLICK NOW!";
+
+    }, delay);
+
+}
+
+
+function handlePVTResponse() {
 
   const box =
-    $("#pvt-box");
-
-
-  if (box) {
-
-    box.classList.remove(
-      "ready"
+    document.getElementById(
+      "pvt-box"
     );
 
-    box.textContent =
-      `${reactionTime} ms — press Start Test for another trial`;
+
+  if (!box) {
+    return;
+  }
+
+
+  if (!pvtReady) {
+
+    return;
 
   }
+
+
+  const reaction =
+    Math.round(
+      performance.now() -
+      pvtStartTime
+    );
+
+
+  pvtReady = false;
+
+  pvtScores.push(reaction);
+
+
+  box.classList.remove(
+    "ready"
+  );
+
+
+  box.textContent =
+    `${reaction} ms`;
+
+
+  setText(
+    "pvt-score",
+    `${reaction} ms`
+  );
+
+
+  updatePVTStatistics();
 
 
   const button =
-    $("#pvt-start-btn");
+    document.getElementById(
+      "pvt-start-btn"
+    );
+
 
   if (button) {
     button.disabled = false;
   }
 
-
-  updatePVTResults();
-
 }
 
 
-function updatePVTResults() {
+function updatePVTStatistics() {
 
   const trials =
-    state.pvt.trials;
+    pvtScores.length;
 
 
-  const count =
-    trials.length;
+  if (!trials) {
+    return;
+  }
+
+
+  const average =
+    pvtScores.reduce(
+      (sum, score) =>
+        sum + score,
+      0
+    ) / trials;
+
+
+  const best =
+    Math.min(...pvtScores);
+
+
+  const lapses =
+    pvtScores.filter(
+      score => score > 500
+    ).length;
 
 
   setText(
     "pvt-trials",
-    String(count)
+    trials
   );
 
-
-  if (!count) {
-
-    setText(
-      "pvt-score",
-      "-- ms"
-    );
-
-    setText(
-      "pvt-average",
-      "-- ms"
-    );
-
-    setText(
-      "pvt-best",
-      "-- ms"
-    );
-
-    setText(
-      "pvt-lapses",
-      String(state.pvt.lapses)
-    );
-
-    return;
-
-  }
-
-
-  const last =
-    trials[trials.length - 1];
-
-
-  const average =
-    trials.reduce(
-      (sum, value) =>
-        sum + value,
-      0
-    ) / count;
-
-
-  const best =
-    Math.min(...trials);
-
-
-  setText(
-    "pvt-score",
-    `${last} ms`
-  );
 
   setText(
     "pvt-average",
     `${Math.round(average)} ms`
   );
 
+
   setText(
     "pvt-best",
     `${best} ms`
   );
 
+
   setText(
     "pvt-lapses",
-    String(state.pvt.lapses)
+    lapses
   );
 
 }
 
 
 /* =========================================================
-   EXPORT / PRINT
+   EXPORT
    ========================================================= */
 
-function setupExport() {
+function initializeExport() {
 
   const button =
-    $("#export-btn");
+    document.getElementById(
+      "export-btn"
+    );
 
 
   if (!button) {
@@ -2101,126 +2011,9 @@ function setupExport() {
 
   button.addEventListener(
     "click",
-    exportSummary
-  );
-
-}
-
-
-function exportSummary() {
-
-  const currentScenario =
-    SCENARIOS[state.activeScenario];
-
-
-  const originalTitle =
-    document.title;
-
-
-  document.title =
-    "Space NeuroHealth Research Summary";
-
-
-  const message =
-    `Space NeuroHealth
-
-Scenario: ${currentScenario.name}
-CO₂: ${formatNumber(state.currentCO2)} ppm
-Performance indicator: ${$("#performance-value")?.textContent || "--"} ms
-Change from baseline: ${$("#change-value")?.textContent || "--"}
-
-Dataset:
-${state.customDataset
-  ? state.customDataset.name
-  : "Built-in demonstration data"}
-
-PVT trials:
-${state.pvt.trials.length}
-
-PVT average:
-${state.pvt.trials.length
-  ? `${Math.round(
-      state.pvt.trials.reduce(
-        (a, b) => a + b,
-        0
-      ) / state.pvt.trials.length
-    )} ms`
-  : "--"}
-
-This report contains demonstration/interface data
-unless a validated dataset has been loaded.`;
-
-
-  const shouldPrint =
-    window.confirm(
-      `${message}\n\nOpen the print dialog to save this summary as PDF?`
-    );
-
-
-  if (shouldPrint) {
-
-    window.print();
-
-  }
-
-
-  setTimeout(
     () => {
-      document.title =
-        originalTitle;
-    },
-    1000
-  );
 
-}
-
-
-/* =========================================================
-   KEYBOARD ACCESSIBILITY
-   ========================================================= */
-
-function setupKeyboardNavigation() {
-
-  document.addEventListener(
-    "keydown",
-    event => {
-
-      if (
-        event.key === "Escape" &&
-        state.pvt.running
-      ) {
-
-        if (state.pvt.timer) {
-          clearTimeout(
-            state.pvt.timer
-          );
-        }
-
-
-        state.pvt.running = false;
-        state.pvt.ready = false;
-
-
-        const box =
-          $("#pvt-box");
-
-        if (box) {
-          box.textContent =
-            "Test cancelled — press Start Test";
-          box.classList.remove(
-            "ready"
-          );
-        }
-
-
-        const button =
-          $("#pvt-start-btn");
-
-        if (button) {
-          button.disabled = false;
-        }
-
-      }
+      window.print();
 
     }
   );
@@ -2229,63 +2022,48 @@ function setupKeyboardNavigation() {
 
 
 /* =========================================================
-   INITIALIZATION
+   HELPERS
    ========================================================= */
 
-function initializeApp() {
-
-  setupNavigation();
-
-  setupScenarios();
-
-  setupSlider();
-
-  setupCSV();
-
-  setupPVT();
-
-  setupExport();
-
-  setupKeyboardNavigation();
-
-
-  updateStatistics(
-    DEMO_DATA.environment
-  );
-
-
-  updateDatasetInformation();
-
-
-  /*
-    Chart.js is loaded with defer before this script,
-    so DOMContentLoaded is sufficient for initialization.
-  */
-
-  createCharts();
-
-
-  applyScenario(
-    SCENARIOS.baseline
-  );
-
-
-  updateAnalysis();
-
-}
-
-
-if (
-  document.readyState === "loading"
+function setText(
+  id,
+  value
 ) {
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    initializeApp
-  );
+  const element =
+    document.getElementById(id);
 
-} else {
 
-  initializeApp();
+  if (element) {
+    element.textContent = value;
+  }
 
 }
+
+
+function setFileStatus(message) {
+
+  const element =
+    document.getElementById(
+      "file-status-msg"
+    );
+
+
+  if (element) {
+    element.textContent = message;
+  }
+
+}
+
+
+function formatNumber(value) {
+
+  return Number(value)
+    .toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits: 0
+      }
+    );
+
+             }
