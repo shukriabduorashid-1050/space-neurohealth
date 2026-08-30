@@ -25,7 +25,7 @@
 
 
 /* =========================================================
-   BASE
+   RESET
    ========================================================= */
 
 * {
@@ -64,20 +64,25 @@ body {
 
 button,
 input {
-  font-family: inherit;
+  font: inherit;
 }
 
-button {
-  cursor: pointer;
-}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
 
 button:focus-visible,
 input:focus-visible,
-.pvt-box:focus-visible,
-.upload-button:focus-visible {
+.pvt-box:focus-visible {
   outline: 2px solid var(--blue-bright);
   outline-offset: 3px;
 }
+
+
+/* =========================================================
+   APP
+   ========================================================= */
 
 .app {
   width: 100%;
@@ -106,7 +111,9 @@ input:focus-visible,
 
   padding: 6px 10px;
 
-  border: 1px solid rgba(88, 166, 255, 0.35);
+  border:
+    1px solid
+    rgba(88, 166, 255, 0.35);
 
   border-radius: 20px;
 
@@ -118,7 +125,8 @@ input:focus-visible,
 
   letter-spacing: 1px;
 
-  background: rgba(88, 166, 255, 0.06);
+  background:
+    rgba(88, 166, 255, 0.06);
 }
 
 h1 {
@@ -128,8 +136,6 @@ h1 {
     clamp(1.8rem, 5vw, 2.7rem);
 
   letter-spacing: -1px;
-
-  color: var(--text);
 }
 
 h2 {
@@ -183,7 +189,8 @@ h3 {
   background: var(--green);
 
   box-shadow:
-    0 0 10px rgba(63, 185, 80, 0.6);
+    0 0 10px
+    rgba(63, 185, 80, 0.6);
 }
 
 .separator {
@@ -217,12 +224,14 @@ h3 {
   border-radius: 10px;
 
   overflow-x: auto;
+
+  scrollbar-width: thin;
 }
 
 .nav-btn {
   flex: 1;
 
-  min-width: 105px;
+  min-width: 110px;
 
   border: 0;
 
@@ -238,10 +247,11 @@ h3 {
 
   font-weight: 600;
 
+  cursor: pointer;
+
   transition:
-    color 0.2s ease,
     background 0.2s ease,
-    transform 0.2s ease;
+    color 0.2s ease;
 }
 
 .nav-btn:hover {
@@ -256,7 +266,8 @@ h3 {
   background: var(--card);
 
   box-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.25);
+    0 2px 10px
+    rgba(0, 0, 0, 0.25);
 }
 
 
@@ -268,7 +279,7 @@ h3 {
   display: none;
 
   animation:
-    sectionIn 0.2s ease;
+    sectionIn 0.18s ease;
 }
 
 .section.active-section {
@@ -276,7 +287,7 @@ h3 {
 }
 
 .section[hidden] {
-  display: none;
+  display: none !important;
 }
 
 @keyframes sectionIn {
@@ -318,10 +329,14 @@ h3 {
 }
 
 .data-status,
-.demo-pill {
+.demo-pill,
+.small-badge {
+  display: inline-block;
+
   padding: 6px 9px;
 
-  border: 1px solid
+  border:
+    1px solid
     rgba(210, 153, 34, 0.35);
 
   border-radius: 6px;
@@ -338,51 +353,170 @@ h3 {
   letter-spacing: 0.7px;
 }
 
+.small-badge {
+  color: var(--blue-bright);
+
+  border-color:
+    rgba(88, 166, 255, 0.3);
+
+  background:
+    rgba(88, 166, 255, 0.06);
+}
+
 
 /* =========================================================
-   CONTROLS
+   SCENARIOS
    ========================================================= */
 
-.control-card {
-  margin-bottom: 18px;
+.scenario-container {
+  display: grid;
 
-  padding: 20px;
+  grid-template-columns:
+    repeat(3, 1fr);
 
-  border: 1px solid var(--border);
+  gap: 8px;
+
+  margin-bottom: 16px;
+}
+
+.scenario-btn {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 11px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 8px;
+
+  background: var(--card);
+
+  color: var(--muted);
+
+  font-size: 0.75rem;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    0.2s ease;
+}
+
+.scenario-btn:hover {
+  border-color: #34465c;
+
+  color: var(--text);
+
+  background: var(--card-hover);
+}
+
+.scenario-btn.active {
+  border-color: var(--blue);
+
+  color: var(--text);
+
+  background:
+    rgba(88, 166, 255, 0.08);
+}
+
+.scenario-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+}
+
+.safe {
+  background: var(--green);
+}
+
+.warning {
+  background: var(--yellow);
+}
+
+.danger {
+  background: var(--red);
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.metric-card,
+.chart-card,
+.science-card,
+.pipeline-card,
+.control-card,
+.statistics-card,
+.pvt-card,
+.upload-card,
+.data-card,
+.info-card,
+.method-card,
+.about-card,
+.future-card,
+.export-card,
+.research-gap,
+.limitation-card {
+  margin-bottom: 14px;
+
+  border:
+    1px solid
+    var(--border);
 
   border-radius: var(--radius);
 
   background: var(--card);
-
-  box-shadow: var(--shadow);
 }
 
-.control-card h3 {
-  margin-bottom: 4px;
+
+/* =========================================================
+   CONTROL CARD
+   ========================================================= */
+
+.control-card {
+  padding: 20px;
 }
 
-.control-description {
-  margin: 0 0 18px;
-
-  color: var(--muted);
-
-  font-size: 0.76rem;
-}
-
-.control-group label {
+.control-header {
   display: flex;
 
   justify-content: space-between;
+
+  align-items: flex-start;
+
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+.slider-group label {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
 
   gap: 15px;
 
   color: var(--muted-light);
 
-  font-size: 0.82rem;
+  font-size: 0.9rem;
 }
 
-.control-group label strong {
+.slider-group label strong {
   color: var(--blue-bright);
+
+  white-space: nowrap;
 }
 
 #co2-slider {
@@ -391,9 +525,11 @@ h3 {
   margin-top: 12px;
 
   accent-color: var(--blue);
+
+  cursor: pointer;
 }
 
-.range-labels {
+.slider-scale {
   display: flex;
 
   justify-content: space-between;
@@ -406,73 +542,18 @@ h3 {
 }
 
 .control-help {
-  margin: 9px 0 0;
+  margin: 12px 0 0;
 
   color: var(--muted);
 
-  font-size: 0.67rem;
+  font-size: 0.7rem;
 
   line-height: 1.5;
 }
 
-.control-actions {
-  display: flex;
-
-  justify-content: flex-end;
-
-  margin-top: 15px;
-}
-
-.primary-btn,
-.secondary-btn {
-  border-radius: 6px;
-
-  padding: 9px 15px;
-
-  font-size: 0.75rem;
-
-  font-weight: 700;
-
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.primary-btn {
-  border: 1px solid var(--blue);
-
-  background: var(--blue);
-
-  color: var(--bg);
-}
-
-.primary-btn:hover {
-  background: var(--blue-bright);
-
-  transform: translateY(-1px);
-}
-
-.secondary-btn {
-  border: 1px solid var(--border);
-
-  background: transparent;
-
-  color: var(--muted-light);
-}
-
-.secondary-btn:hover {
-  border-color: var(--blue);
-
-  color: var(--text);
-
-  background:
-    rgba(88, 166, 255, 0.06);
-}
-
 
 /* =========================================================
-   METRICS
+   METRIC CARDS
    ========================================================= */
 
 .metric-grid {
@@ -489,23 +570,7 @@ h3 {
 .metric-card {
   padding: 18px;
 
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius);
-
-  background: var(--card);
-
   box-shadow: var(--shadow);
-
-  transition:
-    border-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.metric-card:hover {
-  border-color: #34465c;
-
-  transform: translateY(-2px);
 }
 
 .metric-header {
@@ -557,15 +622,15 @@ h3 {
 }
 
 .safe-text {
-  color: var(--green);
+  color: var(--green) !important;
 }
 
 .warning-text {
-  color: var(--yellow);
+  color: var(--yellow) !important;
 }
 
 .danger-text {
-  color: var(--red);
+  color: var(--red) !important;
 }
 
 
@@ -574,27 +639,18 @@ h3 {
    ========================================================= */
 
 .chart-card {
-  margin-bottom: 14px;
-
   padding: 18px;
-
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius);
-
-  background: var(--card);
-
-  box-shadow: var(--shadow);
 }
 
-.chart-header {
+.chart-header,
+.card-title-row {
   display: flex;
 
   justify-content: space-between;
 
   align-items: center;
 
-  gap: 10px;
+  gap: 15px;
 
   margin-bottom: 14px;
 }
@@ -602,7 +658,9 @@ h3 {
 .chart-unit {
   padding: 5px 8px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid
+    var(--border);
 
   border-radius: 5px;
 
@@ -619,7 +677,12 @@ h3 {
   height: 300px;
 }
 
-.chart-disclaimer {
+.chart-container canvas {
+  max-width: 100%;
+}
+
+.chart-disclaimer,
+.pvt-disclaimer {
   margin: 12px 0 0;
 
   color: var(--muted);
@@ -629,9 +692,33 @@ h3 {
   line-height: 1.5;
 }
 
+.chart-error {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  padding: 20px;
+
+  color: var(--yellow);
+
+  text-align: center;
+
+  font-size: 0.8rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
 
 /* =========================================================
-   SCIENCE
+   SCIENCE CARD
    ========================================================= */
 
 .science-card {
@@ -639,16 +726,15 @@ h3 {
 
   gap: 15px;
 
-  margin-bottom: 14px;
-
   padding: 18px;
 
-  border: 1px solid
+  border:
+    1px solid
     rgba(88, 166, 255, 0.25);
 
-  border-left: 4px solid var(--blue);
-
-  border-radius: 9px;
+  border-left:
+    4px solid
+    var(--blue);
 
   background:
     linear-gradient(
@@ -674,433 +760,12 @@ h3 {
 
 
 /* =========================================================
-   LIMITATIONS
-   ========================================================= */
-
-.limitation-card {
-  margin-bottom: 14px;
-
-  padding: 16px;
-
-  border: 1px solid var(--border);
-
-  border-radius: 9px;
-
-  background: var(--bg-secondary);
-}
-
-.limitation-title {
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  margin-bottom: 10px;
-
-  color: var(--yellow);
-
-  font-size: 0.8rem;
-
-  font-weight: 700;
-}
-
-.limitation-card ul {
-  margin: 0;
-
-  padding-left: 18px;
-
-  color: var(--muted);
-
-  font-size: 0.73rem;
-
-  line-height: 1.7;
-}
-
-
-/* =========================================================
-   ANALYSIS
-   ========================================================= */
-
-.analysis-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 12px;
-
-  margin-bottom: 14px;
-}
-
-.analysis-card {
-  padding: 18px;
-
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius);
-
-  background: var(--card);
-}
-
-.analysis-icon {
-  font-size: 1.4rem;
-}
-
-.analysis-card h3 {
-  margin-top: 12px;
-}
-
-.analysis-card div {
-  margin-top: 8px;
-
-  color: var(--blue-bright);
-
-  font-size: 1.35rem;
-
-  font-weight: 800;
-}
-
-.analysis-card p {
-  margin: 9px 0 0;
-
-  color: var(--muted);
-
-  font-size: 0.7rem;
-
-  line-height: 1.5;
-}
-
-
-/* =========================================================
-   PVT
-   ========================================================= */
-
-.pvt-card {
-  margin-bottom: 14px;
-
-  padding: 20px;
-
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius);
-
-  background: var(--card);
-
-  box-shadow: var(--shadow);
-}
-
-.pvt-description {
-  max-width: 800px;
-
-  margin: 8px 0 15px;
-
-  color: var(--muted);
-
-  font-size: 0.78rem;
-
-  line-height: 1.6;
-}
-
-.pvt-box {
-  width: 100%;
-
-  min-height: 120px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  padding: 20px;
-
-  border-radius: 7px;
-
-  background: var(--border);
-
-  color: var(--text);
-
-  font-weight: 700;
-
-  font-size: 1rem;
-
-  text-align: center;
-
-  user-select: none;
-
-  transition:
-    background 0.15s ease;
-}
-
-.pvt-controls {
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-  gap: 15px;
-
-  margin-top: 15px;
-}
-
-.pvt-score {
-  color: var(--muted-light);
-
-  font-size: 0.78rem;
-}
-
-.pvt-score strong {
-  color: var(--blue-bright);
-}
-
-.pvt-result {
-  min-height: 20px;
-
-  margin-top: 12px;
-
-  color: var(--muted);
-
-  font-size: 0.75rem;
-}
-
-
-/* =========================================================
-   CARDS
-   ========================================================= */
-
-.info-card,
-.method-card,
-.about-card,
-.future-card {
-  margin-bottom: 14px;
-
-  padding: 20px;
-
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius);
-
-  background: var(--card);
-}
-
-.data-card {
-  margin-bottom: 14px;
-
-  padding: 20px;
-
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius);
-
-  background: var(--card);
-
-  box-shadow: var(--shadow);
-}
-
-.data-card-header {
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-  gap: 15px;
-
-  margin-bottom: 15px;
-}
-
-.data-table {
-  border-top: 1px solid var(--border);
-}
-
-.data-row {
-  display: flex;
-
-  justify-content: space-between;
-
-  gap: 20px;
-
-  padding: 12px 0;
-
-  border-bottom: 1px solid var(--border);
-
-  font-size: 0.75rem;
-}
-
-.data-row span {
-  color: var(--muted);
-}
-
-.data-row strong {
-  text-align: right;
-}
-
-
-/* =========================================================
-   CSV UPLOAD
-   ========================================================= */
-
-.upload-card {
-  margin-bottom: 20px;
-
-  padding: 22px;
-
-  border: 2px dashed var(--border);
-
-  border-radius: var(--radius);
-
-  background: var(--card);
-
-  text-align: center;
-
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
-}
-
-.upload-card.drag-over {
-  border-color: var(--blue);
-
-  background:
-    rgba(88, 166, 255, 0.06);
-}
-
-.upload-card h3 {
-  margin-bottom: 7px;
-}
-
-.upload-card > p {
-  max-width: 650px;
-
-  margin: 0 auto 16px;
-
-  color: var(--muted);
-
-  font-size: 0.76rem;
-}
-
-#csv-file-input {
-  display: none;
-}
-
-.upload-button {
-  display: inline-block;
-
-  padding: 9px 16px;
-
-  border: 1px solid var(--blue);
-
-  border-radius: 6px;
-
-  color: var(--blue);
-
-  font-size: 0.75rem;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease;
-}
-
-.upload-button:hover {
-  background:
-    rgba(88, 166, 255, 0.08);
-}
-
-.file-status {
-  min-height: 22px;
-
-  margin-top: 12px;
-
-  color: var(--green);
-
-  font-size: 0.75rem;
-}
-
-.file-status.error {
-  color: var(--red);
-}
-
-.upload-format {
-  display: flex;
-
-  justify-content: center;
-
-  align-items: center;
-
-  flex-wrap: wrap;
-
-  gap: 8px;
-
-  margin-top: 15px;
-
-  color: var(--muted);
-
-  font-size: 0.68rem;
-}
-
-.upload-format code {
-  padding: 3px 6px;
-
-  border-radius: 4px;
-
-  background: var(--bg);
-
-  color: var(--blue-bright);
-}
-
-
-/* =========================================================
-   QUESTIONS
-   ========================================================= */
-
-.question-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(2, 1fr);
-
-  gap: 10px;
-
-  margin-top: 15px;
-}
-
-.question-grid div {
-  display: flex;
-
-  gap: 10px;
-
-  padding: 13px;
-
-  border: 1px solid var(--border);
-
-  border-radius: 7px;
-
-  background: var(--bg-secondary);
-}
-
-.question-grid span {
-  color: var(--blue);
-
-  font-weight: 800;
-}
-
-.question-grid p {
-  margin: 0;
-
-  color: var(--muted-light);
-
-  font-size: 0.72rem;
-}
-
-
-/* =========================================================
    PIPELINE
    ========================================================= */
+
+.pipeline-card {
+  padding: 18px;
+}
 
 .pipeline {
   display: flex;
@@ -1109,7 +774,7 @@ h3 {
 
   gap: 8px;
 
-  margin: 20px 0 0;
+  margin-top: 16px;
 }
 
 .pipeline-step {
@@ -1117,11 +782,14 @@ h3 {
 
   padding: 16px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid
+    var(--border);
 
   border-radius: 9px;
 
-  background: var(--bg-secondary);
+  background:
+    var(--bg-secondary);
 }
 
 .pipeline-step span {
@@ -1162,7 +830,500 @@ h3 {
 
 
 /* =========================================================
-   METHOD
+   ANALYSIS
+   ========================================================= */
+
+.analysis-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 12px;
+
+  margin-bottom: 14px;
+}
+
+.analysis-card {
+  padding: 18px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 10px;
+
+  background: var(--card);
+}
+
+.analysis-icon {
+  font-size: 1.4rem;
+}
+
+.analysis-card h3 {
+  margin-top: 12px;
+}
+
+.analysis-card div {
+  margin-top: 8px;
+
+  color: var(--blue-bright);
+
+  font-size: 1.35rem;
+
+  font-weight: 800;
+}
+
+.analysis-card p {
+  margin: 9px 0 0;
+
+  color: var(--muted);
+
+  font-size: 0.7rem;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.statistics-card {
+  padding: 20px;
+}
+
+.statistics-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 10px;
+}
+
+.stat-item {
+  padding: 14px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 8px;
+
+  background:
+    var(--bg-secondary);
+}
+
+.stat-item span {
+  display: block;
+
+  color: var(--muted);
+
+  font-size: 0.68rem;
+}
+
+.stat-item strong {
+  display: block;
+
+  margin-top: 5px;
+
+  color: var(--blue-bright);
+
+  font-size: 1rem;
+}
+
+
+/* =========================================================
+   PVT
+   ========================================================= */
+
+.pvt-card {
+  padding: 20px;
+}
+
+.pvt-description {
+  margin: 0 0 15px;
+
+  color: var(--muted);
+
+  font-size: 0.82rem;
+
+  line-height: 1.6;
+}
+
+.pvt-box {
+  width: 100%;
+
+  height: 120px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 15px;
+
+  border-radius: 7px;
+
+  background:
+    var(--border);
+
+  color: var(--text);
+
+  font-size: 1.05rem;
+
+  font-weight: 700;
+
+  text-align: center;
+
+  user-select: none;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.pvt-box:active {
+  transform: scale(0.995);
+}
+
+.pvt-controls {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 15px;
+
+  margin-top: 15px;
+}
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn {
+  border-radius: 6px;
+
+  padding: 10px 18px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    0.2s ease;
+}
+
+.primary-btn {
+  border: 0;
+
+  background: var(--blue);
+
+  color: var(--bg);
+}
+
+.primary-btn:hover {
+  background: var(--blue-bright);
+}
+
+.secondary-btn {
+  border:
+    1px solid
+    var(--blue);
+
+  background: transparent;
+
+  color: var(--blue);
+
+  padding: 9px 16px;
+}
+
+.secondary-btn:hover {
+  background:
+    rgba(88, 166, 255, 0.08);
+}
+
+.ghost-btn {
+  border:
+    1px solid
+    var(--border);
+
+  background: var(--card);
+
+  color: var(--muted);
+}
+
+.ghost-btn:hover:not(:disabled) {
+  color: var(--text);
+
+  background: var(--card-hover);
+}
+
+button:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+}
+
+.pvt-score {
+  color: var(--muted-light);
+
+  font-size: 0.9rem;
+}
+
+.pvt-score strong {
+  color: var(--blue-bright);
+}
+
+.pvt-results {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 8px;
+
+  margin-top: 15px;
+}
+
+.pvt-results div {
+  padding: 12px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 7px;
+
+  background:
+    var(--bg-secondary);
+}
+
+.pvt-results span {
+  display: block;
+
+  color: var(--muted);
+
+  font-size: 0.65rem;
+}
+
+.pvt-results strong {
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--blue-bright);
+
+  font-size: 0.9rem;
+}
+
+
+/* =========================================================
+   DATA UPLOAD
+   ========================================================= */
+
+.upload-card {
+  padding: 20px;
+
+  text-align: center;
+
+  border:
+    2px dashed
+    var(--border);
+
+  transition:
+    0.2s ease;
+}
+
+.upload-card.drag-over {
+  border-color: var(--blue);
+
+  background:
+    rgba(88, 166, 255, 0.05);
+}
+
+.upload-card h3 {
+  margin-bottom: 8px;
+}
+
+.upload-card p {
+  max-width: 650px;
+
+  margin: 0 auto 15px;
+
+  color: var(--muted);
+
+  font-size: 0.8rem;
+
+  line-height: 1.6;
+}
+
+.upload-actions {
+  display: flex;
+
+  justify-content: center;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.file-status {
+  margin-top: 12px;
+
+  color: var(--green);
+
+  font-size: 0.75rem;
+}
+
+.file-status.error {
+  color: var(--red);
+}
+
+.file-status.warning {
+  color: var(--yellow);
+}
+
+
+/* =========================================================
+   DATA CARD
+   ========================================================= */
+
+.data-card,
+.info-card,
+.method-card,
+.about-card,
+.future-card,
+.export-card,
+.research-gap,
+.limitation-card {
+  padding: 20px;
+}
+
+.data-table {
+  border-top:
+    1px solid
+    var(--border);
+}
+
+.data-row {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 12px 0;
+
+  border-bottom:
+    1px solid
+    var(--border);
+
+  font-size: 0.75rem;
+}
+
+.data-row span {
+  color: var(--muted);
+}
+
+.data-row strong {
+  text-align: right;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   QUESTIONS
+   ========================================================= */
+
+.question-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 10px;
+
+  margin-top: 15px;
+}
+
+.question-grid div {
+  display: flex;
+
+  gap: 10px;
+
+  padding: 13px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 7px;
+
+  background:
+    var(--bg-secondary);
+}
+
+.question-grid span {
+  color: var(--blue);
+
+  font-weight: 800;
+}
+
+.question-grid p {
+  margin: 0;
+
+  color: var(--muted-light);
+
+  font-size: 0.72rem;
+}
+
+
+/* =========================================================
+   LIMITATIONS
+   ========================================================= */
+
+.limitation-card {
+  background:
+    var(--bg-secondary);
+}
+
+.limitation-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 10px;
+
+  color: var(--yellow);
+
+  font-size: 0.8rem;
+
+  font-weight: 700;
+}
+
+.limitation-card ul {
+  margin: 0;
+
+  padding-left: 18px;
+
+  color: var(--muted);
+
+  font-size: 0.73rem;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   METHODOLOGY
    ========================================================= */
 
 .method-flow {
@@ -1177,7 +1338,7 @@ h3 {
   overflow-x: auto;
 }
 
-.method-flow > div:not(.method-line) {
+.method-flow div:not(.method-line) {
   flex-shrink: 0;
 
   text-align: center;
@@ -1227,7 +1388,7 @@ h3 {
 
 
 /* =========================================================
-   SCIENTIFIC CONTEXT
+   SCIENCE CONTEXT
    ========================================================= */
 
 .science-context {
@@ -1244,9 +1405,11 @@ h3 {
 .context-card {
   padding: 20px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid
+    var(--border);
 
-  border-radius: var(--radius);
+  border-radius: 10px;
 
   background: var(--card);
 
@@ -1277,26 +1440,19 @@ h3 {
   margin-bottom: 0;
 }
 
-.context-card strong {
-  color: var(--blue-bright);
-}
-
 
 /* =========================================================
    RESEARCH GAP
    ========================================================= */
 
 .research-gap {
-  margin-bottom: 14px;
-
-  padding: 20px;
-
-  border: 1px solid
+  border:
+    1px solid
     rgba(88, 166, 255, 0.25);
 
-  border-left: 4px solid var(--blue);
-
-  border-radius: var(--radius);
+  border-left:
+    4px solid
+    var(--blue);
 
   background:
     linear-gradient(
@@ -1335,7 +1491,6 @@ h3 {
   justify-content: center;
 
   min-width: 55px;
-
   height: 55px;
 
   border-radius: 12px;
@@ -1368,7 +1523,9 @@ h3 {
 .about-small-card {
   padding: 16px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid
+    var(--border);
 
   border-radius: 9px;
 
@@ -1391,38 +1548,42 @@ h3 {
   line-height: 1.5;
 }
 
-.future-card p {
-  max-width: 750px;
 
-  margin-bottom: 0;
+/* =========================================================
+   EXPORT
+   ========================================================= */
+
+.export-card {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 20px;
+
+  border:
+    1px solid
+    rgba(88, 166, 255, 0.25);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(88, 166, 255, 0.07),
+      transparent
+    );
+}
+
+.export-card p {
+  max-width: 650px;
+
+  margin: 8px 0 0;
 
   color: var(--muted-light);
 
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 
   line-height: 1.6;
-}
-
-.source-note {
-  margin-top: 12px;
-
-  padding: 14px;
-
-  border: 1px solid var(--border);
-
-  border-radius: 8px;
-
-  background: var(--bg-secondary);
-
-  color: var(--muted);
-
-  font-size: 0.68rem;
-
-  line-height: 1.6;
-}
-
-.source-note strong {
-  color: var(--muted-light);
 }
 
 
@@ -1443,7 +1604,9 @@ footer {
 
   padding-top: 20px;
 
-  border-top: 1px solid var(--border);
+  border-top:
+    1px solid
+    var(--border);
 
   color: var(--muted);
 
@@ -1473,6 +1636,12 @@ footer strong {
     grid-template-columns: 1fr;
   }
 
+  .statistics-grid,
+  .pvt-results {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
   .about-grid {
     grid-template-columns:
       repeat(2, 1fr);
@@ -1498,31 +1667,30 @@ footer strong {
     flex-shrink: 0;
   }
 
+  .export-card {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
 }
 
 
 @media (max-width: 500px) {
 
   .app {
-    padding: 12px 10px 30px;
+    padding:
+      12px
+      10px
+      30px;
   }
 
-  .navigation {
+  .scenario-container {
+    grid-template-columns: 1fr;
+  }
+
+  .scenario-btn {
     justify-content: flex-start;
-  }
-
-  .nav-btn {
-    flex: 0 0 auto;
-  }
-
-  .section-heading {
-    flex-direction: column;
-  }
-
-  .control-group label {
-    flex-direction: column;
-
-    gap: 4px;
   }
 
   .question-grid,
@@ -1548,13 +1716,33 @@ footer strong {
     text-align: left;
   }
 
+  .control-header,
+  .card-title-row {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .slider-group label {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 4px;
+  }
+
   .pvt-controls {
     flex-direction: column;
 
     align-items: stretch;
   }
 
-  .pipeline {
+  .pvt-score {
+    text-align: center;
+  }
+
+  .statistics-grid,
+  .pvt-results {
     grid-template-columns: 1fr;
   }
 
@@ -1572,15 +1760,25 @@ footer strong {
 
 
 /* =========================================================
-   PRINT / EXPORT
+   PRINT / PDF EXPORT
    ========================================================= */
 
 @media print {
 
+  @page {
+    size: A4;
+    margin: 16mm;
+  }
+
   body {
     background: white;
 
-    color: black;
+    color: #111;
+
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
   }
 
   .app {
@@ -1589,61 +1787,99 @@ footer strong {
     padding: 0;
   }
 
+  .hero {
+    padding-top: 0;
+
+    border-bottom:
+      1px solid
+      #ccc;
+  }
+
   .navigation,
+  .scenario-container,
   .control-card,
-  .pvt-card,
   .upload-card,
-  footer {
+  .export-card,
+  footer,
+  .pvt-card,
+  .method-flow {
     display: none !important;
   }
 
   .section {
+    display: none !important;
+  }
+
+  #dashboard,
+  #analysis {
     display: block !important;
   }
 
-  .section:not(#dashboard) {
-    page-break-before: always;
+  .section-heading {
+    margin-top: 18px;
+  }
+
+  .metric-grid,
+  .analysis-grid,
+  .statistics-grid,
+  .science-context {
+    display: grid;
   }
 
   .metric-card,
   .chart-card,
   .science-card,
-  .info-card,
+  .statistics-card,
+  .analysis-card,
+  .context-card,
   .data-card,
-  .method-card,
+  .research-gap,
+  .limitation-card,
   .about-card,
-  .future-card,
-  .context-card {
+  .future-card {
     background: white;
 
-    color: black;
+    color: #111;
+
+    border:
+      1px solid
+      #ccc;
 
     box-shadow: none;
 
-    border-color: #cccccc;
+    break-inside: avoid;
   }
 
-  .metric-value,
   h1,
   h2,
-  h3 {
-    color: black;
+  h3,
+  strong {
+    color: #111;
   }
 
   .subtitle,
   .metric-unit,
   .metric-status,
   .chart-disclaimer,
-  .about-card p,
-  .future-card p,
+  .science-card p,
+  .analysis-card p,
   .context-card p,
-  .limitation-card,
+  .research-gap p,
+  .future-card p,
   .data-row span {
     color: #444;
   }
 
+  .eyebrow {
+    color: #175ea8;
+  }
+
   canvas {
-    max-height: 250px;
+    max-height: 300px;
+  }
+
+  .chart-container {
+    height: 260px;
   }
 
   }
