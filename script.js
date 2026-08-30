@@ -1,138 +1,1084 @@
-// script.js — UI logic for Space NeuroHealth prototype
-(() => {
-  'use strict';
+/* =========================================================
+   SPACE NEUROHEALTH
+   NASA SPACE APPS CHALLENGE PROTOTYPE
 
-  const DEMO_SCENARIOS = {
-    baseline: { label: 'Baseline', color: '#3CB371', initialCO2: 1200, initialPerf: 240 },
-    elevated: { label: 'Elevated', color: '#FFA500', initialCO2: 2500, initialPerf: 295 },
-    high: { label: 'High Exposure', color: '#FF3B30', initialCO2: 5000, initialPerf: 380 }
-  };
+   IMPORTANT:
+   The values below are DEMONSTRATION DATA.
 
-  const dom = {};
-  let environmentChart = null;
-  let performanceChart = null;
-  let currentScenarioKey = 'baseline';
+   They are NOT presented as actual NASA measurements.
 
-  function formatNumber(n) {
-    return new Intl.NumberFormat().format(Math.round(n));
+   Replace them with verified NASA data after selecting
+   the official challenge dataset.
+   ========================================================= */
+
+
+/* =========================================================
+   DEMONSTRATION SCENARIOS
+   ========================================================= */
+
+const scenarios = {
+
+  baseline: {
+
+    environment: 1200,
+
+    unit: "ppm CO₂",
+
+    performance: 240,
+
+    change: 0,
+
+    environmentStatus:
+      "Baseline demonstration condition",
+
+    performanceStatus:
+      "Reference indicator",
+
+    changeStatus:
+      "No change",
+
+    trend:
+      "Stable",
+
+    color:
+      "#3fb950",
+
+    noteTitle:
+      "Baseline environmental condition",
+
+    note:
+      "This demonstration shows a baseline environmental " +
+      "measurement. In the final project, this value will " +
+      "come from a verified NASA dataset and will be " +
+      "interpreted according to documented scientific evidence."
+
+  },
+
+
+  elevated: {
+
+    environment: 2800,
+
+    unit: "ppm CO₂",
+
+    performance: 285,
+
+    change: 18.8,
+
+    environmentStatus:
+      "Elevated demonstration value",
+
+    performanceStatus:
+      "Reference indicator",
+
+    changeStatus:
+      "Higher than baseline",
+
+    trend:
+      "Increasing",
+
+    color:
+      "#d29922",
+
+    noteTitle:
+      "Elevated environmental measurement",
+
+    note:
+      "The prototype identifies a higher environmental " +
+      "measurement than the baseline scenario. The displayed " +
+      "performance indicator is a demonstration value and " +
+      "should not be treated as evidence that the environmental " +
+      "measurement caused a change in cognition."
+
+  },
+
+
+  high: {
+
+    environment: 4100,
+
+    unit: "ppm CO₂",
+
+    performance: 350,
+
+    change: 20,
+
+    environmentStatus:
+      "High demonstration value",
+
+    performanceStatus:
+      "Reference indicator",
+
+    changeStatus:
+      "Higher than baseline",
+
+    trend:
+      "Increasing",
+
+    color:
+      "#f85149",
+
+    noteTitle:
+      "High demonstration value",
+
+    note:
+      "This scenario demonstrates how the application could " +
+      "flag an unusually high environmental measurement for " +
+      "further investigation. A real alert threshold would " +
+      "only be added after reviewing the relevant NASA dataset, " +
+      "mission requirements, and scientific evidence."
+
   }
 
-  function generateDemoSeries(initialCo2, initialPerf, points = 8) {
-    const labels = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'];
-    const env = [];
-    const perf = [];
-    for (let i = 0; i < points; i++) {
-      const noise = (Math.random() - 0.5) * 0.05;
-      initialCo2 = initialCo2 * (1 + noise);
-      initialPerf = initialPerf * (1 + noise / 1.5);
-      env.push(Math.round(initialCo2));
-      perf.push(Math.round(initialPerf));
-    }
-    return { labels, env, perf };
+};
+
+
+/* =========================================================
+   DEMONSTRATION TIME SERIES
+   ========================================================= */
+
+const chartData = {
+
+  baseline: {
+
+    labels: [
+      "08:00",
+      "10:00",
+      "12:00",
+      "14:00",
+      "16:00",
+      "18:00",
+      "20:00"
+    ],
+
+    environment: [
+      1100,
+      1150,
+      1200,
+      1180,
+      1210,
+      1190,
+      1200
+    ],
+
+    performance: [
+      235,
+      238,
+      240,
+      239,
+      241,
+      240,
+      240
+    ]
+
+  },
+
+
+  elevated: {
+
+    labels: [
+      "08:00",
+      "10:00",
+      "12:00",
+      "14:00",
+      "16:00",
+      "18:00",
+      "20:00"
+    ],
+
+    environment: [
+      1500,
+      1800,
+      2100,
+      2350,
+      2500,
+      2700,
+      2800
+    ],
+
+    performance: [
+      245,
+      250,
+      260,
+      265,
+      275,
+      280,
+      285
+    ]
+
+  },
+
+
+  high: {
+
+    labels: [
+      "08:00",
+      "10:00",
+      "12:00",
+      "14:00",
+      "16:00",
+      "18:00",
+      "20:00"
+    ],
+
+    environment: [
+      2000,
+      2500,
+      3100,
+      3400,
+      3800,
+      3950,
+      4100
+    ],
+
+    performance: [
+      260,
+      275,
+      300,
+      315,
+      330,
+      340,
+      350
+    ]
+
   }
 
-  function createCharts(labels, envData, perfData, scenarioColor) {
-    if (environmentChart) {
-      environmentChart.data.labels = labels;
-      environmentChart.data.datasets[0].data = envData;
-      environmentChart.data.datasets[0].borderColor = scenarioColor;
-      environmentChart.update();
-    } else if (dom.environmentChartCtx) {
-      environmentChart = new Chart(dom.environmentChartCtx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            label: 'CO₂ Level (ppm)',
-            data: envData,
-            borderColor: scenarioColor,
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            fill: true,
-            tension: 0.3
-          }]
+};
+
+
+/* =========================================================
+   GLOBAL CHART VARIABLES
+   ========================================================= */
+
+let environmentChart;
+
+let performanceChart;
+
+
+/* =========================================================
+   CHART SETTINGS
+   ========================================================= */
+
+const chartTextColor =
+  "#8b949e";
+
+const chartGridColor =
+  "#1d2a3a";
+
+
+/* =========================================================
+   CREATE ENVIRONMENT CHART
+   ========================================================= */
+
+function createEnvironmentChart() {
+
+  const canvas =
+    document.getElementById(
+      "environmentChart"
+    );
+
+  if (!canvas) {
+    return;
+  }
+
+  const ctx =
+    canvas.getContext("2d");
+
+
+  environmentChart =
+    new Chart(ctx, {
+
+      type: "line",
+
+      data: {
+
+        labels:
+          chartData.baseline.labels,
+
+        datasets: [
+
+          {
+
+            label:
+              "Environmental Measurement",
+
+            data:
+              chartData.baseline.environment,
+
+            borderColor:
+              "#58a6ff",
+
+            backgroundColor:
+              "rgba(88,166,255,0.10)",
+
+            borderWidth:
+              2,
+
+            pointRadius:
+              3,
+
+            pointHoverRadius:
+              5,
+
+            tension:
+              0.3,
+
+            fill:
+              true
+
+          }
+
+        ]
+
+      },
+
+
+      options: {
+
+        responsive:
+          true,
+
+        maintainAspectRatio:
+          false,
+
+
+        interaction: {
+
+          intersect:
+            false,
+
+          mode:
+            "index"
+
         },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
-    }
 
-    if (performanceChart) {
-      performanceChart.data.labels = labels;
-      performanceChart.data.datasets[0].data = perfData;
-      performanceChart.update();
-    } else if (dom.performanceChartCtx) {
-      performanceChart = new Chart(dom.performanceChartCtx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Reaction Time (ms)',
-            data: perfData,
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            fill: true,
-            tension: 0.3
-          }]
+
+        plugins: {
+
+          legend: {
+
+            labels: {
+
+              color:
+                "#f0f6fc",
+
+              font: {
+                size: 11
+              }
+
+            }
+
+          },
+
+
+          tooltip: {
+
+            backgroundColor:
+              "#101824",
+
+            borderColor:
+              "#1d2a3a",
+
+            borderWidth:
+              1,
+
+            titleColor:
+              "#f0f6fc",
+
+            bodyColor:
+              "#b6c2cf"
+
+          }
+
         },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
-    }
+
+
+        scales: {
+
+          x: {
+
+            ticks: {
+
+              color:
+                chartTextColor
+
+            },
+
+            grid: {
+
+              color:
+                chartGridColor
+
+            }
+
+          },
+
+
+          y: {
+
+            beginAtZero:
+              false,
+
+            ticks: {
+
+              color:
+                chartTextColor
+
+            },
+
+            grid: {
+
+              color:
+                chartGridColor
+
+            },
+
+            title: {
+
+              display:
+                true,
+
+              text:
+                "CO₂ concentration (ppm)",
+
+              color:
+                chartTextColor
+
+            }
+
+          }
+
+        }
+
+      }
+
+    });
+
+}
+
+
+/* =========================================================
+   CREATE PERFORMANCE CHART
+   ========================================================= */
+
+function createPerformanceChart() {
+
+  const canvas =
+    document.getElementById(
+      "performanceChart"
+    );
+
+  if (!canvas) {
+    return;
   }
 
-  function updateMetricDisplays(envLatest, perfLatest, baselineEnv) {
-    if (dom.environmentValue) dom.environmentValue.textContent = formatNumber(envLatest);
-    if (dom.performanceValue) dom.performanceValue.textContent = formatNumber(perfLatest);
-    const change = baselineEnv ? ((envLatest - baselineEnv) / baselineEnv) * 100 : 0;
-    if (dom.changeValue) dom.changeValue.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
+  const ctx =
+    canvas.getContext("2d");
+
+
+  performanceChart =
+    new Chart(ctx, {
+
+      type: "line",
+
+      data: {
+
+        labels:
+          chartData.baseline.labels,
+
+        datasets: [
+
+          {
+
+            label:
+              "Performance Reference",
+
+            data:
+              chartData.baseline.performance,
+
+            borderColor:
+              "#56d4dd",
+
+            backgroundColor:
+              "rgba(86,212,221,0.08)",
+
+            borderWidth:
+              2,
+
+            pointRadius:
+              3,
+
+            pointHoverRadius:
+              5,
+
+            tension:
+              0.3,
+
+            fill:
+              true
+
+          }
+
+        ]
+
+      },
+
+
+      options: {
+
+        responsive:
+          true,
+
+        maintainAspectRatio:
+          false,
+
+
+        interaction: {
+
+          intersect:
+            false,
+
+          mode:
+            "index"
+
+        },
+
+
+        plugins: {
+
+          legend: {
+
+            labels: {
+
+              color:
+                "#f0f6fc",
+
+              font: {
+                size: 11
+              }
+
+            }
+
+          },
+
+
+          tooltip: {
+
+            backgroundColor:
+              "#101824",
+
+            borderColor:
+              "#1d2a3a",
+
+            borderWidth:
+              1,
+
+            titleColor:
+              "#f0f6fc",
+
+            bodyColor:
+              "#b6c2cf"
+
+          }
+
+        },
+
+
+        scales: {
+
+          x: {
+
+            ticks: {
+
+              color:
+                chartTextColor
+
+            },
+
+            grid: {
+
+              color:
+                chartGridColor
+
+            }
+
+          },
+
+
+          y: {
+
+            beginAtZero:
+              false,
+
+            ticks: {
+
+              color:
+                chartTextColor
+
+            },
+
+            grid: {
+
+              color:
+                chartGridColor
+
+            },
+
+            title: {
+
+              display:
+                true,
+
+              text:
+                "Reaction time (ms)",
+
+              color:
+                chartTextColor
+
+            }
+
+          }
+
+        }
+
+      }
+
+    });
+
+}
+
+
+/* =========================================================
+   UPDATE DASHBOARD
+   ========================================================= */
+
+function loadScenario(type) {
+
+  const selected =
+    scenarios[type];
+
+  const data =
+    chartData[type];
+
+
+  if (!selected || !data) {
+    return;
   }
 
-  function onNavClick(e) {
-    const btn = e.target.closest('.nav-btn');
-    if (!btn) return;
-    const section = btn.dataset.section;
-    if (!section) return;
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b === btn));
-    document.querySelectorAll('.section').forEach(s => s.classList.toggle('active-section', s.id === section));
+
+  /* -----------------------------------------
+     ENVIRONMENT
+     ----------------------------------------- */
+
+  const environmentValue =
+    document.getElementById(
+      "environment-value"
+    );
+
+  environmentValue.textContent =
+    selected.environment.toLocaleString();
+
+
+  document.getElementById(
+    "environment-unit"
+  ).textContent =
+    selected.unit;
+
+
+  const environmentStatus =
+    document.getElementById(
+      "environment-status"
+    );
+
+  environmentStatus.textContent =
+    selected.environmentStatus;
+
+
+  environmentStatus.className =
+    "metric-status";
+
+
+  if (type === "baseline") {
+
+    environmentStatus.classList.add(
+      "safe-text"
+    );
+
   }
 
-  function onScenarioClick(e) {
-    const btn = e.target.closest('.scenario-btn');
-    if (!btn) return;
-    const key = btn.dataset.scenario;
-    if (!DEMO_SCENARIOS[key]) return;
-    currentScenarioKey = key;
-    document.querySelectorAll('.scenario-btn').forEach(b => b.classList.toggle('active', b === btn));
-    const cfg = DEMO_SCENARIOS[key];
-    const { labels, env, perf } = generateDemoSeries(cfg.initialCO2, cfg.initialPerf);
-    createCharts(labels, env, perf, cfg.color);
-    updateMetricDisplays(env[env.length - 1], perf[perf.length - 1], DEMO_SCENARIOS.baseline.initialCO2);
+  else if (type === "elevated") {
+
+    environmentStatus.classList.add(
+      "warning-text"
+    );
+
   }
 
-  function cacheDom() {
-    dom.environmentValue = document.getElementById('environment-value');
-    dom.performanceValue = document.getElementById('performance-value');
-    dom.changeValue = document.getElementById('change-value');
-    
-    const envEl = document.getElementById('environmentChart');
-    if (envEl) dom.environmentChartCtx = envEl.getContext('2d');
-    
-    const perfEl = document.getElementById('performanceChart');
-    if (perfEl) dom.performanceChartCtx = perfEl.getContext('2d');
+  else {
+
+    environmentStatus.classList.add(
+      "danger-text"
+    );
+
   }
 
-  function init() {
-    cacheDom();
-    document.addEventListener('click', onNavClick);
-    document.addEventListener('click', onScenarioClick);
 
-    const cfg = DEMO_SCENARIOS[currentScenarioKey];
-    const { labels, env, perf } = generateDemoSeries(cfg.initialCO2, cfg.initialPerf);
-    createCharts(labels, env, perf, cfg.color);
-    updateMetricDisplays(env[env.length - 1], perf[perf.length - 1], DEMO_SCENARIOS.baseline.initialCO2);
+  /* -----------------------------------------
+     PERFORMANCE
+     ----------------------------------------- */
+
+  document.getElementById(
+    "performance-value"
+  ).textContent =
+    selected.performance;
+
+
+  document.getElementById(
+    "performance-status"
+  ).textContent =
+    selected.performanceStatus;
+
+
+  /* -----------------------------------------
+     CHANGE
+     ----------------------------------------- */
+
+  document.getElementById(
+    "change-value"
+  ).textContent =
+    selected.change === 0
+      ? "0%"
+      : "+" + selected.change + "%";
+
+
+  const changeStatus =
+    document.getElementById(
+      "change-status"
+    );
+
+  changeStatus.textContent =
+    selected.changeStatus;
+
+
+  changeStatus.className =
+    "metric-status";
+
+
+  if (selected.change === 0) {
+
+    changeStatus.classList.add(
+      "safe-text"
+    );
+
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+  else if (selected.change < 20) {
+
+    changeStatus.classList.add(
+      "warning-text"
+    );
+
   }
-})();
+
+  else {
+
+    changeStatus.classList.add(
+      "danger-text"
+    );
+
+  }
+
+
+  /* -----------------------------------------
+     SCIENTIFIC INTERPRETATION
+     ----------------------------------------- */
+
+  document.getElementById(
+    "science-title"
+  ).textContent =
+    selected.noteTitle;
+
+
+  document.getElementById(
+    "science-text"
+  ).textContent =
+    selected.note;
+
+
+  /* -----------------------------------------
+     ANALYSIS
+     ----------------------------------------- */
+
+  document.getElementById(
+    "trend-result"
+  ).textContent =
+    selected.trend;
+
+
+  document.getElementById(
+    "baseline-result"
+  ).textContent =
+    selected.change === 0
+      ? "0%"
+      : "+" + selected.change + "%";
+
+
+  document.getElementById(
+    "analysis-result"
+  ).textContent =
+    "Exploratory";
+
+
+  /* -----------------------------------------
+     UPDATE ENVIRONMENT CHART
+     ----------------------------------------- */
+
+  if (environmentChart) {
+
+    environmentChart.data.labels =
+      data.labels;
+
+    environmentChart.data.datasets[0].data =
+      data.environment;
+
+    environmentChart.data.datasets[0].borderColor =
+      selected.color;
+
+    environmentChart.data.datasets[0].backgroundColor =
+      hexToRgba(
+        selected.color,
+        0.10
+      );
+
+    environmentChart.update();
+
+  }
+
+
+  /* -----------------------------------------
+     UPDATE PERFORMANCE CHART
+     ----------------------------------------- */
+
+  if (performanceChart) {
+
+    performanceChart.data.labels =
+      data.labels;
+
+    performanceChart.data.datasets[0].data =
+      data.performance;
+
+    performanceChart.update();
+
+  }
+
+
+  /* -----------------------------------------
+     UPDATE ACTIVE SCENARIO
+     ----------------------------------------- */
+
+  document
+    .querySelectorAll(".scenario-btn")
+    .forEach(button => {
+
+      button.classList.remove(
+        "active"
+      );
+
+
+      if (
+        button.dataset.scenario === type
+      ) {
+
+        button.classList.add(
+          "active"
+        );
+
+      }
+
+    });
+
+}
+
+
+/* =========================================================
+   HEX → RGBA
+   ========================================================= */
+
+function hexToRgba(
+  hex,
+  alpha
+) {
+
+  const cleanHex =
+    hex.replace("#", "");
+
+  const bigint =
+    parseInt(
+      cleanHex,
+      16
+    );
+
+  const r =
+    (bigint >> 16) & 255;
+
+  const g =
+    (bigint >> 8) & 255;
+
+  const b =
+    bigint & 255;
+
+  return (
+    `rgba(${r}, ${g}, ${b}, ${alpha})`
+  );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+function setupNavigation() {
+
+  const buttons =
+    document.querySelectorAll(
+      ".nav-btn"
+    );
+
+  const sections =
+    document.querySelectorAll(
+      ".section"
+    );
+
+
+  buttons.forEach(button => {
+
+    button.addEventListener(
+      "click",
+      function() {
+
+        const target =
+          this.dataset.section;
+
+
+        buttons.forEach(btn => {
+
+          btn.classList.remove(
+            "active"
+          );
+
+        });
+
+
+        sections.forEach(section => {
+
+          section.classList.remove(
+            "active-section"
+          );
+
+        });
+
+
+        this.classList.add(
+          "active"
+        );
+
+
+        const targetSection =
+          document.getElementById(
+            target
+          );
+
+
+        if (targetSection) {
+
+          targetSection.classList.add(
+            "active-section"
+          );
+
+        }
+
+      }
+
+    );
+
+  });
+
+}
+
+
+/* =========================================================
+   SCENARIO BUTTONS
+   ========================================================= */
+
+function setupScenarioButtons() {
+
+  const buttons =
+    document.querySelectorAll(
+      ".scenario-btn"
+    );
+
+
+  buttons.forEach(button => {
+
+    button.addEventListener(
+      "click",
+      function() {
+
+        const scenario =
+          this.dataset.scenario;
+
+        loadScenario(
+          scenario
+        );
+
+      }
+
+    );
+
+  });
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+function initializeApp() {
+
+  createEnvironmentChart();
+
+  createPerformanceChart();
+
+  setupNavigation();
+
+  setupScenarioButtons();
+
+  loadScenario(
+    "baseline"
+  );
+
+}
+
+
+/* =========================================================
+   START APPLICATION
+   ========================================================= */
+
+if (
+  document.readyState === "loading"
+) {
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    initializeApp
+  );
+
+}
+
+else {
+
+  initializeApp();
+
+      }
