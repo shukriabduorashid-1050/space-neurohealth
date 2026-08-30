@@ -1,20 +1,16 @@
-<!DOCTYPE html><html lang="en"><head>
-  <meta charset="UTF-8"><meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
-
-«»
-
-<meta
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta
 name="description"
-content="Space NeuroHealth research and visualization prototype"
+content="Space NeuroHealth research and visualization prototype exploring environmental conditions and human cognitive performance."
 
 «»
 
-  <title>Space NeuroHealth</title>  <link rel="stylesheet" href="style.css">  <!-- Chart.js -->  <script
+  <meta name="theme-color" content="#070b12">  <title>Space NeuroHealth</title>  <link rel="stylesheet" href="style.css">  <!-- Chart.js -->  <script
     src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"
     defer
-  ></script>  <!-- Application JavaScript -->  <script src="script.js" defer></script></head><body>  <div class="app"><!-- =====================================================
+  ></script>  <script src="script.js" defer></script></head><body>  <div class="app"><!-- =====================================================
      HEADER
 ====================================================== -->
 
@@ -32,17 +28,14 @@ content="Space NeuroHealth research and visualization prototype"
   </p>
 
   <div class="status-row">
-
-    <span class="status-dot"></span>
-
-    <span>Prototype status: active</span>
+    <span class="status-dot" aria-hidden="true"></span>
+    <span>Interactive prototype</span>
 
     <span class="separator">•</span>
 
     <span class="demo-label">
-      Demonstration data
+      DEMONSTRATION DATA
     </span>
-
   </div>
 
 </header>
@@ -54,68 +47,56 @@ content="Space NeuroHealth research and visualization prototype"
 
 <nav
   class="navigation"
-  aria-label="Main navigation"
   role="tablist"
+  aria-label="Main navigation"
 >
 
   <button
+    type="button"
     class="nav-btn active"
     id="tab-dashboard"
-    type="button"
     role="tab"
     aria-selected="true"
     aria-controls="dashboard"
     data-section="dashboard"
   >
-    Dashboard
+    📊 Dashboard
   </button>
 
   <button
+    type="button"
     class="nav-btn"
     id="tab-analysis"
-    type="button"
     role="tab"
     aria-selected="false"
     aria-controls="analysis"
     data-section="analysis"
   >
-    Analysis
+    🧠 Analysis
   </button>
 
   <button
-    class="nav-btn"
-    id="tab-nasa-data"
     type="button"
+    class="nav-btn"
+    id="tab-data"
     role="tab"
     aria-selected="false"
-    aria-controls="nasa-data"
-    data-section="nasa-data"
+    aria-controls="data"
+    data-section="data"
   >
-    NASA Data
+    🛰 NASA Data
   </button>
 
   <button
-    class="nav-btn"
-    id="tab-method"
     type="button"
-    role="tab"
-    aria-selected="false"
-    aria-controls="method"
-    data-section="method"
-  >
-    Method
-  </button>
-
-  <button
     class="nav-btn"
     id="tab-about"
-    type="button"
     role="tab"
     aria-selected="false"
     aria-controls="about"
     data-section="about"
   >
-    About
+    ℹ️ About
   </button>
 
 </nav>
@@ -125,1002 +106,1138 @@ content="Space NeuroHealth research and visualization prototype"
      DASHBOARD
 ====================================================== -->
 
-<main>
+<main
+  id="dashboard"
+  class="section active-section"
+  role="tabpanel"
+  aria-labelledby="tab-dashboard"
+  tabindex="0"
+>
 
-  <section
-    id="dashboard"
-    class="section active-section"
-    role="tabpanel"
-    aria-labelledby="tab-dashboard"
-  >
+  <div class="section-heading">
 
-    <div class="section-heading">
+    <div>
+      <span class="eyebrow">
+        ENVIRONMENTAL MONITORING
+      </span>
+
+      <h2>
+        Mission Environment Dashboard
+      </h2>
+    </div>
+
+    <span class="data-status">
+      DEMO DATA
+    </span>
+
+  </div>
+
+
+  <!-- ===================================================
+       INTERACTIVE CONTROLS
+  ==================================================== -->
+
+  <div class="control-card">
+
+    <span class="eyebrow">
+      INTERACTIVE SIMULATOR
+    </span>
+
+    <h3>
+      Environmental Parameters
+    </h3>
+
+    <p class="control-description">
+      Adjust the simulated CO₂ concentration to explore
+      how the dashboard responds to different environmental
+      conditions.
+    </p>
+
+    <div class="slider-row">
+
+      <label for="co2-slider">
+        <span>
+          Target CO₂ Concentration
+        </span>
+
+        <strong id="co2-slider-value">
+          1,200 ppm
+        </strong>
+      </label>
+
+      <input
+        type="range"
+        id="co2-slider"
+        min="400"
+        max="5000"
+        value="1200"
+        step="50"
+        aria-describedby="slider-help"
+      >
+
+      <div class="range-labels">
+        <span>400 ppm</span>
+        <span>5,000 ppm</span>
+      </div>
+
+      <p
+        id="slider-help"
+        class="small-note"
+      >
+        This simulator uses demonstration calculations.
+        It does not represent a medical or operational
+        exposure threshold.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================
+       METRICS
+  ==================================================== -->
+
+  <div class="metric-grid">
+
+    <article class="metric-card">
+
+      <div class="metric-header">
+        <span class="metric-icon">🌫️</span>
+
+        <span class="metric-label">
+          CO₂ concentration
+        </span>
+      </div>
+
+      <div
+        id="environment-value"
+        class="metric-value"
+      >
+        1,200
+      </div>
+
+      <div
+        id="environment-unit"
+        class="metric-unit"
+      >
+        ppm CO₂
+      </div>
+
+      <div
+        id="environment-status"
+        class="metric-status safe-text"
+      >
+        Nominal Baseline
+      </div>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <div class="metric-header">
+        <span class="metric-icon">⚡</span>
+
+        <span class="metric-label">
+          Performance reference
+        </span>
+      </div>
+
+      <div
+        id="performance-value"
+        class="metric-value"
+      >
+        240
+      </div>
+
+      <div class="metric-unit">
+        ms reaction-time reference
+      </div>
+
+      <div
+        id="performance-status"
+        class="metric-status"
+      >
+        Exploratory indicator
+      </div>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <div class="metric-header">
+        <span class="metric-icon">📈</span>
+
+        <span class="metric-label">
+          Change from baseline
+        </span>
+      </div>
+
+      <div
+        id="change-value"
+        class="metric-value"
+      >
+        0%
+      </div>
+
+      <div class="metric-unit">
+        simulated difference
+      </div>
+
+      <div
+        id="change-status"
+        class="metric-status safe-text"
+      >
+        No change
+      </div>
+
+    </article>
+
+  </div>
+
+
+  <!-- ===================================================
+       ENVIRONMENT CHART
+  ==================================================== -->
+
+  <article class="chart-card">
+
+    <div class="chart-header">
 
       <div>
         <span class="eyebrow">
-          LIVE PROTOTYPE VIEW
+          TIME SERIES
         </span>
-
-        <h2>Environmental & Cognitive Dashboard</h2>
-      </div>
-
-      <span class="data-status">
-        DEMONSTRATION DATA
-      </span>
-
-    </div>
-
-
-    <!-- SCENARIOS -->
-
-    <div
-      class="scenario-container"
-      aria-label="Demonstration scenarios"
-    >
-
-      <button
-        class="scenario-btn active"
-        type="button"
-        data-scenario="baseline"
-        aria-pressed="true"
-      >
-        <span class="scenario-dot safe"></span>
-        Baseline
-      </button>
-
-      <button
-        class="scenario-btn"
-        type="button"
-        data-scenario="elevated"
-        aria-pressed="false"
-      >
-        <span class="scenario-dot warning"></span>
-        Elevated
-      </button>
-
-      <button
-        class="scenario-btn"
-        type="button"
-        data-scenario="high"
-        aria-pressed="false"
-      >
-        <span class="scenario-dot danger"></span>
-        High
-      </button>
-
-    </div>
-
-
-    <!-- METRICS -->
-
-    <div class="metric-grid">
-
-      <article class="metric-card">
-
-        <div class="metric-header">
-
-          <span class="metric-icon">🌫️</span>
-
-          <span class="metric-label">
-            Environmental Measurement
-          </span>
-
-        </div>
-
-        <div
-          id="environment-value"
-          class="metric-value"
-        >
-          1,200
-        </div>
-
-        <div
-          id="environment-unit"
-          class="metric-unit"
-        >
-          ppm CO₂
-        </div>
-
-        <div
-          id="environment-status"
-          class="metric-status safe-text"
-        >
-          Baseline demonstration condition
-        </div>
-
-      </article>
-
-
-      <article class="metric-card">
-
-        <div class="metric-header">
-
-          <span class="metric-icon">🧠</span>
-
-          <span class="metric-label">
-            Performance Reference
-          </span>
-
-        </div>
-
-        <div
-          id="performance-value"
-          class="metric-value"
-        >
-          240
-        </div>
-
-        <div class="metric-unit">
-          reaction time (ms)
-        </div>
-
-        <div
-          id="performance-status"
-          class="metric-status"
-        >
-          Reference indicator
-        </div>
-
-      </article>
-
-
-      <article class="metric-card">
-
-        <div class="metric-header">
-
-          <span class="metric-icon">📊</span>
-
-          <span class="metric-label">
-            Change From Baseline
-          </span>
-
-        </div>
-
-        <div
-          id="change-value"
-          class="metric-value"
-        >
-          0%
-        </div>
-
-        <div class="metric-unit">
-          exploratory comparison
-        </div>
-
-        <div
-          id="change-status"
-          class="metric-status safe-text"
-        >
-          No change
-        </div>
-
-      </article>
-
-    </div>
-
-
-    <!-- ENVIRONMENT CHART -->
-
-    <article class="chart-card">
-
-      <div class="chart-header">
 
         <h3>
           Environmental Measurement
         </h3>
-
-        <span class="chart-unit">
-          CO₂ ppm
-        </span>
-
       </div>
 
-      <div class="chart-container">
-
-        <canvas
-          id="environmentChart"
-          aria-label="Environmental measurement chart"
-          role="img"
-        ></canvas>
-
-      </div>
-
-      <p class="chart-disclaimer">
-        Demonstration visualization only. Values are not
-        presented as actual NASA measurements.
-      </p>
-
-    </article>
-
-
-    <!-- PERFORMANCE CHART -->
-
-    <article class="chart-card">
-
-      <div class="chart-header">
-
-        <h3>
-          Cognitive Performance Reference
-        </h3>
-
-        <span class="chart-unit">
-          milliseconds
-        </span>
-
-      </div>
-
-      <div class="chart-container">
-
-        <canvas
-          id="performanceChart"
-          aria-label="Cognitive performance reference chart"
-          role="img"
-        ></canvas>
-
-      </div>
-
-      <p class="chart-disclaimer">
-        The performance values are demonstration indicators
-        and do not establish a causal relationship with the
-        environmental measurements.
-      </p>
-
-    </article>
-
-
-    <!-- SCIENTIFIC INTERPRETATION -->
-
-    <article class="science-card">
-
-      <div class="science-icon">
-        🔬
-      </div>
-
-      <div>
-
-        <h3 id="science-title">
-          Baseline environmental condition
-        </h3>
-
-        <p id="science-text">
-          This demonstration shows a baseline environmental
-          measurement. In the final project, this value will
-          come from a verified NASA dataset and will be
-          interpreted according to documented scientific
-          evidence.
-        </p>
-
-      </div>
-
-    </article>
-
-
-    <!-- LIMITATIONS -->
-
-    <article class="limitation-card">
-
-      <div class="limitation-title">
-        ⚠️ Prototype limitations
-      </div>
-
-      <ul>
-
-        <li>
-          Current values are demonstration data.
-        </li>
-
-        <li>
-          No causal relationship is claimed.
-        </li>
-
-        <li>
-          NASA measurements must be verified before use.
-        </li>
-
-        <li>
-          Scientific thresholds should be based on
-          documented evidence.
-        </li>
-
-      </ul>
-
-    </article>
-
-  </section>
-
-
-  <!-- ===================================================
-       ANALYSIS
-  ==================================================== -->
-
-  <section
-    id="analysis"
-    class="section"
-    role="tabpanel"
-    aria-labelledby="tab-analysis"
-    hidden
-  >
-
-    <div class="section-heading">
-
-      <div>
-
-        <span class="eyebrow">
-          EXPLORATORY ANALYSIS
-        </span>
-
-        <h2>Scenario Analysis</h2>
-
-      </div>
-
-      <span class="demo-pill">
-        EXPLORATORY
+      <span class="chart-unit">
+        ppm
       </span>
 
     </div>
 
-
-    <div class="analysis-grid">
-
-      <article class="analysis-card">
-
-        <div class="analysis-icon">
-          📈
-        </div>
-
-        <h3>Observed Trend</h3>
-
-        <div id="trend-result">
-          Stable
-        </div>
-
-        <p>
-          Direction shown by the selected demonstration
-          scenario.
-        </p>
-
-      </article>
-
-
-      <article class="analysis-card">
-
-        <div class="analysis-icon">
-          🎯
-        </div>
-
-        <h3>Difference From Baseline</h3>
-
-        <div id="baseline-result">
-          0%
-        </div>
-
-        <p>
-          Demonstration comparison with the baseline
-          scenario.
-        </p>
-
-      </article>
-
-
-      <article class="analysis-card">
-
-        <div class="analysis-icon">
-          🔎
-        </div>
-
-        <h3>Analysis Status</h3>
-
-        <div id="analysis-result">
-          Exploratory
-        </div>
-
-        <p>
-          This prototype does not establish scientific
-          causation.
-        </p>
-
-      </article>
-
+    <div class="chart-container">
+      <canvas
+        id="environmentChart"
+        aria-label="Environmental measurement chart"
+      ></canvas>
     </div>
 
+    <p class="chart-disclaimer">
+      Demonstration time-series data generated by the
+      prototype. Uploaded datasets can replace these
+      values from the NASA Data section.
+    </p>
 
-    <article class="info-card">
-
-      <h3>
-        How to interpret this analysis
-      </h3>
-
-      <p>
-        The dashboard allows users to compare demonstration
-        scenarios. The comparison is intended to illustrate
-        how a future data-analysis system could display
-        environmental and cognitive measurements together.
-      </p>
-
-      <p>
-        A scientifically validated analysis would require
-        verified measurements, appropriate statistical
-        methods, documented variables, and sufficient data.
-      </p>
-
-    </article>
-
-
-    <div class="question-grid">
-
-      <div>
-
-        <span>01</span>
-
-        <p>
-          Does an environmental change correspond with a
-          measurable performance change?
-        </p>
-
-      </div>
-
-      <div>
-
-        <span>02</span>
-
-        <p>
-          Are observed patterns consistent across multiple
-          measurements?
-        </p>
-
-      </div>
-
-      <div>
-
-        <span>03</span>
-
-        <p>
-          Which environmental variables should be controlled
-          for?
-        </p>
-
-      </div>
-
-      <div>
-
-        <span>04</span>
-
-        <p>
-          Can the relationship be tested using verified
-          mission data?
-        </p>
-
-      </div>
-
-    </div>
-
-  </section>
+  </article>
 
 
   <!-- ===================================================
-       NASA DATA
+       PERFORMANCE CHART
   ==================================================== -->
 
-  <section
-    id="nasa-data"
-    class="section"
-    role="tabpanel"
-    aria-labelledby="tab-nasa-data"
-    hidden
-  >
+  <article class="chart-card">
 
-    <div class="section-heading">
+    <div class="chart-header">
 
       <div>
-
         <span class="eyebrow">
-          DATA PIPELINE
+          PERFORMANCE
         </span>
 
-        <h2>NASA Data Integration</h2>
-
+        <h3>
+          Reaction-Time Reference
+        </h3>
       </div>
 
-      <span class="data-status">
-        DATA NOT YET CONNECTED
+      <span class="chart-unit">
+        ms
       </span>
 
     </div>
 
-
-    <article class="data-card">
-
-      <div class="data-card-header">
-
-        <h3>
-          Current Dataset Status
-        </h3>
-
-        <span class="demo-pill">
-          DEMO
-        </span>
-
-      </div>
-
-
-      <div class="data-table">
-
-        <div class="data-row">
-
-          <span>
-            Data source
-          </span>
-
-          <strong>
-            Demonstration dataset
-          </strong>
-
-        </div>
-
-        <div class="data-row">
-
-          <span>
-            NASA dataset connected
-          </span>
-
-          <strong class="warning-text">
-            Not yet connected
-          </strong>
-
-        </div>
-
-        <div class="data-row">
-
-          <span>
-            Environmental variable
-          </span>
-
-          <strong>
-            CO₂ concentration
-          </strong>
-
-        </div>
-
-        <div class="data-row">
-
-          <span>
-            Cognitive indicator
-          </span>
-
-          <strong>
-            Reaction-time reference
-          </strong>
-
-        </div>
-
-        <div class="data-row">
-
-          <span>
-            Scientific status
-          </span>
-
-          <strong class="warning-text">
-            Exploratory
-          </strong>
-
-        </div>
-
-      </div>
-
-    </article>
-
-
-    <div class="pipeline">
-
-      <div class="pipeline-step">
-
-        <span>STEP 01</span>
-
-        <strong>
-          NASA Dataset
-        </strong>
-
-        <p>
-          Select and verify the official dataset.
-        </p>
-
-      </div>
-
-      <div class="pipeline-arrow">
-        →
-      </div>
-
-      <div class="pipeline-step">
-
-        <span>STEP 02</span>
-
-        <strong>
-          Data Cleaning
-        </strong>
-
-        <p>
-          Check units, missing values, and timestamps.
-        </p>
-
-      </div>
-
-      <div class="pipeline-arrow">
-        →
-      </div>
-
-      <div class="pipeline-step">
-
-        <span>STEP 03</span>
-
-        <strong>
-          Analysis
-        </strong>
-
-        <p>
-          Compare environmental and performance variables.
-        </p>
-
-      </div>
-
-      <div class="pipeline-arrow">
-        →
-      </div>
-
-      <div class="pipeline-step">
-
-        <span>STEP 04</span>
-
-        <strong>
-          Visualization
-        </strong>
-
-        <p>
-          Display verified results clearly.
-        </p>
-
-      </div>
-
+    <div class="chart-container">
+      <canvas
+        id="performanceChart"
+        aria-label="Performance reference chart"
+      ></canvas>
     </div>
 
+    <p class="chart-disclaimer">
+      This performance series is demonstration data and
+      does not establish a causal relationship between CO₂
+      concentration and cognition.
+    </p>
 
-    <article class="source-note">
-
-      <strong>
-        Dataset note:
-      </strong>
-
-      The values currently displayed by this prototype are
-      manually defined demonstration values. They should be
-      replaced only after the official NASA Space Apps
-      dataset has been identified and verified.
-
-    </article>
-
-  </section>
+  </article>
 
 
   <!-- ===================================================
-       METHOD
+       SCIENTIFIC INTERPRETATION
   ==================================================== -->
 
-  <section
-    id="method"
-    class="section"
-    role="tabpanel"
-    aria-labelledby="tab-method"
-    hidden
-  >
+  <article class="science-card">
 
-    <div class="section-heading">
+    <div class="science-icon">
+      🔬
+    </div>
 
-      <div>
+    <div>
 
-        <span class="eyebrow">
-          RESEARCH APPROACH
-        </span>
+      <h3 id="science-title">
+        Baseline environmental condition
+      </h3>
 
-        <h2>Methodology</h2>
-
-      </div>
+      <p id="science-text">
+        This demonstration shows a baseline environmental
+        measurement. In the final project, this value can
+        be replaced with a verified dataset and interpreted
+        using documented scientific evidence.
+      </p>
 
     </div>
 
-
-    <article class="method-card">
-
-      <h3>
-        Proposed analytical workflow
-      </h3>
-
-      <div class="method-flow">
-
-        <div>
-
-          <span>1</span>
-
-          <p>
-            Identify data
-          </p>
-
-        </div>
-
-        <div class="method-line"></div>
-
-        <div>
-
-          <span>2</span>
-
-          <p>
-            Validate
-          </p>
-
-        </div>
-
-        <div class="method-line"></div>
-
-        <div>
-
-          <span>3</span>
-
-          <p>
-            Clean
-          </p>
-
-        </div>
-
-        <div class="method-line"></div>
-
-        <div>
-
-          <span>4</span>
-
-          <p>
-            Analyze
-          </p>
-
-        </div>
-
-        <div class="method-line"></div>
-
-        <div>
-
-          <span>5</span>
-
-          <p>
-            Visualize
-          </p>
-
-        </div>
-
-      </div>
-
-    </article>
+  </article>
 
 
-    <div class="science-context">
+  <!-- ===================================================
+       LIMITATIONS
+  ==================================================== -->
 
-      <article class="context-card">
+  <article class="limitation-card">
 
-        <div class="context-icon">
-          🌍
-        </div>
-
-        <h3>
-          Environmental factors
-        </h3>
-
-        <p>
-          Future analysis may examine variables such as
-          atmospheric composition, radiation, temperature,
-          sleep conditions, or other mission-relevant
-          environmental measurements.
-        </p>
-
-      </article>
-
-
-      <article class="context-card">
-
-        <div class="context-icon">
-          🧠
-        </div>
-
-        <h3>
-          Cognitive factors
-        </h3>
-
-        <p>
-          Cognitive performance could be represented using
-          validated measurements such as reaction time,
-          attention, or other appropriate indicators.
-        </p>
-
-      </article>
-
-
-      <article class="context-card">
-
-        <div class="context-icon">
-          📐
-        </div>
-
-        <h3>
-          Statistical analysis
-        </h3>
-
-        <p>
-          Verified data would need appropriate statistical
-          analysis before any relationship could be
-          interpreted.
-        </p>
-
-      </article>
-
+    <div class="limitation-title">
+      ⚠️ Scientific limitations
     </div>
 
+    <ul>
+      <li>
+        Demonstration values are not presented as NASA
+        measurements.
+      </li>
 
-    <article class="research-gap">
+      <li>
+        The simulator does not diagnose cognitive impairment.
+      </li>
+
+      <li>
+        Correlation should not be interpreted as causation.
+      </li>
+
+      <li>
+        Real mission data should be analyzed with validated
+        statistical methods and documented thresholds.
+      </li>
+    </ul>
+
+  </article>
+
+</main>
+
+
+<!-- =====================================================
+     ANALYSIS
+====================================================== -->
+
+<section
+  id="analysis"
+  class="section"
+  role="tabpanel"
+  aria-labelledby="tab-analysis"
+  tabindex="0"
+  hidden
+>
+
+  <div class="section-heading">
+
+    <div>
+      <span class="eyebrow">
+        COGNITIVE PERFORMANCE
+      </span>
+
+      <h2>
+        Interactive Analysis
+      </h2>
+    </div>
+
+    <span class="data-status">
+      EXPLORATORY
+    </span>
+
+  </div>
+
+
+  <!-- ===================================================
+       ANALYSIS METRICS
+  ==================================================== -->
+
+  <div class="analysis-grid">
+
+    <article class="analysis-card">
+
+      <div class="analysis-icon">
+        📈
+      </div>
 
       <h3>
-        Research consideration
+        Current Trend
       </h3>
+
+      <div id="trend-result">
+        Stable
+      </div>
 
       <p>
-        A central challenge is distinguishing correlation
-        from causation. Spaceflight involves many interacting
-        environmental and physiological factors, so a single
-        environmental measurement should not be interpreted
-        as the cause of a cognitive change without appropriate
-        evidence.
-
+        Direction of the currently selected demonstration
+        series.
       </p>
 
     </article>
 
-  </section>
+
+    <article class="analysis-card">
+
+      <div class="analysis-icon">
+        🎯
+      </div>
+
+      <h3>
+        Baseline Difference
+      </h3>
+
+      <div id="baseline-result">
+        0%
+      </div>
+
+      <p>
+        Simulated difference relative to the baseline
+        reference.
+      </p>
+
+    </article>
+
+
+    <article class="analysis-card">
+
+      <div class="analysis-icon">
+        🔎
+      </div>
+
+      <h3>
+        Analysis Type
+      </h3>
+
+      <div id="analysis-result">
+        Exploratory
+      </div>
+
+      <p>
+        Prototype analysis status.
+      </p>
+
+    </article>
+
+  </div>
 
 
   <!-- ===================================================
-       ABOUT
+       DYNAMIC STATISTICS
   ==================================================== -->
 
-  <section
-    id="about"
-    class="section"
-    role="tabpanel"
-    aria-labelledby="tab-about"
-    hidden
-  >
+  <article class="stats-card">
 
-    <div class="section-heading">
+    <div class="chart-header">
 
       <div>
-
         <span class="eyebrow">
-          PROJECT INFORMATION
+          DATASET STATISTICS
         </span>
 
-        <h2>About Space NeuroHealth</h2>
+        <h3>
+          Environmental Summary
+        </h3>
+      </div>
 
+      <span class="chart-unit">
+        LIVE
+      </span>
+
+    </div>
+
+    <div class="stats-grid">
+
+      <div>
+        <span>Mean CO₂</span>
+        <strong id="mean-co2">
+          1,176 ppm
+        </strong>
+      </div>
+
+      <div>
+        <span>Peak CO₂</span>
+        <strong id="peak-co2">
+          1,210 ppm
+        </strong>
+      </div>
+
+      <div>
+        <span>Minimum CO₂</span>
+        <strong id="min-co2">
+          1,100 ppm
+        </strong>
+      </div>
+
+      <div>
+        <span>Data points</span>
+        <strong id="data-points">
+          7
+        </strong>
       </div>
 
     </div>
 
+  </article>
 
-    <article class="about-card">
 
-      <div class="about-icon">
+  <!-- ===================================================
+       PVT TEST
+  ==================================================== -->
+
+  <article class="pvt-card">
+
+    <span class="eyebrow">
+      INTERACTIVE ASSESSMENT
+    </span>
+
+    <h3>
+      Psychomotor Vigilance Task (PVT) Tester
+    </h3>
+
+    <p class="pvt-description">
+      Click "Start Test", wait until the box turns green,
+      then click it as quickly as you can. The test measures
+      your local response latency in milliseconds.
+    </p>
+
+    <div
+      id="pvt-box"
+      class="pvt-box"
+      role="button"
+      tabindex="0"
+      aria-label="PVT reaction test area"
+    >
+      Click "Start Test" Below
+    </div>
+
+    <div class="pvt-controls">
+
+      <button
+        type="button"
+        id="pvt-start-btn"
+        class="primary-btn"
+      >
+        Start Test
+      </button>
+
+      <div class="pvt-score">
+        Last Score:
+        <strong id="pvt-score">
+          -- ms
+        </strong>
+      </div>
+
+    </div>
+
+    <div
+      id="pvt-result"
+      class="pvt-result"
+      aria-live="polite"
+    >
+      Ready to begin.
+    </div>
+
+    <p class="small-note">
+      A response above 500 ms is labeled as a simulated
+      vigilance lapse for this prototype. This is not a
+      clinical diagnosis.
+    </p>
+
+  </article>
+
+
+  <!-- ===================================================
+       PVT HISTORY
+  ==================================================== -->
+
+  <article class="data-card">
+
+    <div class="data-card-header">
+
+      <div>
+        <span class="eyebrow">
+          TEST HISTORY
+        </span>
+
+        <h3>
+          Recent PVT Measurements
+        </h3>
+      </div>
+
+      <button
+        type="button"
+        id="clear-pvt-history"
+        class="secondary-btn"
+      >
+        Clear
+      </button>
+
+    </div>
+
+    <div
+      id="pvt-history"
+      class="history-list"
+    >
+      <div class="empty-state">
+        No tests completed yet.
+      </div>
+    </div>
+
+  </article>
+
+</section>
+
+
+<!-- =====================================================
+     NASA DATA
+====================================================== -->
+
+<section
+  id="data"
+  class="section"
+  role="tabpanel"
+  aria-labelledby="tab-data"
+  tabindex="0"
+  hidden
+>
+
+  <div class="section-heading">
+
+    <div>
+      <span class="eyebrow">
+        DATA INGESTION
+      </span>
+
+      <h2>
+        NASA Dataset Workspace
+      </h2>
+    </div>
+
+    <span class="data-status">
+      LOCAL PROCESSING
+    </span>
+
+  </div>
+
+
+  <!-- ===================================================
+       PIPELINE
+  ==================================================== -->
+
+  <div class="pipeline">
+
+    <div class="pipeline-step">
+      <span>01</span>
+      <strong>Upload</strong>
+      <p>
+        Select a CSV file.
+      </p>
+    </div>
+
+    <div class="pipeline-arrow">
+      →
+    </div>
+
+    <div class="pipeline-step">
+      <span>02</span>
+      <strong>Parse</strong>
+      <p>
+        Read rows in the browser.
+      </p>
+    </div>
+
+    <div class="pipeline-arrow">
+      →
+    </div>
+
+    <div class="pipeline-step">
+      <span>03</span>
+      <strong>Analyze</strong>
+      <p>
+        Calculate summary statistics.
+      </p>
+    </div>
+
+    <div class="pipeline-arrow">
+      →
+    </div>
+
+    <div class="pipeline-step">
+      <span>04</span>
+      <strong>Visualize</strong>
+      <p>
+        Update the dashboard charts.
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================
+       CSV UPLOADER
+  ==================================================== -->
+
+  <article
+    class="upload-card"
+    id="upload-card"
+  >
+
+    <span class="eyebrow">
+      CUSTOM DATA INGESTION
+    </span>
+
+    <h3>
+      Upload Environmental CSV
+    </h3>
+
+    <p>
+      Upload a CSV containing time-series environmental
+      measurements. Processing happens locally in your
+      browser.
+    </p>
+
+    <input
+      type="file"
+      id="csv-file-input"
+      accept=".csv,text/csv"
+      hidden
+    >
+
+    <div class="upload-actions">
+
+      <button
+        type="button"
+        id="browse-csv-btn"
+        class="primary-btn"
+      >
+        Browse CSV File
+      </button>
+
+      <button
+        type="button"
+        id="reset-data-btn"
+        class="secondary-btn"
+      >
+        Restore Demo Data
+      </button>
+
+    </div>
+
+    <div
+      id="file-status-msg"
+      class="file-status"
+      aria-live="polite"
+    >
+      No custom dataset loaded.
+    </div>
+
+    <div class="csv-format">
+
+      <strong>Accepted example:</strong>
+
+      <code>
+        time,co2,performance
+      </code>
+
+      <code>
+        08:00,1200,240
+      </code>
+
+      <code>
+        10:00,1250,242
+      </code>
+
+      <span>
+        The parser also attempts to identify common
+        CO₂ column names such as CO2, CO₂, carbon_dioxide,
+        and co2_ppm.
+      </span>
+
+    </div>
+
+  </article>
+
+
+  <!-- ===================================================
+       DATASET CARD
+  ==================================================== -->
+
+  <article class="data-card">
+
+    <div class="data-card-header">
+
+      <div>
+        <span class="eyebrow">
+          ACTIVE DATASET
+        </span>
+
+        <h3 id="dataset-name">
+          Demonstration Dataset
+        </h3>
+      </div>
+
+      <span
+        id="dataset-count"
+        class="demo-pill"
+      >
+        7 POINTS
+      </span>
+
+    </div>
+
+    <div class="data-table">
+
+      <div class="data-row">
+        <span>Source</span>
+        <strong id="dataset-source">
+          Demonstration values
+        </strong>
+      </div>
+
+      <div class="data-row">
+        <span>Environmental variable</span>
+        <strong>
+          CO₂ concentration
+        </strong>
+      </div>
+
+      <div class="data-row">
+        <span>Processing</span>
+        <strong>
+          Browser-based
+        </strong>
+      </div>
+
+      <div class="data-row">
+        <span>Status</span>
+        <strong
+          id="dataset-status"
+          class="safe-text"
+        >
+          Ready
+        </strong>
+      </div>
+
+    </div>
+
+  </article>
+
+
+  <!-- ===================================================
+       DATA PREVIEW
+  ==================================================== -->
+
+  <article class="data-card">
+
+    <div class="data-card-header">
+
+      <div>
+        <span class="eyebrow">
+          DATA PREVIEW
+        </span>
+
+        <h3>
+          Parsed Records
+        </h3>
+      </div>
+
+    </div>
+
+    <div class="table-wrapper">
+
+      <table id="csv-preview-table">
+
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>CO₂</th>
+            <th>Performance</th>
+          </tr>
+        </thead>
+
+        <tbody id="csv-preview-body">
+          <tr>
+            <td>08:00</td>
+            <td>1,100 ppm</td>
+            <td>235 ms</td>
+          </tr>
+
+          <tr>
+            <td>10:00</td>
+            <td>1,150 ppm</td>
+            <td>238 ms</td>
+          </tr>
+
+          <tr>
+            <td>12:00</td>
+            <td>1,200 ppm</td>
+            <td>240 ms</td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </article>
+
+
+  <div class="source-note">
+
+    <strong>Data integrity:</strong>
+
+    Uploaded files are processed locally by the browser.
+    The application does not claim that an uploaded file is
+    an official NASA dataset. For the final NASA Space Apps
+    project, document the dataset name, source, variables,
+    units, preprocessing, and scientific references.
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     ABOUT
+====================================================== -->
+
+<section
+  id="about"
+  class="section"
+  role="tabpanel"
+  aria-labelledby="tab-about"
+  tabindex="0"
+  hidden
+>
+
+  <div class="section-heading">
+
+    <div>
+      <span class="eyebrow">
+        PROJECT INFORMATION
+      </span>
+
+      <h2>
+        About Space NeuroHealth
+      </h2>
+    </div>
+
+  </div>
+
+
+  <article class="about-card">
+
+    <div class="about-icon">
+      🧠
+    </div>
+
+    <div>
+
+      <h3>
+        Research Prototype
+      </h3>
+
+      <p>
+        Space NeuroHealth is an interactive research
+        prototype designed to explore how environmental
+        measurements could be connected with human cognitive
+        performance during spaceflight.
+      </p>
+
+      <p>
+        The interface combines environmental visualization,
+        interactive simulation, reaction-time testing,
+        dataset ingestion, and exploratory statistics.
+      </p>
+
+    </div>
+
+  </article>
+
+
+  <div class="science-context">
+
+    <article class="context-card">
+
+      <div class="context-icon">
+        🌌
+      </div>
+
+      <h3>
+        Space Environment
+      </h3>
+
+      <p>
+        Space missions expose crews to environmental
+        conditions that require continuous monitoring.
+      </p>
+
+      <p>
+        <strong>
+          Prototype focus:
+        </strong>
+        environmental time-series visualization.
+      </p>
+
+    </article>
+
+
+    <article class="context-card">
+
+      <div class="context-icon">
         🧠
       </div>
 
-      <div>
-
-        <h3>
-          A research visualization prototype
-        </h3>
-
-        <p>
-          Space NeuroHealth is designed as an exploratory
-          interface for studying how space-environment data
-          could be displayed alongside human cognitive
-          performance measurements.
-        </p>
-
-        <p>
-          The current interface uses demonstration data to
-          show the intended functionality of the prototype.
-        </p>
-
-      </div>
-
-    </article>
-
-
-    <div class="about-grid">
-
-      <article class="about-small-card">
-
-        <span>🚀</span>
-
-        <h3>
-          Spaceflight
-        </h3>
-
-        <p>
-          Explore environmental conditions relevant to
-          human spaceflight.
-        </p>
-
-      </article>
-
-
-      <article class="about-small-card">
-
-        <span>🧠</span>
-
-        <h3>
-          Neurohealth
-        </h3>
-
-        <p>
-          Visualize cognitive performance indicators.
-        </p>
-
-      </article>
-
-
-      <article class="about-small-card">
-
-        <span>📊</span>
-
-        <h3>
-          Data
-        </h3>
-
-        <p>
-          Prepare the interface for verified mission
-          datasets.
-        </p>
-
-      </article>
-
-
-      <article class="about-small-card">
-
-        <span>🔬</span>
-
-        <h3>
-          Research
-        </h3>
-
-        <p>
-          Encourage evidence-based interpretation.
-        </p>
-
-      </article>
-
-    </div>
-
-
-    <article class="future-card">
-
       <h3>
-        Future development
+        Human Performance
       </h3>
 
       <p>
-        The next stage is to connect the interface to a
-        verified NASA dataset, document the variables and
-        units, implement appropriate statistical analysis,
-        and replace demonstration values with traceable
-        measurements.
+        Cognitive and psychomotor performance can be studied
+        using measurable behavioral tasks.
+      </p>
+
+      <p>
+        <strong>
+          Prototype focus:
+        </strong>
+        reaction-time measurements.
       </p>
 
     </article>
 
-  </section>
 
-</main>
+    <article class="context-card">
+
+      <div class="context-icon">
+        📊
+      </div>
+
+      <h3>
+        Data Analysis
+      </h3>
+
+      <p>
+        Time-series datasets can be transformed into
+        statistics and visualizations.
+      </p>
+
+      <p>
+        <strong>
+          Prototype focus:
+        </strong>
+        transparent exploratory analysis.
+      </p>
+
+    </article>
+
+  </div>
+
+
+  <article class="research-gap">
+
+    <span class="eyebrow">
+      RESEARCH QUESTION
+    </span>
+
+    <h3>
+      What could an integrated monitoring system reveal?
+    </h3>
+
+    <p>
+      The prototype explores whether environmental
+      measurements and human-performance observations can be
+      represented together in a way that helps researchers
+      identify patterns, unusual observations, and questions
+      for further investigation.
+    </p>
+
+  </article>
+
+
+  <div class="about-grid">
+
+    <article class="about-small-card">
+      <span>🛰️</span>
+      <h3>Space Data</h3>
+      <p>
+        Designed to accept time-series environmental data.
+      </p>
+    </article>
+
+    <article class="about-small-card">
+      <span>📉</span>
+      <h3>Visualization</h3>
+      <p>
+        Interactive charts make changes easier to inspect.
+      </p>
+    </article>
+
+    <article class="about-small-card">
+      <span>⚡</span>
+      <h3>Reaction Time</h3>
+      <p>
+        Includes a browser-based PVT demonstration.
+      </p>
+    </article>
+
+    <article class="about-small-card">
+      <span>🔬</span>
+      <h3>Scientific Caution</h3>
+      <p>
+        Demonstration results are separated from verified
+        scientific findings.
+      </p>
+    </article>
+
+  </div>
+
+
+  <article class="future-card">
+
+    <span class="eyebrow">
+      NEXT DEVELOPMENT
+    </span>
+
+    <h3>
+      From prototype to validated research tool
+    </h3>
+
+    <p>
+      Future development could connect the interface to a
+      documented NASA dataset, add reproducible preprocessing,
+      statistical testing, uncertainty estimates, metadata,
+      and validated research measures.
+    </p>
+
+  </article>
+
+</section>
 
 
 <!-- =====================================================
@@ -1130,21 +1247,33 @@ content="Space NeuroHealth research and visualization prototype"
 <footer>
 
   <div>
-
     <strong>
       Space NeuroHealth
     </strong>
 
-    <span>
-      NASA Space Apps Challenge Prototype
-    </span>
-
+    NASA Space Apps Challenge Prototype
   </div>
 
   <div class="footer-note">
-    Demonstration interface • Research prototype
+    Demonstration interface • Not a medical device
   </div>
 
 </footer>
 
-  </div></body></html>
+
+<!-- =====================================================
+     EXPORT BUTTON
+====================================================== -->
+
+<button
+  type="button"
+  id="export-btn"
+  class="export-btn"
+  title="Print or save this dashboard as PDF"
+  aria-label="Export dashboard summary"
+>
+  🖨️ Export PDF Summary
+</button>
+
+  </div></body>
+  </html>
