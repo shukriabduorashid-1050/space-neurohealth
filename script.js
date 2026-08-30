@@ -1,1084 +1,1067 @@
-/* =========================================================
-   SPACE NEUROHEALTH
-   NASA SPACE APPS CHALLENGE PROTOTYPE
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-   IMPORTANT:
-   The values below are DEMONSTRATION DATA.
+  <title>Space NeuroHealth</title>
 
-   They are NOT presented as actual NASA measurements.
+  <link rel="stylesheet" href="style.css">
+</head>
 
-   Replace them with verified NASA data after selecting
-   the official challenge dataset.
-   ========================================================= */
+<body>
 
+<div class="app">
 
-/* =========================================================
-   DEMONSTRATION SCENARIOS
-   ========================================================= */
+  <!-- HEADER -->
 
-const scenarios = {
+  <header class="hero">
 
-  baseline: {
+    <div class="mission-badge">
+      NASA SPACE APPS • RESEARCH PROTOTYPE
+    </div>
 
-    environment: 1200,
+    <h1>🧠 Space NeuroHealth</h1>
 
-    unit: "ppm CO₂",
+    <p class="subtitle">
+      Exploring the relationship between space-environment conditions
+      and human cognitive performance
+    </p>
 
-    performance: 240,
+    <div class="status-row">
+      <span class="status-dot"></span>
+      <span>Prototype active</span>
+      <span class="separator">•</span>
+      <span class="demo-label">DEMONSTRATION DATA</span>
+    </div>
 
-    change: 0,
+  </header>
 
-    environmentStatus:
-      "Baseline demonstration condition",
 
-    performanceStatus:
-      "Reference indicator",
+  <!-- NAVIGATION -->
 
-    changeStatus:
-      "No change",
+  <nav class="navigation">
 
-    trend:
-      "Stable",
+    <button class="nav-btn active" data-section="dashboard">
+      Dashboard
+    </button>
 
-    color:
-      "#3fb950",
+    <button class="nav-btn" data-section="data">
+      NASA Data
+    </button>
 
-    noteTitle:
-      "Baseline environmental condition",
+    <button class="nav-btn" data-section="analysis">
+      Analysis
+    </button>
 
-    note:
-      "This demonstration shows a baseline environmental " +
-      "measurement. In the final project, this value will " +
-      "come from a verified NASA dataset and will be " +
-      "interpreted according to documented scientific evidence."
+    <button class="nav-btn" data-section="about">
+      Scientific Context
+    </button>
 
-  },
+  </nav>
 
 
-  elevated: {
+  <!-- =====================================================
+       DASHBOARD
+       ===================================================== -->
 
-    environment: 2800,
+  <main id="dashboard" class="section active-section">
 
-    unit: "ppm CO₂",
+    <div class="section-heading">
 
-    performance: 285,
+      <div>
+        <span class="eyebrow">LIVE PROTOTYPE VIEW</span>
+        <h2>Environmental & Performance Explorer</h2>
+      </div>
 
-    change: 18.8,
+      <span class="data-status">
+        DEMONSTRATION DATA
+      </span>
 
-    environmentStatus:
-      "Elevated demonstration value",
+    </div>
 
-    performanceStatus:
-      "Reference indicator",
 
-    changeStatus:
-      "Higher than baseline",
+    <!-- SCENARIOS -->
 
-    trend:
-      "Increasing",
+    <div class="scenario-container">
 
-    color:
-      "#d29922",
+      <button
+        class="scenario-btn active"
+        data-scenario="baseline"
+      >
+        <span class="scenario-dot safe"></span>
+        Baseline
+      </button>
 
-    noteTitle:
-      "Elevated environmental measurement",
+      <button
+        class="scenario-btn"
+        data-scenario="elevated"
+      >
+        <span class="scenario-dot warning"></span>
+        Elevated
+      </button>
 
-    note:
-      "The prototype identifies a higher environmental " +
-      "measurement than the baseline scenario. The displayed " +
-      "performance indicator is a demonstration value and " +
-      "should not be treated as evidence that the environmental " +
-      "measurement caused a change in cognition."
+      <button
+        class="scenario-btn"
+        data-scenario="high"
+      >
+        <span class="scenario-dot danger"></span>
+        High Exposure
+      </button>
+
+    </div>
 
-  },
 
+    <!-- METRICS -->
 
-  high: {
+    <div class="metric-grid">
 
-    environment: 4100,
+      <div class="metric-card">
 
-    unit: "ppm CO₂",
+        <div class="metric-header">
+          <span class="metric-icon">🌫️</span>
 
-    performance: 350,
-
-    change: 20,
-
-    environmentStatus:
-      "High demonstration value",
-
-    performanceStatus:
-      "Reference indicator",
-
-    changeStatus:
-      "Higher than baseline",
-
-    trend:
-      "Increasing",
-
-    color:
-      "#f85149",
-
-    noteTitle:
-      "High demonstration value",
-
-    note:
-      "This scenario demonstrates how the application could " +
-      "flag an unusually high environmental measurement for " +
-      "further investigation. A real alert threshold would " +
-      "only be added after reviewing the relevant NASA dataset, " +
-      "mission requirements, and scientific evidence."
-
-  }
-
-};
-
-
-/* =========================================================
-   DEMONSTRATION TIME SERIES
-   ========================================================= */
-
-const chartData = {
-
-  baseline: {
-
-    labels: [
-      "08:00",
-      "10:00",
-      "12:00",
-      "14:00",
-      "16:00",
-      "18:00",
-      "20:00"
-    ],
-
-    environment: [
-      1100,
-      1150,
-      1200,
-      1180,
-      1210,
-      1190,
-      1200
-    ],
-
-    performance: [
-      235,
-      238,
-      240,
-      239,
-      241,
-      240,
-      240
-    ]
+          <span class="metric-label">
+            Environmental Measurement
+          </span>
+        </div>
 
-  },
+        <div
+          id="environment-value"
+          class="metric-value"
+        >
+          1,200
+        </div>
 
+        <div
+          id="environment-unit"
+          class="metric-unit"
+        >
+          ppm CO₂
+        </div>
 
-  elevated: {
-
-    labels: [
-      "08:00",
-      "10:00",
-      "12:00",
-      "14:00",
-      "16:00",
-      "18:00",
-      "20:00"
-    ],
+        <div
+          id="environment-status"
+          class="metric-status safe-text"
+        >
+          Baseline condition
+        </div>
 
-    environment: [
-      1500,
-      1800,
-      2100,
-      2350,
-      2500,
-      2700,
-      2800
-    ],
+      </div>
 
-    performance: [
-      245,
-      250,
-      260,
-      265,
-      275,
-      280,
-      285
-    ]
 
-  },
+      <div class="metric-card">
 
+        <div class="metric-header">
+          <span class="metric-icon">🧠</span>
 
-  high: {
+          <span class="metric-label">
+            Performance Indicator
+          </span>
+        </div>
 
-    labels: [
-      "08:00",
-      "10:00",
-      "12:00",
-      "14:00",
-      "16:00",
-      "18:00",
-      "20:00"
-    ],
+        <div
+          id="performance-value"
+          class="metric-value"
+        >
+          240
+        </div>
 
-    environment: [
-      2000,
-      2500,
-      3100,
-      3400,
-      3800,
-      3950,
-      4100
-    ],
+        <div class="metric-unit">
+          ms reaction time*
+        </div>
 
-    performance: [
-      260,
-      275,
-      300,
-      315,
-      330,
-      340,
-      350
-    ]
+        <div
+          id="performance-status"
+          class="metric-status"
+        >
+          Reference indicator
+        </div>
 
-  }
+      </div>
 
-};
 
+      <div class="metric-card">
 
-/* =========================================================
-   GLOBAL CHART VARIABLES
-   ========================================================= */
+        <div class="metric-header">
+          <span class="metric-icon">📊</span>
 
-let environmentChart;
+          <span class="metric-label">
+            Change From Baseline
+          </span>
+        </div>
 
-let performanceChart;
+        <div
+          id="change-value"
+          class="metric-value"
+        >
+          0%
+        </div>
 
+        <div class="metric-unit">
+          relative change
+        </div>
 
-/* =========================================================
-   CHART SETTINGS
-   ========================================================= */
+        <div
+          id="change-status"
+          class="metric-status safe-text"
+        >
+          No change
+        </div>
 
-const chartTextColor =
-  "#8b949e";
+      </div>
 
-const chartGridColor =
-  "#1d2a3a";
+    </div>
 
 
-/* =========================================================
-   CREATE ENVIRONMENT CHART
-   ========================================================= */
+    <!-- ENVIRONMENT CHART -->
 
-function createEnvironmentChart() {
+    <div class="chart-card">
 
-  const canvas =
-    document.getElementById(
-      "environmentChart"
-    );
+      <div class="chart-header">
 
-  if (!canvas) {
-    return;
-  }
+        <div>
+          <span class="eyebrow">
+            TIME SERIES
+          </span>
 
-  const ctx =
-    canvas.getContext("2d");
+          <h3>
+            Environmental Measurement
+          </h3>
+        </div>
 
+        <span
+          class="chart-unit"
+          id="chart-unit"
+        >
+          ppm
+        </span>
 
-  environmentChart =
-    new Chart(ctx, {
+      </div>
 
-      type: "line",
+      <div class="chart-container">
+        <canvas id="environmentChart"></canvas>
+      </div>
 
-      data: {
+    </div>
 
-        labels:
-          chartData.baseline.labels,
 
-        datasets: [
+    <!-- PERFORMANCE CHART -->
 
-          {
+    <div class="chart-card">
 
-            label:
-              "Environmental Measurement",
+      <div class="chart-header">
 
-            data:
-              chartData.baseline.environment,
+        <div>
+          <span class="eyebrow">
+            PERFORMANCE INDICATOR
+          </span>
 
-            borderColor:
-              "#58a6ff",
+          <h3>
+            Human Performance Reference
+          </h3>
 
-            backgroundColor:
-              "rgba(88,166,255,0.10)",
+        </div>
 
-            borderWidth:
-              2,
+        <span class="chart-unit">
+          ms
+        </span>
 
-            pointRadius:
-              3,
+      </div>
 
-            pointHoverRadius:
-              5,
+      <div class="chart-container">
+        <canvas id="performanceChart"></canvas>
+      </div>
 
-            tension:
-              0.3,
+      <p class="chart-disclaimer">
+        * Demonstration performance values are placeholders.
+        They do not represent individual astronaut measurements
+        and do not establish a causal relationship with CO₂.
+      </p>
 
-            fill:
-              true
+    </div>
 
-          }
 
-        ]
+    <!-- SCIENTIFIC INTERPRETATION -->
 
-      },
+    <div class="science-card">
 
+      <div class="science-icon">
+        🔬
+      </div>
 
-      options: {
+      <div>
 
-        responsive:
-          true,
+        <span class="eyebrow">
+          SCIENTIFIC INTERPRETATION
+        </span>
 
-        maintainAspectRatio:
-          false,
+        <h3 id="science-title">
+          Baseline environmental condition
+        </h3>
 
+        <p id="science-text">
+          This demonstration shows an environmental measurement
+          that can be monitored over time. The value can later
+          be replaced with a verified NASA dataset and analyzed
+          alongside an appropriate human-performance indicator.
+        </p>
 
-        interaction: {
+      </div>
 
-          intersect:
-            false,
+    </div>
 
-          mode:
-            "index"
 
-        },
+    <!-- LIMITATIONS -->
 
+    <div class="limitation-card">
 
-        plugins: {
+      <div class="limitation-title">
+        <span>⚠️</span>
+        Prototype limitations
+      </div>
 
-          legend: {
+      <ul>
 
-            labels: {
+        <li>
+          This prototype is not a medical diagnostic tool.
+        </li>
 
-              color:
-                "#f0f6fc",
+        <li>
+          Demonstration values are not presented as NASA measurements.
+        </li>
 
-              font: {
-                size: 11
-              }
+        <li>
+          Correlation does not establish causation.
+        </li>
 
-            }
+        <li>
+          Final analysis will use verified NASA data and
+          documented scientific sources.
+        </li>
 
-          },
+      </ul>
 
+    </div>
 
-          tooltip: {
+  </main>
 
-            backgroundColor:
-              "#101824",
 
-            borderColor:
-              "#1d2a3a",
+  <!-- =====================================================
+       NASA DATA
+       ===================================================== -->
 
-            borderWidth:
-              1,
+  <section
+    id="data"
+    class="section"
+  >
 
-            titleColor:
-              "#f0f6fc",
+    <div class="section-heading">
 
-            bodyColor:
-              "#b6c2cf"
+      <div>
+        <span class="eyebrow">
+          DATA PIPELINE
+        </span>
 
-          }
+        <h2>
+          NASA Data
+        </h2>
+      </div>
 
-        },
+      <span class="data-status">
+        SOURCE PENDING
+      </span>
 
+    </div>
 
-        scales: {
 
-          x: {
+    <!-- DATA PIPELINE -->
 
-            ticks: {
+    <div class="pipeline">
 
-              color:
-                chartTextColor
+      <div class="pipeline-step">
 
-            },
+        <span>01</span>
 
-            grid: {
+        <strong>
+          NASA Data
+        </strong>
 
-              color:
-                chartGridColor
+        <p>
+          Verified scientific dataset
+        </p>
 
-            }
+      </div>
 
-          },
 
+      <div class="pipeline-arrow">
+        →
+      </div>
 
-          y: {
 
-            beginAtZero:
-              false,
+      <div class="pipeline-step">
 
-            ticks: {
+        <span>02</span>
 
-              color:
-                chartTextColor
+        <strong>
+          Processing
+        </strong>
 
-            },
+        <p>
+          Clean and organize measurements
+        </p>
 
-            grid: {
+      </div>
 
-              color:
-                chartGridColor
 
-            },
+      <div class="pipeline-arrow">
+        →
+      </div>
 
-            title: {
 
-              display:
-                true,
+      <div class="pipeline-step">
 
-              text:
-                "CO₂ concentration (ppm)",
+        <span>03</span>
 
-              color:
-                chartTextColor
+        <strong>
+          Analysis
+        </strong>
 
-            }
+        <p>
+          Compare measurements over time
+        </p>
 
-          }
+      </div>
 
-        }
 
-      }
+      <div class="pipeline-arrow">
+        →
+      </div>
 
-    });
 
-}
+      <div class="pipeline-step">
 
+        <span>04</span>
 
-/* =========================================================
-   CREATE PERFORMANCE CHART
-   ========================================================= */
+        <strong>
+          Visualization
+        </strong>
 
-function createPerformanceChart() {
+        <p>
+          Present results clearly
+        </p>
 
-  const canvas =
-    document.getElementById(
-      "performanceChart"
-    );
+      </div>
 
-  if (!canvas) {
-    return;
-  }
+    </div>
 
-  const ctx =
-    canvas.getContext("2d");
 
+    <!-- DATA INFORMATION -->
 
-  performanceChart =
-    new Chart(ctx, {
+    <div class="data-card">
 
-      type: "line",
+      <div class="data-card-header">
 
-      data: {
+        <div>
 
-        labels:
-          chartData.baseline.labels,
+          <span class="eyebrow">
+            CURRENT PROTOTYPE
+          </span>
 
-        datasets: [
+          <h3>
+            Dataset Information
+          </h3>
 
-          {
+        </div>
 
-            label:
-              "Performance Reference",
+        <span class="demo-pill">
+          DEMO
+        </span>
 
-            data:
-              chartData.baseline.performance,
+      </div>
 
-            borderColor:
-              "#56d4dd",
 
-            backgroundColor:
-              "rgba(86,212,221,0.08)",
+      <div class="data-table">
 
-            borderWidth:
-              2,
+        <div class="data-row">
 
-            pointRadius:
-              3,
+          <span>
+            Data source
+          </span>
 
-            pointHoverRadius:
-              5,
+          <strong>
+            NASA dataset — to be selected
+          </strong>
 
-            tension:
-              0.3,
+        </div>
 
-            fill:
-              true
 
-          }
+        <div class="data-row">
 
-        ]
+          <span>
+            Measurement
+          </span>
 
-      },
+          <strong>
+            Environmental condition
+          </strong>
 
+        </div>
 
-      options: {
 
-        responsive:
-          true,
+        <div class="data-row">
 
-        maintainAspectRatio:
-          false,
+          <span>
+            Unit
+          </span>
 
+          <strong>
+            ppm CO₂ — prototype example
+          </strong>
 
-        interaction: {
+        </div>
 
-          intersect:
-            false,
 
-          mode:
-            "index"
+        <div class="data-row">
 
-        },
+          <span>
+            Time resolution
+          </span>
 
+          <strong>
+            Demonstration hourly values
+          </strong>
 
-        plugins: {
+        </div>
 
-          legend: {
 
-            labels: {
+        <div class="data-row">
 
-              color:
-                "#f0f6fc",
+          <span>
+            Data status
+          </span>
 
-              font: {
-                size: 11
-              }
+          <strong class="warning-text">
+            Placeholder
+          </strong>
 
-            }
+        </div>
 
-          },
+      </div>
 
+    </div>
 
-          tooltip: {
 
-            backgroundColor:
-              "#101824",
+    <!-- DATA QUESTIONS -->
 
-            borderColor:
-              "#1d2a3a",
+    <div class="info-card">
 
-            borderWidth:
-              1,
+      <h3>
+        What the final dataset must answer
+      </h3>
 
-            titleColor:
-              "#f0f6fc",
+      <div class="question-grid">
 
-            bodyColor:
-              "#b6c2cf"
+        <div>
+          <span>?</span>
+          <p>
+            What does the measurement represent?
+          </p>
+        </div>
 
-          }
+        <div>
+          <span>?</span>
+          <p>
+            What are the units?
+          </p>
+        </div>
 
-        },
+        <div>
+          <span>?</span>
+          <p>
+            Where did the data come from?
+          </p>
+        </div>
 
+        <div>
+          <span>?</span>
+          <p>
+            What can the data actually tell us?
+          </p>
+        </div>
 
-        scales: {
+      </div>
 
-          x: {
+    </div>
 
-            ticks: {
+  </section>
 
-              color:
-                chartTextColor
 
-            },
+  <!-- =====================================================
+       ANALYSIS
+       ===================================================== -->
 
-            grid: {
+  <section
+    id="analysis"
+    class="section"
+  >
 
-              color:
-                chartGridColor
+    <div class="section-heading">
 
-            }
+      <div>
 
-          },
+        <span class="eyebrow">
+          DATA SCIENCE
+        </span>
 
+        <h2>
+          Analysis
+        </h2>
 
-          y: {
+      </div>
 
-            beginAtZero:
-              false,
+    </div>
 
-            ticks: {
 
-              color:
-                chartTextColor
+    <div class="analysis-grid">
 
-            },
 
-            grid: {
+      <div class="analysis-card">
 
-              color:
-                chartGridColor
+        <span class="analysis-icon">
+          📈
+        </span>
 
-            },
+        <h3>
+          Trend
+        </h3>
 
-            title: {
+        <div id="trend-result">
+          Stable
+        </div>
 
-              display:
-                true,
+        <p>
+          Describes how the environmental measurement
+          changes across the displayed time period.
+        </p>
 
-              text:
-                "Reaction time (ms)",
+      </div>
 
-              color:
-                chartTextColor
 
-            }
+      <div class="analysis-card">
 
-          }
+        <span class="analysis-icon">
+          Δ
+        </span>
 
-        }
+        <h3>
+          Baseline Difference
+        </h3>
 
-      }
+        <div id="baseline-result">
+          0%
+        </div>
 
-    });
+        <p>
+          Shows the relative difference between the current
+          value and the prototype baseline.
+        </p>
 
-}
+      </div>
 
 
-/* =========================================================
-   UPDATE DASHBOARD
-   ========================================================= */
+      <div class="analysis-card">
 
-function loadScenario(type) {
+        <span class="analysis-icon">
+          🔎
+        </span>
 
-  const selected =
-    scenarios[type];
+        <h3>
+          Interpretation
+        </h3>
 
-  const data =
-    chartData[type];
+        <div id="analysis-result">
+          Exploratory
+        </div>
 
+        <p>
+          The prototype describes patterns but does not
+          claim medical causation.
+        </p>
 
-  if (!selected || !data) {
-    return;
-  }
+      </div>
 
+    </div>
 
-  /* -----------------------------------------
-     ENVIRONMENT
-     ----------------------------------------- */
 
-  const environmentValue =
-    document.getElementById(
-      "environment-value"
-    );
+    <!-- METHOD -->
 
-  environmentValue.textContent =
-    selected.environment.toLocaleString();
+    <div class="method-card">
 
+      <span class="eyebrow">
+        METHOD
+      </span>
 
-  document.getElementById(
-    "environment-unit"
-  ).textContent =
-    selected.unit;
+      <h3>
+        How the analysis works
+      </h3>
 
+      <div class="method-flow">
 
-  const environmentStatus =
-    document.getElementById(
-      "environment-status"
-    );
+        <div>
+          <span>1</span>
+          <p>Collect</p>
+        </div>
 
-  environmentStatus.textContent =
-    selected.environmentStatus;
+        <div class="method-line"></div>
 
+        <div>
+          <span>2</span>
+          <p>Clean</p>
+        </div>
 
-  environmentStatus.className =
-    "metric-status";
+        <div class="method-line"></div>
 
+        <div>
+          <span>3</span>
+          <p>Compare</p>
+        </div>
 
-  if (type === "baseline") {
+        <div class="method-line"></div>
 
-    environmentStatus.classList.add(
-      "safe-text"
-    );
+        <div>
+          <span>4</span>
+          <p>Visualize</p>
+        </div>
 
-  }
+        <div class="method-line"></div>
 
-  else if (type === "elevated") {
+        <div>
+          <span>5</span>
+          <p>Interpret</p>
+        </div>
 
-    environmentStatus.classList.add(
-      "warning-text"
-    );
+      </div>
 
-  }
+    </div>
 
-  else {
+  </section>
 
-    environmentStatus.classList.add(
-      "danger-text"
-    );
 
-  }
+  <!-- =====================================================
+       SCIENTIFIC CONTEXT
+       ===================================================== -->
 
+  <section
+    id="about"
+    class="section"
+  >
 
-  /* -----------------------------------------
-     PERFORMANCE
-     ----------------------------------------- */
+    <div class="section-heading">
 
-  document.getElementById(
-    "performance-value"
-  ).textContent =
-    selected.performance;
+      <div>
 
+        <span class="eyebrow">
+          KEY SCIENTIFIC CONTEXT
+        </span>
 
-  document.getElementById(
-    "performance-status"
-  ).textContent =
-    selected.performanceStatus;
+        <h2>
+          Why CO₂ and Cognitive Performance?
+        </h2>
 
+      </div>
 
-  /* -----------------------------------------
-     CHANGE
-     ----------------------------------------- */
+    </div>
 
-  document.getElementById(
-    "change-value"
-  ).textContent =
-    selected.change === 0
-      ? "0%"
-      : "+" + selected.change + "%";
 
+    <!-- PROJECT INTRODUCTION -->
 
-  const changeStatus =
-    document.getElementById(
-      "change-status"
-    );
+    <div class="about-card">
 
-  changeStatus.textContent =
-    selected.changeStatus;
+      <div class="about-icon">
+        🧠
+      </div>
 
+      <div>
 
-  changeStatus.className =
-    "metric-status";
+        <h3>
+          The Space NeuroHealth idea
+        </h3>
 
+        <p>
+          Space NeuroHealth is a research and monitoring prototype
+          designed to explore how space-environment conditions may
+          relate to human cognitive and neurological performance.
+        </p>
 
-  if (selected.change === 0) {
+        <p>
+          The application combines NASA data, scientific analysis,
+          data visualization, and web development in one accessible
+          interface.
+        </p>
 
-    changeStatus.classList.add(
-      "safe-text"
-    );
+      </div>
 
-  }
+    </div>
 
-  else if (selected.change < 20) {
 
-    changeStatus.classList.add(
-      "warning-text"
-    );
+    <!-- SCIENTIFIC CONTEXT CARDS -->
 
-  }
+    <div class="science-context">
 
-  else {
 
-    changeStatus.classList.add(
-      "danger-text"
-    );
+      <!-- CO2 -->
 
-  }
+      <div class="context-card">
 
+        <div class="context-icon">
+          🌍
+        </div>
 
-  /* -----------------------------------------
-     SCIENTIFIC INTERPRETATION
-     ----------------------------------------- */
+        <h3>
+          The Environmental Driver
+        </h3>
 
-  document.getElementById(
-    "science-title"
-  ).textContent =
-    selected.noteTitle;
+        <p>
+          Atmospheric CO₂ on Earth is roughly
+          <strong>400+ ppm</strong>. Spacecraft have a different
+          atmospheric environment because astronauts continuously
+          produce CO₂ and spacecraft depend on environmental control
+          and life-support systems to remove it.
+        </p>
 
+        <p>
+          NASA has identified elevated spacecraft CO₂ as a
+          potential human-health and performance concern.
+        </p>
 
-  document.getElementById(
-    "science-text"
-  ).textContent =
-    selected.note;
+      </div>
 
 
-  /* -----------------------------------------
-     ANALYSIS
-     ----------------------------------------- */
+      <!-- PVT -->
 
-  document.getElementById(
-    "trend-result"
-  ).textContent =
-    selected.trend;
+      <div class="context-card">
 
+        <div class="context-icon">
+          🧠
+        </div>
 
-  document.getElementById(
-    "baseline-result"
-  ).textContent =
-    selected.change === 0
-      ? "0%"
-      : "+" + selected.change + "%";
+        <h3>
+          The Cognitive Metric
+        </h3>
 
+        <p>
+          The
+          <strong>Psychomotor Vigilance Task (PVT)</strong>
+          is a reaction-time test used to evaluate sustained
+          attention and alertness.
+        </p>
 
-  document.getElementById(
-    "analysis-result"
-  ).textContent =
-    "Exploratory";
+        <p>
+          NASA research uses PVT-based measures of reaction time
+          and lapses. A response slower than
+          <strong>500 ms</strong> is commonly classified as a
+          PVT lapse.
+        </p>
 
+      </div>
 
-  /* -----------------------------------------
-     UPDATE ENVIRONMENT CHART
-     ----------------------------------------- */
 
-  if (environmentChart) {
+      <!-- RESEARCH -->
 
-    environmentChart.data.labels =
-      data.labels;
+      <div class="context-card">
 
-    environmentChart.data.datasets[0].data =
-      data.environment;
+        <div class="context-icon">
+          🔬
+        </div>
 
-    environmentChart.data.datasets[0].borderColor =
-      selected.color;
+        <h3>
+          Supporting Research
+        </h3>
 
-    environmentChart.data.datasets[0].backgroundColor =
-      hexToRgba(
-        selected.color,
-        0.10
-      );
+        <p>
+          Ground-based research by
+          <strong>Satish et al. (2012)</strong>
+          reported changes in several decision-making measures
+          during controlled exposure to 1,000 and 2,500 ppm CO₂.
+        </p>
 
-    environmentChart.update();
+        <p>
+          These findings provide scientific motivation for
+          investigating CO₂ and cognitive performance, but they
+          do not prove a causal relationship in astronauts.
+        </p>
 
-  }
+      </div>
 
+    </div>
 
-  /* -----------------------------------------
-     UPDATE PERFORMANCE CHART
-     ----------------------------------------- */
 
-  if (performanceChart) {
+    <!-- RESEARCH GAP -->
 
-    performanceChart.data.labels =
-      data.labels;
+    <div class="research-gap">
 
-    performanceChart.data.datasets[0].data =
-      data.performance;
+      <span class="eyebrow">
+        RESEARCH QUESTION
+      </span>
 
-    performanceChart.update();
+      <h3>
+        What is the relationship between spacecraft CO₂ exposure
+        and human performance?
+      </h3>
 
-  }
+      <p>
+        NASA research has investigated elevated CO₂ as a potential
+        contributor to performance and physiological effects during
+        spaceflight. Space NeuroHealth explores how environmental
+        measurements could be visualized alongside appropriate
+        human-performance indicators to help identify patterns
+        that deserve further investigation.
+      </p>
 
+    </div>
 
-  /* -----------------------------------------
-     UPDATE ACTIVE SCENARIO
-     ----------------------------------------- */
 
-  document
-    .querySelectorAll(".scenario-btn")
-    .forEach(button => {
+    <!-- PROJECT AREAS -->
 
-      button.classList.remove(
-        "active"
-      );
+    <div class="about-grid">
 
+      <div class="about-small-card">
 
-      if (
-        button.dataset.scenario === type
-      ) {
+        <span>🧬</span>
 
-        button.classList.add(
-          "active"
-        );
+        <h3>
+          Neuroscience
+        </h3>
 
-      }
+        <p>
+          Exploring human cognition and neurological performance.
+        </p>
 
-    });
+      </div>
 
-}
 
+      <div class="about-small-card">
 
-/* =========================================================
-   HEX → RGBA
-   ========================================================= */
+        <span>⚙️</span>
 
-function hexToRgba(
-  hex,
-  alpha
-) {
+        <h3>
+          Engineering
+        </h3>
 
-  const cleanHex =
-    hex.replace("#", "");
+        <p>
+          Turning scientific measurements into a useful interface.
+        </p>
 
-  const bigint =
-    parseInt(
-      cleanHex,
-      16
-    );
+      </div>
 
-  const r =
-    (bigint >> 16) & 255;
 
-  const g =
-    (bigint >> 8) & 255;
+      <div class="about-small-card">
 
-  const b =
-    bigint & 255;
+        <span>📊</span>
 
-  return (
-    `rgba(${r}, ${g}, ${b}, ${alpha})`
-  );
+        <h3>
+          Data Science
+        </h3>
 
-}
+        <p>
+          Processing and visualizing scientific measurements.
+        </p>
 
+      </div>
 
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
 
-function setupNavigation() {
+      <div class="about-small-card">
 
-  const buttons =
-    document.querySelectorAll(
-      ".nav-btn"
-    );
+        <span>🚀</span>
 
-  const sections =
-    document.querySelectorAll(
-      ".section"
-    );
+        <h3>
+          Space Medicine
+        </h3>
 
+        <p>
+          Investigating environmental factors relevant to
+          astronaut health.
+        </p>
 
-  buttons.forEach(button => {
+      </div>
 
-    button.addEventListener(
-      "click",
-      function() {
+    </div>
 
-        const target =
-          this.dataset.section;
 
+    <!-- FUTURE -->
 
-        buttons.forEach(btn => {
+    <div class="future-card">
 
-          btn.classList.remove(
-            "active"
-          );
+      <span class="eyebrow">
+        FUTURE DEVELOPMENT
+      </span>
 
-        });
+      <h3>
+        From prototype to research tool
+      </h3>
 
+      <p>
+        Future versions could incorporate additional verified
+        datasets, automated data processing, more physiological
+        indicators, statistical analysis, and mission-specific
+        monitoring.
+      </p>
 
-        sections.forEach(section => {
+    </div>
 
-          section.classList.remove(
-            "active-section"
-          );
 
-        });
+    <!-- SCIENTIFIC SCOPE -->
 
+    <div class="source-note">
 
-        this.classList.add(
-          "active"
-        );
+      <strong>
+        Scientific scope:
+      </strong>
 
+      This application is a research and visualization prototype.
+      It does not diagnose neurological conditions and does not
+      claim that CO₂ exposure directly causes a specific cognitive
+      outcome. Final conclusions will depend on verified NASA
+      datasets, documented measurement methods, and appropriate
+      statistical analysis.
 
-        const targetSection =
-          document.getElementById(
-            target
-          );
+    </div>
 
+  </section>
 
-        if (targetSection) {
 
-          targetSection.classList.add(
-            "active-section"
-          );
+  <!-- FOOTER -->
 
-        }
+  <footer>
 
-      }
+    <div>
 
-    );
+      <strong>
+        🧠 Space NeuroHealth
+      </strong>
 
-  });
+      <span>
+        NASA Space Apps Challenge Prototype
+      </span>
 
-}
+    </div>
 
+    <div class="footer-note">
+      Research prototype • Not a medical device
+    </div>
 
-/* =========================================================
-   SCENARIO BUTTONS
-   ========================================================= */
+  </footer>
 
-function setupScenarioButtons() {
+</div>
 
-  const buttons =
-    document.querySelectorAll(
-      ".scenario-btn"
-    );
 
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  buttons.forEach(button => {
+<!-- Your JavaScript -->
+<script src="script.js"></script>
 
-    button.addEventListener(
-      "click",
-      function() {
-
-        const scenario =
-          this.dataset.scenario;
-
-        loadScenario(
-          scenario
-        );
-
-      }
-
-    );
-
-  });
-
-}
-
-
-/* =========================================================
-   INITIALIZE
-   ========================================================= */
-
-function initializeApp() {
-
-  createEnvironmentChart();
-
-  createPerformanceChart();
-
-  setupNavigation();
-
-  setupScenarioButtons();
-
-  loadScenario(
-    "baseline"
-  );
-
-}
-
-
-/* =========================================================
-   START APPLICATION
-   ========================================================= */
-
-if (
-  document.readyState === "loading"
-) {
-
-  document.addEventListener(
-    "DOMContentLoaded",
-    initializeApp
-  );
-
-}
-
-else {
-
-  initializeApp();
-
-  }
+</body>
+</html>
+<script src="script.js"></script>
