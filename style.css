@@ -4,19 +4,23 @@
    ========================================================= */
 
 :root {
-  --bg: #070b12;
-  --bg-soft: #0b111b;
-  --card: #101722;
-  --card-light: #141d2a;
-  --border: #253143;
-  --text: #edf4ff;
-  --muted: #8f9caf;
-  --blue: #4ea1ff;
-  --cyan: #51d7e8;
+  /* Core palette — deep-space purple with a hot-pink signal color,
+     pulled from the nebula/planet artwork used in the hero. */
+  --bg: #150a26;
+  --bg-soft: #1c0f34;
+  --card: #241340;
+  --card-light: #2c1750;
+  --border: #45285f;
+  --text: #f8ecf9;
+  --muted: #b79bd0;
+  --violet: #9b6bff;
+  --lilac: #c084fc;
+  --pink: #ff5da8;
+  --hot-pink: #ff2f8f;
+  --gold: #ffd166;
   --green: #43d17c;
-  --yellow: #f2c94c;
   --red: #ff5d73;
-  --shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+  --shadow: 0 18px 50px rgba(6, 2, 16, 0.45);
   --radius: 18px;
 }
 
@@ -28,12 +32,29 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+}
+
 body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top right, rgba(42, 107, 173, 0.15), transparent 30%),
-    radial-gradient(circle at bottom left, rgba(30, 147, 166, 0.08), transparent 30%),
+    radial-gradient(circle at top right, rgba(155, 107, 255, 0.16), transparent 32%),
+    radial-gradient(circle at bottom left, rgba(255, 47, 143, 0.10), transparent 34%),
     var(--bg);
   color: var(--text);
   font-family:
@@ -47,6 +68,17 @@ body {
   line-height: 1.6;
 }
 
+h1,
+h2,
+h3 {
+  font-family:
+    "Space Grotesk",
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+}
+
 button,
 input {
   font: inherit;
@@ -56,20 +88,74 @@ button {
   cursor: pointer;
 }
 
+/* Visible keyboard focus everywhere */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
 .app {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 34px 0 50px;
+  padding: 0 0 50px;
 }
 
 
 /* =========================================================
-   HEADER
+   HERO — nebula artwork background
    ========================================================= */
 
 .hero {
+  position: relative;
   text-align: center;
-  padding: 38px 20px 30px;
+  padding: 64px 20px 38px;
+  margin: 0 calc(50% - 50vw) 12px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: url("assets/hero-space.jpg");
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(21, 10, 38, 0.55) 0%,
+      rgba(21, 10, 38, 0.72) 55%,
+      var(--bg) 100%
+    );
+}
+
+/* Twinkling stars — the one signature motion moment, hero-only */
+.hero .twinkle {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.8);
+  animation: twinkle 3.4s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.15); }
 }
 
 .mission-badge,
@@ -79,27 +165,29 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(78, 161, 255, 0.35);
-  background: rgba(78, 161, 255, 0.08);
-  color: var(--blue);
+  border: 1px solid rgba(255, 93, 168, 0.4);
+  background: rgba(255, 93, 168, 0.12);
+  color: var(--pink);
   border-radius: 999px;
   padding: 6px 12px;
   font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.09em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .hero h1 {
   margin: 18px 0 8px;
   font-size: clamp(2.2rem, 6vw, 4.2rem);
   line-height: 1.05;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.45);
 }
 
 .subtitle {
-  max-width: 720px;
+  max-width: 640px;
   margin: 0 auto;
-  color: var(--muted);
+  color: #e6d6f2;
   font-size: 1rem;
 }
 
@@ -108,7 +196,7 @@ button {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 20px;
   color: var(--muted);
   font-size: 0.82rem;
 }
@@ -126,7 +214,7 @@ button {
 }
 
 .demo-label {
-  color: var(--yellow);
+  color: var(--gold);
   font-weight: 700;
 }
 
@@ -141,7 +229,7 @@ button {
   gap: 8px;
   padding: 8px;
   margin: 12px 0 30px;
-  background: rgba(16, 23, 34, 0.8);
+  background: rgba(28, 15, 52, 0.85);
   border: 1px solid var(--border);
   border-radius: 16px;
   position: sticky;
@@ -163,17 +251,17 @@ button {
 
 .nav-btn:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .nav-btn.active {
   color: white;
   background: linear-gradient(
     135deg,
-    rgba(78, 161, 255, 0.22),
-    rgba(81, 215, 232, 0.1)
+    rgba(155, 107, 255, 0.35),
+    rgba(255, 93, 168, 0.22)
   );
-  box-shadow: inset 0 0 0 1px rgba(78, 161, 255, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(255, 93, 168, 0.4);
 }
 
 
@@ -212,14 +300,15 @@ button {
 .section-heading h2 {
   margin: 4px 0 0;
   font-size: clamp(1.6rem, 4vw, 2.4rem);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  font-weight: 600;
 }
 
 .eyebrow {
-  color: var(--cyan);
+  color: var(--lilac);
   font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.13em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
 }
 
 h2,
@@ -230,6 +319,7 @@ p {
 
 h3 {
   margin: 7px 0 10px;
+  font-weight: 600;
 }
 
 p {
@@ -263,8 +353,8 @@ p {
   background:
     linear-gradient(
       145deg,
-      rgba(20, 29, 42, 0.96),
-      rgba(10, 16, 25, 0.96)
+      rgba(44, 23, 80, 0.85),
+      rgba(21, 10, 38, 0.9)
     );
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -317,8 +407,8 @@ p {
 .scenario-btn:hover,
 .scenario-btn.active {
   color: var(--text);
-  border-color: rgba(78, 161, 255, 0.55);
-  background: rgba(78, 161, 255, 0.1);
+  border-color: rgba(255, 93, 168, 0.55);
+  background: rgba(255, 93, 168, 0.12);
 }
 
 .scenario-dot {
@@ -332,7 +422,7 @@ p {
 }
 
 .scenario-dot.warning {
-  background: var(--yellow);
+  background: var(--gold);
 }
 
 .scenario-dot.danger {
@@ -366,13 +456,13 @@ p {
 }
 
 .slider-group label strong {
-  color: var(--cyan);
+  color: var(--pink);
 }
 
 input[type="range"] {
   width: 100%;
   margin: 20px 0 6px;
-  accent-color: var(--blue);
+  accent-color: var(--pink);
 }
 
 .slider-scale {
@@ -423,8 +513,9 @@ input[type="range"] {
 .metric-value {
   margin-top: 15px;
   font-size: 2.35rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-family: "Space Grotesk", Inter, sans-serif;
 }
 
 .metric-unit {
@@ -434,7 +525,7 @@ input[type="range"] {
 
 .metric-status {
   margin-top: 8px;
-  color: var(--cyan);
+  color: var(--lilac);
   font-size: 0.82rem;
   font-weight: 700;
 }
@@ -516,8 +607,8 @@ input[type="range"] {
 }
 
 .pipeline-step > span {
-  color: var(--cyan);
-  font-weight: 800;
+  color: var(--lilac);
+  font-weight: 700;
 }
 
 .pipeline-step strong {
@@ -531,7 +622,7 @@ input[type="range"] {
 }
 
 .pipeline-arrow {
-  color: var(--blue);
+  color: var(--pink);
   font-size: 1.4rem;
 }
 
@@ -556,9 +647,10 @@ input[type="range"] {
 
 .analysis-card > div {
   margin-top: 12px;
-  color: var(--cyan);
+  color: var(--pink);
   font-size: 1.8rem;
-  font-weight: 800;
+  font-weight: 700;
+  font-family: "Space Grotesk", Inter, sans-serif;
 }
 
 
@@ -603,7 +695,7 @@ input[type="range"] {
   margin-top: 20px;
   border: 2px dashed var(--border);
   border-radius: 16px;
-  background: #0a1019;
+  background: #170a29;
   color: var(--muted);
   text-align: center;
   user-select: none;
@@ -611,9 +703,9 @@ input[type="range"] {
 }
 
 .pvt-box.ready {
-  background: rgba(67, 209, 124, 0.18);
-  border-color: var(--green);
-  color: var(--green);
+  background: rgba(255, 93, 168, 0.18);
+  border-color: var(--pink);
+  color: var(--pink);
 }
 
 .pvt-box.false-start {
@@ -671,25 +763,29 @@ input[type="range"] {
 .ghost-btn {
   border-radius: 11px;
   padding: 11px 17px;
-  font-weight: 750;
+  font-weight: 700;
   border: 1px solid transparent;
   transition: 0.2s ease;
 }
 
 .primary-btn {
-  background: var(--blue);
-  color: #06101c;
+  background: linear-gradient(135deg, var(--pink), var(--hot-pink));
+  color: #1c0a17;
 }
 
 .primary-btn:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.08);
   transform: translateY(-1px);
 }
 
 .secondary-btn {
   color: var(--text);
-  background: rgba(78, 161, 255, 0.1);
-  border-color: rgba(78, 161, 255, 0.35);
+  background: rgba(155, 107, 255, 0.14);
+  border-color: rgba(155, 107, 255, 0.4);
+}
+
+.secondary-btn:hover {
+  background: rgba(155, 107, 255, 0.22);
 }
 
 .ghost-btn {
@@ -760,8 +856,8 @@ button:disabled {
 }
 
 .question-grid span {
-  color: var(--cyan);
-  font-weight: 800;
+  color: var(--lilac);
+  font-weight: 700;
 }
 
 .question-grid p {
@@ -769,12 +865,12 @@ button:disabled {
 }
 
 .limitation-card {
-  border-color: rgba(242, 201, 76, 0.25);
+  border-color: rgba(255, 209, 102, 0.28);
 }
 
 .limitation-title {
-  color: var(--yellow);
-  font-weight: 800;
+  color: var(--gold);
+  font-weight: 700;
 }
 
 .limitation-card li {
@@ -806,9 +902,9 @@ button:disabled {
   height: 42px;
   margin: auto;
   border-radius: 50%;
-  background: rgba(78, 161, 255, 0.12);
-  color: var(--blue);
-  font-weight: 800;
+  background: rgba(255, 93, 168, 0.14);
+  color: var(--pink);
+  font-weight: 700;
 }
 
 .method-flow p {
@@ -866,6 +962,13 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 25px;
+  flex-wrap: wrap;
+}
+
+.export-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 
@@ -910,8 +1013,15 @@ footer strong {
   .control-card,
   .upload-actions,
   #export-btn,
+  #copy-summary-btn,
+  .hero .twinkle,
   footer {
     display: none !important;
+  }
+
+  .hero::before,
+  .hero::after {
+    display: none;
   }
 
   .app {
@@ -1007,11 +1117,10 @@ footer strong {
 
   .app {
     width: min(100% - 20px, 1180px);
-    padding-top: 15px;
   }
 
   .hero {
-    padding: 25px 8px;
+    padding: 40px 8px 28px;
   }
 
   .section-heading,
