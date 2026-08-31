@@ -1,6 +1,7 @@
 /* =========================================================
    SPACE NEUROHEALTH
-   FINAL MAIN STYLESHEET
+   MAIN STYLESHEET
+   FINAL INTEGRATED VERSION
    ========================================================= */
 
 :root {
@@ -9,6 +10,7 @@
   --card: #101722;
   --card-light: #141d2a;
   --border: #253143;
+
   --text: #edf4ff;
   --muted: #8f9caf;
 
@@ -18,16 +20,10 @@
   --yellow: #f2c94c;
   --red: #ff5d73;
 
-  --shadow:
-    0 18px 50px rgba(0, 0, 0, 0.25);
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
 
   --radius: 18px;
 }
-
-
-/* =========================================================
-   RESET
-   ========================================================= */
 
 * {
   box-sizing: border-box;
@@ -69,8 +65,7 @@ body {
 }
 
 button,
-input,
-select {
+input {
   font: inherit;
 }
 
@@ -79,17 +74,10 @@ button {
 }
 
 button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-.pvt-box:focus-visible {
+input:focus-visible {
   outline: 2px solid var(--cyan);
   outline-offset: 3px;
 }
-
-
-/* =========================================================
-   APP
-   ========================================================= */
 
 .app {
   width: min(1180px, calc(100% - 32px));
@@ -115,8 +103,7 @@ select:focus-visible,
   align-items: center;
   justify-content: center;
 
-  border:
-    1px solid rgba(78, 161, 255, 0.35);
+  border: 1px solid rgba(78, 161, 255, 0.35);
 
   background:
     rgba(78, 161, 255, 0.08);
@@ -146,6 +133,7 @@ select:focus-visible,
 
 .subtitle {
   max-width: 720px;
+
   margin: 0 auto;
 
   color: var(--muted);
@@ -200,17 +188,18 @@ select:focus-visible,
   gap: 8px;
 
   padding: 8px;
+
   margin: 12px 0 30px;
 
   background:
     rgba(16, 23, 34, 0.8);
 
-  border:
-    1px solid var(--border);
+  border: 1px solid var(--border);
 
   border-radius: 16px;
 
   position: sticky;
+
   top: 10px;
 
   z-index: 20;
@@ -224,6 +213,7 @@ select:focus-visible,
   min-width: 110px;
 
   border: 0;
+
   border-radius: 11px;
 
   padding: 12px 16px;
@@ -232,7 +222,10 @@ select:focus-visible,
 
   background: transparent;
 
-  transition: 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .nav-btn:hover {
@@ -253,8 +246,7 @@ select:focus-visible,
     );
 
   box-shadow:
-    inset
-    0 0 0 1px
+    inset 0 0 0 1px
     rgba(78, 161, 255, 0.3);
 }
 
@@ -354,7 +346,6 @@ p {
 .future-card,
 .export-card,
 .limitation-card {
-
   background:
     linear-gradient(
       145deg,
@@ -362,14 +353,11 @@ p {
       rgba(10, 16, 25, 0.96)
     );
 
-  border:
-    1px solid var(--border);
+  border: 1px solid var(--border);
 
-  border-radius:
-    var(--radius);
+  border-radius: var(--radius);
 
-  box-shadow:
-    var(--shadow);
+  box-shadow: var(--shadow);
 }
 
 .control-card,
@@ -387,10 +375,27 @@ p {
 .future-card,
 .export-card,
 .limitation-card {
-
   padding: 24px;
-
   margin-top: 20px;
+}
+
+.metric-card,
+.analysis-card,
+.about-small-card,
+.context-card {
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.metric-card:hover,
+.analysis-card:hover,
+.about-small-card:hover,
+.context-card:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(78, 161, 255, 0.4);
 }
 
 
@@ -415,8 +420,7 @@ p {
 
   gap: 8px;
 
-  border:
-    1px solid var(--border);
+  border: 1px solid var(--border);
 
   border-radius: 999px;
 
@@ -431,7 +435,6 @@ p {
 
 .scenario-btn:hover,
 .scenario-btn.active {
-
   color: var(--text);
 
   border-color:
@@ -469,7 +472,6 @@ p {
 .chart-header,
 .card-title-row,
 .data-card-header {
-
   display: flex;
 
   align-items: flex-start;
@@ -483,9 +485,7 @@ p {
   margin-top: 22px;
 }
 
-.slider-group label,
-.parameter-control label {
-
+.slider-group label {
   display: flex;
 
   justify-content: space-between;
@@ -495,9 +495,7 @@ p {
   color: var(--text);
 }
 
-.slider-group label strong,
-.parameter-control label strong {
-
+.slider-group label strong {
   color: var(--cyan);
 }
 
@@ -522,75 +520,9 @@ input[type="range"] {
 .control-help,
 .chart-disclaimer,
 .pvt-disclaimer {
-
   font-size: 0.78rem;
 
   margin-bottom: 0;
-}
-
-
-/* =========================================================
-   ADVANCED ENVIRONMENT
-   ========================================================= */
-
-.advanced-grid {
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 16px;
-
-  margin-top: 20px;
-}
-
-.parameter-control {
-
-  padding: 17px;
-
-  border:
-    1px solid var(--border);
-
-  border-radius: 14px;
-
-  background:
-    rgba(255, 255, 255, 0.025);
-}
-
-.parameter-control input[type="range"] {
-  margin-top: 13px;
-}
-
-.parameter-label {
-  display: block;
-
-  color: var(--muted);
-
-  font-size: 0.8rem;
-}
-
-.parameter-result {
-  display: flex;
-
-  flex-direction: column;
-
-  justify-content: center;
-}
-
-.parameter-result strong {
-
-  margin-top: 5px;
-
-  color: var(--cyan);
-
-  font-size: 1.6rem;
-}
-
-.parameter-result small {
-  color: var(--muted);
-
-  margin-top: 3px;
 }
 
 
@@ -599,7 +531,6 @@ input[type="range"] {
    ========================================================= */
 
 .metric-grid {
-
   display: grid;
 
   grid-template-columns:
@@ -633,7 +564,6 @@ input[type="range"] {
 }
 
 .metric-value {
-
   margin-top: 15px;
 
   font-size: 2.35rem;
@@ -650,7 +580,6 @@ input[type="range"] {
 }
 
 .metric-status {
-
   margin-top: 8px;
 
   color: var(--cyan);
@@ -664,13 +593,64 @@ input[type="range"] {
   color: var(--green) !important;
 }
 
+.warning-text {
+  color: var(--yellow) !important;
+}
+
+.danger-text {
+  color: var(--red) !important;
+}
+
+
+/* =========================================================
+   ANALYSIS CARDS
+   ========================================================= */
+
+.analysis-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 16px;
+
+  margin-top: 20px;
+}
+
+.analysis-card {
+  padding: 22px;
+}
+
+.analysis-icon {
+  font-size: 1.5rem;
+}
+
+.analysis-card > div:not(.analysis-icon) {
+  margin-top: 12px;
+
+  color: var(--cyan);
+
+  font-size: 1.8rem;
+
+  font-weight: 800;
+}
+
+.index-state {
+  display: inline-block;
+
+  margin-top: 7px;
+
+  font-size: 0.8rem;
+
+  font-weight: 800;
+}
+
 
 /* =========================================================
    CHARTS
    ========================================================= */
 
 .chart-container {
-
   position: relative;
 
   min-height: 310px;
@@ -679,21 +659,18 @@ input[type="range"] {
 }
 
 .chart-container canvas {
-
   width: 100% !important;
 
   height: 310px !important;
 }
 
 .chart-unit {
-
   color: var(--muted);
 
   font-size: 0.8rem;
 }
 
 .chart-error {
-
   position: absolute;
 
   inset: 0;
@@ -717,7 +694,6 @@ input[type="range"] {
    ========================================================= */
 
 .science-card {
-
   display: grid;
 
   grid-template-columns:
@@ -731,7 +707,6 @@ input[type="range"] {
 .science-icon,
 .about-icon,
 .context-icon {
-
   font-size: 2rem;
 }
 
@@ -741,7 +716,6 @@ input[type="range"] {
    ========================================================= */
 
 .pipeline {
-
   display: grid;
 
   grid-template-columns:
@@ -755,11 +729,9 @@ input[type="range"] {
 }
 
 .pipeline-step {
-
   padding: 16px;
 
-  border:
-    1px solid var(--border);
+  border: 1px solid var(--border);
 
   border-radius: 14px;
 
@@ -768,116 +740,27 @@ input[type="range"] {
 }
 
 .pipeline-step > span {
-
   color: var(--cyan);
 
   font-weight: 800;
 }
 
 .pipeline-step strong {
-
   display: block;
 
   margin-top: 5px;
 }
 
 .pipeline-step p {
-
   font-size: 0.8rem;
 
   margin-bottom: 0;
 }
 
 .pipeline-arrow {
-
   color: var(--blue);
 
   font-size: 1.4rem;
-}
-
-
-/* =========================================================
-   ANALYSIS
-   ========================================================= */
-
-.analysis-grid {
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 16px;
-}
-
-.analysis-card {
-
-  padding: 22px;
-}
-
-.analysis-icon {
-
-  font-size: 1.5rem;
-}
-
-.analysis-card > div:last-of-type {
-
-  margin-top: 12px;
-
-  color: var(--cyan);
-
-  font-size: 1.8rem;
-
-  font-weight: 800;
-}
-
-
-/* =========================================================
-   ANALYSIS CONTROLS
-   ========================================================= */
-
-.analysis-controls {
-
-  display: flex;
-
-  flex-wrap: wrap;
-
-  align-items: center;
-
-  gap: 12px;
-
-  margin-top: 20px;
-}
-
-.analysis-controls label {
-
-  color: var(--muted);
-
-  font-size: 0.82rem;
-}
-
-select {
-
-  min-width: 170px;
-
-  padding: 11px 13px;
-
-  border:
-    1px solid var(--border);
-
-  border-radius: 11px;
-
-  background:
-    var(--card);
-
-  color: var(--text);
-}
-
-select option {
-
-  background: var(--card);
-
-  color: var(--text);
 }
 
 
@@ -886,7 +769,6 @@ select option {
    ========================================================= */
 
 .statistics-grid {
-
   display: grid;
 
   grid-template-columns:
@@ -898,11 +780,9 @@ select option {
 }
 
 .stat-item {
-
   padding: 17px;
 
-  border:
-    1px solid var(--border);
+  border: 1px solid var(--border);
 
   border-radius: 13px;
 
@@ -911,7 +791,6 @@ select option {
 }
 
 .stat-item span {
-
   display: block;
 
   color: var(--muted);
@@ -920,60 +799,9 @@ select option {
 }
 
 .stat-item strong {
-
   display: block;
 
   margin-top: 5px;
-}
-
-
-/* =========================================================
-   PREDICTION
-   ========================================================= */
-
-.prediction-grid {
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 12px;
-
-  margin-top: 20px;
-}
-
-.prediction-result {
-
-  padding: 18px;
-
-  border:
-    1px solid var(--border);
-
-  border-radius: 13px;
-
-  background:
-    rgba(255, 255, 255, 0.025);
-}
-
-.prediction-result span {
-
-  display: block;
-
-  color: var(--muted);
-
-  font-size: 0.76rem;
-}
-
-.prediction-result strong {
-
-  display: block;
-
-  margin-top: 6px;
-
-  color: var(--cyan);
-
-  font-size: 1.3rem;
 }
 
 
@@ -982,7 +810,6 @@ select option {
    ========================================================= */
 
 .pvt-box {
-
   display: grid;
 
   place-items: center;
@@ -991,13 +818,11 @@ select option {
 
   margin-top: 20px;
 
-  border:
-    2px dashed var(--border);
+  border: 2px dashed var(--border);
 
   border-radius: 16px;
 
-  background:
-    #0a1019;
+  background: #0a1019;
 
   color: var(--muted);
 
@@ -1009,29 +834,28 @@ select option {
 }
 
 .pvt-box.ready {
-
   background:
     rgba(67, 209, 124, 0.18);
 
   border-color:
     var(--green);
 
-  color: var(--green);
+  color:
+    var(--green);
 }
 
 .pvt-box.false-start {
-
   background:
     rgba(255, 93, 115, 0.12);
 
   border-color:
     var(--red);
 
-  color: var(--red);
+  color:
+    var(--red);
 }
 
 .pvt-controls {
-
   display: flex;
 
   align-items: center;
@@ -1050,7 +874,6 @@ select option {
 }
 
 .pvt-results {
-
   display: grid;
 
   grid-template-columns:
@@ -1062,17 +885,17 @@ select option {
 }
 
 .pvt-results div {
-
   padding: 14px;
 
-  border:
-    1px solid var(--border);
+  border: 1px solid var(--border);
 
   border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.015);
 }
 
 .pvt-results span {
-
   display: block;
 
   color: var(--muted);
@@ -1081,7 +904,6 @@ select option {
 }
 
 .pvt-results strong {
-
   display: block;
 
   margin-top: 5px;
@@ -1095,39 +917,30 @@ select option {
 .primary-btn,
 .secondary-btn,
 .ghost-btn {
-
   border-radius: 11px;
 
   padding: 11px 17px;
 
   font-weight: 750;
 
-  border:
-    1px solid transparent;
+  border: 1px solid transparent;
 
   transition: 0.2s ease;
 }
 
 .primary-btn {
+  background: var(--blue);
 
-  background:
-    var(--blue);
-
-  color:
-    #06101c;
+  color: #06101c;
 }
 
 .primary-btn:hover {
+  filter: brightness(1.1);
 
-  filter:
-    brightness(1.1);
-
-  transform:
-    translateY(-1px);
+  transform: translateY(-1px);
 }
 
 .secondary-btn {
-
   color: var(--text);
 
   background:
@@ -1138,38 +951,29 @@ select option {
 }
 
 .secondary-btn:hover {
-
   background:
     rgba(78, 161, 255, 0.17);
 }
 
 .ghost-btn {
-
   color: var(--muted);
 
   background: transparent;
 
-  border-color:
-    var(--border);
+  border-color: var(--border);
 }
 
 .ghost-btn:hover {
-
   color: var(--text);
-
-  border-color:
-    rgba(255,255,255,0.2);
 }
 
 button:disabled {
-
   opacity: 0.45;
 
   cursor: not-allowed;
 }
 
 .upload-actions {
-
   display: flex;
 
   flex-wrap: wrap;
@@ -1180,7 +984,6 @@ button:disabled {
 }
 
 .file-status {
-
   margin-top: 14px;
 
   color: var(--muted);
@@ -1188,29 +991,12 @@ button:disabled {
   font-size: 0.85rem;
 }
 
-
-/* =========================================================
-   DROP ZONE
-   ========================================================= */
-
-.upload-card {
-
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
-}
-
-.upload-card.drag-active {
-
+.drag-active {
   border-color:
-    var(--cyan);
+    var(--cyan) !important;
 
   background:
-    linear-gradient(
-      145deg,
-      rgba(81, 215, 232, 0.1),
-      rgba(10, 16, 25, 0.96)
-    );
+    rgba(81, 215, 232, 0.06) !important;
 }
 
 
@@ -1223,7 +1009,6 @@ button:disabled {
 }
 
 .data-row {
-
   display: grid;
 
   grid-template-columns:
@@ -1246,34 +1031,12 @@ button:disabled {
 }
 
 .data-row strong {
-
   text-align: right;
 
   overflow-wrap: anywhere;
 }
 
-.benchmark-controls {
-
-  display: flex;
-
-  align-items: center;
-
-  flex-wrap: wrap;
-
-  gap: 12px;
-
-  margin-top: 20px;
-}
-
-.benchmark-controls label {
-
-  color: var(--muted);
-
-  font-size: 0.82rem;
-}
-
 .question-grid {
-
   display: grid;
 
   grid-template-columns:
@@ -1285,42 +1048,38 @@ button:disabled {
 }
 
 .question-grid div {
-
   padding: 17px;
 
-  border:
-    1px solid var(--border);
+  border: 1px solid var(--border);
 
   border-radius: 13px;
+
+  background:
+    rgba(255, 255, 255, 0.02);
 }
 
 .question-grid span {
-
   color: var(--cyan);
 
   font-weight: 800;
 }
 
 .question-grid p {
-
   margin-bottom: 0;
 }
 
 .limitation-card {
-
   border-color:
     rgba(242, 201, 76, 0.25);
 }
 
 .limitation-title {
-
   color: var(--yellow);
 
   font-weight: 800;
 }
 
 .limitation-card li {
-
   color: var(--muted);
 
   margin: 8px 0;
@@ -1332,7 +1091,6 @@ button:disabled {
    ========================================================= */
 
 .method-flow {
-
   display: grid;
 
   grid-template-columns:
@@ -1346,18 +1104,15 @@ button:disabled {
 }
 
 .method-flow div:not(.method-line) {
-
   text-align: center;
 }
 
 .method-flow span {
-
   display: grid;
 
   place-items: center;
 
   width: 42px;
-
   height: 42px;
 
   margin: auto;
@@ -1367,27 +1122,22 @@ button:disabled {
   background:
     rgba(78, 161, 255, 0.12);
 
-  color:
-    var(--blue);
+  color: var(--blue);
 
   font-weight: 800;
 }
 
 .method-flow p {
-
   font-size: 0.78rem;
 }
 
 .method-line {
-
   height: 1px;
 
-  background:
-    var(--border);
+  background: var(--border);
 }
 
 .science-context {
-
   display: grid;
 
   grid-template-columns:
@@ -1399,8 +1149,12 @@ button:disabled {
 }
 
 .context-card {
-
   padding: 22px;
+}
+
+.research-gap {
+  border-color:
+    rgba(81, 215, 232, 0.25);
 }
 
 
@@ -1409,7 +1163,6 @@ button:disabled {
    ========================================================= */
 
 .about-card {
-
   display: grid;
 
   grid-template-columns:
@@ -1419,7 +1172,6 @@ button:disabled {
 }
 
 .about-grid {
-
   display: grid;
 
   grid-template-columns:
@@ -1431,22 +1183,18 @@ button:disabled {
 }
 
 .about-small-card {
-
   padding: 20px;
 }
 
 .about-small-card > span {
-
   font-size: 1.5rem;
 }
 
 .about-small-card p {
-
   font-size: 0.82rem;
 }
 
 .export-card {
-
   display: flex;
 
   align-items: center;
@@ -1462,7 +1210,6 @@ button:disabled {
    ========================================================= */
 
 footer {
-
   display: flex;
 
   justify-content: space-between;
@@ -1473,8 +1220,7 @@ footer {
 
   padding-top: 25px;
 
-  border-top:
-    1px solid var(--border);
+  border-top: 1px solid var(--border);
 
   color: var(--muted);
 
@@ -1482,7 +1228,6 @@ footer {
 }
 
 footer strong {
-
   color: var(--text);
 
   display: block;
@@ -1499,11 +1244,16 @@ footer strong {
 
 @media print {
 
-  body {
+  @page {
+    margin: 14mm;
+  }
 
+  body {
     background: white;
 
     color: black;
+
+    font-size: 11pt;
   }
 
   .navigation,
@@ -1512,27 +1262,43 @@ footer strong {
   .upload-actions,
   #export-btn,
   footer {
-
     display: none !important;
   }
 
   .app {
-
     width: 100%;
 
     padding: 0;
   }
 
-  .section[hidden] {
+  .hero {
+    padding:
+      0 0 12px;
+  }
 
+  .hero h1 {
+    color: black;
+  }
+
+  .subtitle,
+  p,
+  .metric-label,
+  .metric-unit,
+  .data-row span,
+  .chart-disclaimer {
+    color: #444 !important;
+  }
+
+  .section[hidden] {
     display: none !important;
   }
 
   .section {
-
     display: block !important;
+  }
 
-    page-break-inside: avoid;
+  .section-heading {
+    page-break-after: avoid;
   }
 
   .control-card,
@@ -1554,7 +1320,6 @@ footer strong {
   .future-card,
   .export-card,
   .limitation-card {
-
     color: black;
 
     background: white;
@@ -1562,35 +1327,37 @@ footer strong {
     box-shadow: none;
 
     border-color: #ccc;
-  }
 
-  p,
-  .metric-unit,
-  .metric-label,
-  .data-row span,
-  .parameter-label,
-  .stat-item span,
-  .prediction-result span {
-
-    color: #444;
-  }
-
-  .hero {
-
-    color: black;
-  }
-
-  .hero h1,
-  h2,
-  h3,
-  strong {
-
-    color: black;
+    break-inside: avoid;
   }
 
   .chart-container {
+    min-height: 250px;
+  }
 
-    page-break-inside: avoid;
+  .chart-container canvas {
+    height: 250px !important;
+  }
+
+  .metric-value,
+  .analysis-card > div:not(.analysis-icon),
+  .stat-item strong {
+    color: black;
+  }
+
+  .eyebrow {
+    color: #166fa8;
+  }
+
+  .mission-badge,
+  .data-status,
+  .demo-pill,
+  .small-badge {
+    color: #166fa8;
+
+    border-color: #aaa;
+
+    background: white;
   }
 
 }
@@ -1600,23 +1367,14 @@ footer strong {
    RESPONSIVE
    ========================================================= */
 
-@media (max-width: 950px) {
+@media (max-width: 1000px) {
 
-  .advanced-grid,
-  .science-context {
-
+  .metric-grid {
     grid-template-columns:
       repeat(2, 1fr);
   }
 
   .about-grid {
-
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
-
-  .pvt-results {
-
     grid-template-columns:
       repeat(2, 1fr);
   }
@@ -1627,42 +1385,31 @@ footer strong {
 @media (max-width: 850px) {
 
   .metric-grid,
-  .analysis-grid {
-
+  .analysis-grid,
+  .science-context {
     grid-template-columns: 1fr;
   }
 
   .statistics-grid {
-
     grid-template-columns:
       repeat(2, 1fr);
   }
 
-  .prediction-grid {
-
-    grid-template-columns: 1fr;
-  }
-
   .pipeline {
-
     grid-template-columns: 1fr;
   }
 
   .pipeline-arrow {
-
-    transform:
-      rotate(90deg);
+    transform: rotate(90deg);
 
     justify-self: center;
   }
 
   .method-flow {
-
     grid-template-columns: 1fr;
   }
 
   .method-line {
-
     width: 1px;
 
     height: 25px;
@@ -1671,7 +1418,6 @@ footer strong {
   }
 
   .question-grid {
-
     grid-template-columns: 1fr;
   }
 
@@ -1681,7 +1427,6 @@ footer strong {
 @media (max-width: 600px) {
 
   .app {
-
     width:
       min(100% - 20px, 1180px);
 
@@ -1689,8 +1434,11 @@ footer strong {
   }
 
   .hero {
-
     padding: 25px 8px;
+  }
+
+  .status-row {
+    flex-wrap: wrap;
   }
 
   .section-heading,
@@ -1700,78 +1448,59 @@ footer strong {
   .data-card-header,
   .export-card,
   footer {
-
     align-items: flex-start;
 
     flex-direction: column;
   }
 
   .navigation {
-
     position: static;
   }
 
   .nav-btn {
-
     min-width:
       calc(50% - 4px);
   }
 
   .statistics-grid,
   .about-grid,
-  .pvt-results,
-  .advanced-grid,
-  .science-context {
-
+  .pvt-results {
     grid-template-columns: 1fr;
   }
 
   .science-card,
   .about-card {
-
     grid-template-columns: 1fr;
   }
 
   .pvt-controls {
-
     align-items: stretch;
 
     flex-direction: column;
   }
 
   .data-row {
-
     grid-template-columns: 1fr;
 
     gap: 4px;
   }
 
   .data-row strong {
-
     text-align: left;
   }
 
   .chart-container,
   .chart-container canvas {
-
     min-height: 250px;
 
     height: 250px !important;
   }
 
-  .benchmark-controls,
-  .analysis-controls {
-
-    align-items: stretch;
-
+  .upload-actions {
     flex-direction: column;
   }
 
-  .benchmark-controls select,
-  .benchmark-controls button,
-  .analysis-controls select,
-  .analysis-controls button {
-
+  .upload-actions button {
     width: 100%;
   }
 
@@ -1791,7 +1520,6 @@ footer strong {
   *,
   *::before,
   *::after {
-
     animation-duration: 0.01ms !important;
 
     animation-iteration-count: 1 !important;
