@@ -13,12 +13,27 @@
     content="Space NeuroHealth research and visualization prototype exploring environmental conditions and human cognitive performance."
   >
 
-  <meta
-    name="theme-color"
-    content="#070b12"
-  >
+  <meta name="theme-color" content="#150a26">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Space NeuroHealth">
+  <meta property="og:description" content="An interactive research prototype exploring environmental conditions and human cognitive performance in space.">
+  <meta property="og:image" content="assets/hero-space.jpg">
+  <meta property="og:type" content="website">
 
   <title>Space NeuroHealth</title>
+
+  <link
+    rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23150a26'/%3E%3Ccircle cx='30' cy='30' r='16' fill='%23ff5da8'/%3E%3Cellipse cx='30' cy='30' rx='26' ry='7' fill='none' stroke='%239b6bff' stroke-width='2.5' transform='rotate(-18 30 30)'/%3E%3C/svg%3E"
+  >
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -29,6 +44,13 @@
 
     <!-- HEADER -->
     <header class="hero">
+
+      <span class="twinkle" style="width:3px;height:3px;top:14%;left:12%;animation-delay:0s;" aria-hidden="true"></span>
+      <span class="twinkle" style="width:2px;height:2px;top:22%;left:78%;animation-delay:0.6s;" aria-hidden="true"></span>
+      <span class="twinkle" style="width:4px;height:4px;top:38%;left:45%;animation-delay:1.2s;" aria-hidden="true"></span>
+      <span class="twinkle" style="width:2px;height:2px;top:10%;left:60%;animation-delay:1.8s;" aria-hidden="true"></span>
+      <span class="twinkle" style="width:3px;height:3px;top:30%;left:88%;animation-delay:2.4s;" aria-hidden="true"></span>
+      <span class="twinkle" style="width:2px;height:2px;top:48%;left:20%;animation-delay:0.9s;" aria-hidden="true"></span>
 
       <div class="mission-badge">
         NASA SPACE APPS • RESEARCH PROTOTYPE
@@ -143,12 +165,18 @@
 
 
       <!-- SCENARIOS -->
-      <div class="scenario-container">
+      <div
+        class="scenario-container"
+        role="radiogroup"
+        aria-label="Environmental scenario"
+      >
 
         <button
           type="button"
           class="scenario-btn active"
           data-scenario="baseline"
+          role="radio"
+          aria-checked="true"
         >
           <span class="scenario-dot safe"></span>
           Baseline
@@ -158,6 +186,8 @@
           type="button"
           class="scenario-btn"
           data-scenario="elevated"
+          role="radio"
+          aria-checked="false"
         >
           <span class="scenario-dot warning"></span>
           Elevated
@@ -167,6 +197,8 @@
           type="button"
           class="scenario-btn"
           data-scenario="high"
+          role="radio"
+          aria-checked="false"
         >
           <span class="scenario-dot danger"></span>
           High
@@ -596,8 +628,10 @@
         </div>
 
         <p class="chart-disclaimer">
-          This graph displays demonstration/reference values
-          unless a validated dataset has been loaded.
+          This graph displays a demonstration reference curve,
+          not measured reaction-time data — even when a custom
+          CO₂ dataset is loaded, this line is estimated from it,
+          not independently measured.
         </p>
 
       </section>
@@ -625,7 +659,7 @@
         </div>
 
         <p class="pvt-description">
-          Start the test and wait for the box to turn green.
+          Start the test and wait for the box to turn pink.
           Click it as soon as it changes. The measured latency
           is displayed in milliseconds.
         </p>
@@ -1257,18 +1291,31 @@
           <p>
             Generate a print-ready summary of the current
             simulation, dataset statistics, and PVT results.
-            Your browser can save the result as a PDF.
+            Your browser can save the result as a PDF, or
+            copy the summary as text.
           </p>
 
         </div>
 
-        <button
-          type="button"
-          id="export-btn"
-          class="primary-btn"
-        >
-          Export PDF Summary
-        </button>
+        <div class="export-actions">
+
+          <button
+            type="button"
+            id="copy-summary-btn"
+            class="secondary-btn"
+          >
+            Copy Summary
+          </button>
+
+          <button
+            type="button"
+            id="export-btn"
+            class="primary-btn"
+          >
+            Export PDF Summary
+          </button>
+
+        </div>
 
       </section>
 
@@ -1302,4 +1349,4 @@
   <script src="script.js" defer></script>
 
 </body>
-              </html>
+</html>
