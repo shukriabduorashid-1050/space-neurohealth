@@ -1,181 +1,302 @@
 /* =========================================================
    SPACE NEUROHEALTH
-   APPLICATION JAVASCRIPT
+   PURPLE + PINK THEME
    ========================================================= */
 
-"use strict";
+:root {
 
+  /* Main theme */
+  --bg-main: #100719;
+  --bg-secondary: #160b24;
+  --bg-card: #1d1030;
+  --bg-card-soft: #24143a;
 
-/* =========================================================
-   DEMONSTRATION DATA
-   ========================================================= */
+  /* Purple */
+  --purple-dark: #160b24;
+  --purple: #6f2dbd;
+  --purple-light: #9b5de5;
+  --purple-soft: rgba(155, 93, 229, 0.15);
 
-const DEMO_DATA = {
-  labels: [
-    "T-6h",
-    "T-5h",
-    "T-4h",
-    "T-3h",
-    "T-2h",
-    "T-1h",
-    "Current"
-  ],
+  /* Pink */
+  --pink: #ff4fa3;
+  --pink-light: #ff75b7;
+  --pink-soft: rgba(255, 79, 163, 0.15);
+  --pink-glow: rgba(255, 79, 163, 0.35);
 
-  environment: [
-    1100,
-    1150,
-    1180,
-    1200,
-    1210,
-    1190,
-    1200
-  ],
+  /* Text */
+  --text-main: #fff5fb;
+  --text-secondary: #e2cfe0;
+  --text-muted: #ad9ab0;
 
-  performance: [
-    235,
-    238,
-    240,
-    242,
-    244,
-    241,
-    240
-  ]
-};
+  /* Borders */
+  --border: rgba(255, 117, 183, 0.16);
+  --border-strong: rgba(255, 79, 163, 0.35);
 
-/* Offsets applied to a scenario's CO2 value to build a short
-   demonstration time series around it. Shared by the chart and
-   the analysis/statistics panels so both agree with each other. */
-const SERIES_OFFSETS = [
-  -100,
-  -50,
-  -20,
-  0,
-  10,
-  -10,
-  0
-];
+  /* Status */
+  --safe: #72e6b1;
+  --warning: #ffd166;
+  --danger: #ff6b8a;
 
+  /* Shadows */
+  --shadow:
+    0 20px 50px rgba(0, 0, 0, 0.35);
 
-/* =========================================================
-   SCENARIOS
-   ========================================================= */
-
-const SCENARIOS = {
-
-  baseline: {
-    name: "Baseline",
-    co2: 1200,
-    performance: 240,
-    status: "Nominal Baseline",
-    statusClass: "safe-text",
-    interpretationTitle: "Baseline environmental condition",
-    interpretationText:
-      "This demonstration represents a baseline environmental condition. The simulated performance value is an interface reference and is not a validated physiological model."
-  },
-
-  elevated: {
-    name: "Elevated",
-    co2: 2500,
-    performance: 275,
-    status: "Elevated Demonstration",
-    statusClass: "",
-    interpretationTitle: "Elevated demonstration condition",
-    interpretationText:
-      "The simulator represents a higher environmental measurement. The associated performance value is illustrative and should not be interpreted as evidence of a physiological effect."
-  },
-
-  high: {
-    name: "High",
-    co2: 4000,
-    performance: 330,
-    status: "High Demonstration",
-    statusClass: "",
-    interpretationTitle: "High demonstration condition",
-    interpretationText:
-      "This scenario represents a substantially elevated demonstration value. A validated dataset and documented scientific model would be required before drawing conclusions about human performance."
-  }
-
-};
-
-
-/* =========================================================
-   APPLICATION STATE
-   ========================================================= */
-
-const state = {
-
-  activeScenario: "baseline",
-
-  currentCO2: 1200,
-
-  customDataset: null,
-
-  pvt: {
-    running: false,
-    ready: false,
-    startTime: null,
-    timer: null,
-    trials: [],
-    lapses: 0
-  },
-
-  charts: {
-    environment: null,
-    performance: null
-  }
-
-};
-
-
-/* =========================================================
-   DOM HELPERS
-   ========================================================= */
-
-function $(selector) {
-  return document.querySelector(selector);
-}
-
-function $all(selector) {
-  return document.querySelectorAll(selector);
-}
-
-function setText(id, value) {
-
-  const element = document.getElementById(id);
-
-  if (element) {
-    element.textContent = value;
-  }
+  --pink-shadow:
+    0 0 25px rgba(255, 79, 163, 0.15);
 
 }
 
-function formatNumber(value) {
 
-  return Number(value).toLocaleString("en-US", {
-    maximumFractionDigits: 2
-  });
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+body {
+
+  margin: 0;
+
+  min-height: 100vh;
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  background:
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(111, 45, 189, 0.22),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(255, 79, 163, 0.13),
+      transparent 30%
+    ),
+    var(--bg-main);
+
+  color: var(--text-main);
+
+  line-height: 1.6;
 
 }
 
-/* Builds the demonstration CO2 series currently shown on the
-   environment chart, so Analysis/Statistics can read the same
-   numbers instead of a series that never changes. */
-function getActiveEnvironmentSeries() {
 
-  if (state.customDataset) {
-    return state.customDataset.values;
-  }
+button,
+input {
+  font: inherit;
+}
 
-  const scenario = SCENARIOS[state.activeScenario];
 
-  if (!scenario) {
-    return DEMO_DATA.environment;
-  }
+button {
+  cursor: pointer;
+}
 
-  return SERIES_OFFSETS.map(offset =>
-    Math.max(0, scenario.co2 + offset)
-  );
 
+/* =========================================================
+   APP
+   ========================================================= */
+
+.app {
+
+  width: min(1200px, calc(100% - 32px));
+
+  margin: 0 auto;
+
+  padding: 35px 0 50px;
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.hero {
+
+  position: relative;
+
+  padding: 55px 35px 45px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 28px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(111, 45, 189, 0.18),
+      rgba(255, 79, 163, 0.07)
+    ),
+    var(--bg-secondary);
+
+  box-shadow: var(--shadow);
+
+  overflow: hidden;
+
+}
+
+
+.hero::before {
+
+  content: "";
+
+  position: absolute;
+
+  width: 260px;
+  height: 260px;
+
+  right: -100px;
+  top: -120px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 79, 163, 0.2),
+      transparent 70%
+    );
+
+  pointer-events: none;
+
+}
+
+
+.hero::after {
+
+  content: "";
+
+  position: absolute;
+
+  width: 200px;
+  height: 200px;
+
+  left: -100px;
+  bottom: -130px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(111, 45, 189, 0.25),
+      transparent 70%
+    );
+
+  pointer-events: none;
+
+}
+
+
+.mission-badge {
+
+  display: inline-flex;
+
+  padding: 7px 13px;
+
+  border: 1px solid var(--border-strong);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 79, 163, 0.08);
+
+  color: var(--pink-light);
+
+  font-size: 0.72rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+
+}
+
+
+.hero h1 {
+
+  position: relative;
+
+  margin: 20px 0 10px;
+
+  font-size:
+    clamp(2.3rem, 6vw, 4.4rem);
+
+  line-height: 1.05;
+
+  letter-spacing: -0.04em;
+
+}
+
+
+.subtitle {
+
+  max-width: 720px;
+
+  margin: 0;
+
+  color: var(--text-secondary);
+
+  font-size: 1.05rem;
+
+}
+
+
+.status-row {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 25px;
+
+  color: var(--text-muted);
+
+  font-size: 0.88rem;
+
+}
+
+
+.status-dot {
+
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: var(--safe);
+
+  box-shadow:
+    0 0 12px rgba(114, 230, 177, 0.7);
+
+}
+
+
+.separator {
+  color: var(--pink);
+}
+
+
+.demo-label {
+  color: var(--pink-light);
 }
 
 
@@ -183,65 +304,196 @@ function getActiveEnvironmentSeries() {
    NAVIGATION
    ========================================================= */
 
-function setupNavigation() {
+.navigation {
 
-  const buttons = $all(".nav-btn");
+  display: flex;
 
-  buttons.forEach(button => {
+  gap: 8px;
 
-    button.addEventListener("click", () => {
+  margin: 20px 0;
 
-      const sectionId = button.dataset.section;
+  padding: 8px;
 
-      if (!sectionId) {
-        return;
-      }
+  overflow-x: auto;
 
-      buttons.forEach(btn => {
+  border: 1px solid var(--border);
 
-        const active = btn === button;
+  border-radius: 18px;
 
-        btn.classList.toggle("active", active);
-        btn.setAttribute(
-          "aria-selected",
-          String(active)
-        );
+  background:
+    rgba(22, 11, 36, 0.9);
 
-      });
+  box-shadow: var(--pink-shadow);
+
+}
 
 
-      $all(".section").forEach(section => {
+.nav-btn {
 
-        const active = section.id === sectionId;
+  flex: 1;
 
-        section.hidden = !active;
+  min-width: 110px;
 
-        section.classList.toggle(
-          "active-section",
-          active
-        );
+  padding: 12px 18px;
 
-      });
+  border: 1px solid transparent;
+
+  border-radius: 12px;
+
+  background: transparent;
+
+  color: var(--text-muted);
+
+  font-weight: 700;
+
+  transition:
+    0.2s ease;
+
+}
 
 
-      if (sectionId === "analysis") {
-        updateAnalysis();
-      }
+.nav-btn:hover {
 
-      if (sectionId === "data") {
-        updateDatasetInformation();
-      }
+  color: var(--pink-light);
 
-      resizeCharts();
+  background:
+    rgba(255, 79, 163, 0.07);
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+}
 
-    });
 
-  });
+.nav-btn.active {
+
+  color: #ffffff;
+
+  border-color:
+    rgba(255, 79, 163, 0.3);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(111, 45, 189, 0.75),
+      rgba(255, 79, 163, 0.28)
+    );
+
+  box-shadow:
+    0 0 18px rgba(255, 79, 163, 0.15);
+
+}
+
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+
+.section {
+
+  animation:
+    sectionIn 0.3s ease;
+
+}
+
+
+.section[hidden] {
+  display: none;
+}
+
+
+@keyframes sectionIn {
+
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.section-heading {
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin: 35px 0 22px;
+
+}
+
+
+.eyebrow {
+
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: var(--pink);
+
+  font-size: 0.7rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.13em;
+
+}
+
+
+.section-heading h2 {
+
+  margin: 0;
+
+  font-size:
+    clamp(1.6rem, 4vw, 2.35rem);
+
+  letter-spacing: -0.025em;
+
+}
+
+
+h3 {
+  color: var(--text-main);
+}
+
+
+.data-status,
+.demo-pill,
+.small-badge,
+.chart-unit {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  white-space: nowrap;
+
+  padding: 7px 11px;
+
+  border-radius: 999px;
+
+  border: 1px solid var(--border-strong);
+
+  background:
+    rgba(255, 79, 163, 0.08);
+
+  color: var(--pink-light);
+
+  font-size: 0.68rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
 
 }
 
@@ -250,587 +502,582 @@ function setupNavigation() {
    SCENARIOS
    ========================================================= */
 
-function setupScenarios() {
+.scenario-container {
 
-  $all(".scenario-btn").forEach(button => {
+  display: flex;
 
-    button.addEventListener("click", () => {
+  flex-wrap: wrap;
 
-      const scenarioName = button.dataset.scenario;
+  gap: 10px;
 
-      if (!SCENARIOS[scenarioName]) {
-        return;
-      }
-
-      state.activeScenario = scenarioName;
-
-      $all(".scenario-btn").forEach(btn => {
-
-        const active = btn === button;
-
-        btn.classList.toggle("active", active);
-        btn.setAttribute("aria-checked", String(active));
-
-      });
-
-      applyScenario(SCENARIOS[scenarioName]);
-
-    });
-
-  });
+  margin-bottom: 18px;
 
 }
 
 
-function applyScenario(scenario) {
+.scenario-btn {
 
-  state.currentCO2 = scenario.co2;
+  display: flex;
 
-  const slider = $("#co2-slider");
+  align-items: center;
 
-  if (slider) {
-    slider.value = scenario.co2;
-  }
+  gap: 9px;
 
-  setText(
-    "co2-slider-value",
-    `${formatNumber(scenario.co2)} ppm`
-  );
+  padding: 10px 15px;
 
-  setText(
-    "environment-value",
-    formatNumber(scenario.co2)
-  );
+  border: 1px solid var(--border);
 
-  setText(
-    "environment-unit",
-    "ppm CO₂"
-  );
+  border-radius: 12px;
 
-  setText(
-    "environment-status",
-    scenario.status
-  );
+  background: var(--bg-card);
 
-  const status = $("#environment-status");
+  color: var(--text-secondary);
 
-  if (status) {
+  transition: 0.2s ease;
 
-    status.classList.remove("safe-text");
-
-    if (scenario.statusClass) {
-      status.classList.add(
-        scenario.statusClass
-      );
-    }
-
-  }
+}
 
 
-  setText(
-    "performance-value",
-    formatNumber(scenario.performance)
-  );
+.scenario-btn:hover {
 
-  setText(
-    "performance-status",
-    "Demonstration reference"
-  );
+  border-color: var(--border-strong);
+
+  color: var(--text-main);
+
+}
 
 
-  const baselineDifference =
-    ((scenario.performance -
-      SCENARIOS.baseline.performance) /
-      SCENARIOS.baseline.performance) *
-    100;
+.scenario-btn.active {
 
-  setText(
-    "change-value",
-    `${baselineDifference >= 0 ? "+" : ""}${baselineDifference.toFixed(1)}%`
-  );
+  border-color:
+    rgba(255, 79, 163, 0.45);
 
-  setText(
-    "change-status",
-    baselineDifference === 0
-      ? "No change"
-      : "Demonstration difference"
-  );
+  background:
+    rgba(255, 79, 163, 0.09);
+
+  color: var(--pink-light);
+
+}
 
 
-  setText(
-    "science-title",
-    scenario.interpretationTitle
-  );
+.scenario-dot {
 
-  setText(
-    "science-text",
-    scenario.interpretationText
-  );
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+}
 
 
-  updateEnvironmentChartForScenario();
-  updateAnalysis();
+.scenario-dot.safe {
+  background: var(--safe);
+}
+
+
+.scenario-dot.warning {
+  background: var(--warning);
+}
+
+
+.scenario-dot.danger {
+  background: var(--danger);
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.control-card,
+.metric-card,
+.chart-card,
+.science-card,
+.pipeline-card,
+.analysis-card,
+.statistics-card,
+.pvt-card,
+.upload-card,
+.data-card,
+.info-card,
+.limitation-card,
+.method-card,
+.context-card,
+.research-gap,
+.about-card,
+.about-small-card,
+.future-card,
+.export-card {
+
+  border: 1px solid var(--border);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(111, 45, 189, 0.08),
+      rgba(255, 79, 163, 0.025)
+    ),
+    var(--bg-card);
+
+  box-shadow: var(--shadow);
 
 }
 
 
 /* =========================================================
-   SLIDER
+   CONTROL CARD
    ========================================================= */
 
-function setupSlider() {
+.control-card {
 
-  const slider = $("#co2-slider");
+  padding: 25px;
 
-  if (!slider) {
-    return;
-  }
+  border-radius: 22px;
 
-  slider.addEventListener("input", () => {
-
-    const value = Number(slider.value);
-
-    state.currentCO2 = value;
-
-    setText(
-      "co2-slider-value",
-      `${formatNumber(value)} ppm`
-    );
-
-    setText(
-      "environment-value",
-      formatNumber(value)
-    );
-
-    updateFromSlider(value);
-
-  });
+  margin-bottom: 18px;
 
 }
 
 
-function updateFromSlider(value) {
+.control-header,
+.card-title-row,
+.data-card-header,
+.chart-header {
 
-  let performance;
+  display: flex;
 
-  if (value <= 1200) {
+  align-items: flex-start;
 
-    performance = 240 -
-      ((value - 400) / 800) * 5;
+  justify-content: space-between;
 
-  } else {
+  gap: 20px;
 
-    performance =
-      240 +
-      ((value - 1200) / 3800) * 110;
-
-  }
-
-  performance = Math.round(
-    Math.max(220, Math.min(360, performance))
-  );
+}
 
 
-  setText(
-    "performance-value",
-    formatNumber(performance)
-  );
+.control-header h3,
+.chart-header h3,
+.card-title-row h3,
+.data-card-header h3 {
+
+  margin:
+    0;
+
+}
 
 
-  const baselineDifference =
-    ((performance -
-      SCENARIOS.baseline.performance) /
-      SCENARIOS.baseline.performance) *
-    100;
+.slider-group {
+
+  margin-top: 25px;
+
+}
 
 
-  setText(
-    "change-value",
-    `${baselineDifference >= 0 ? "+" : ""}${baselineDifference.toFixed(1)}%`
-  );
+.slider-group label {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 12px;
+
+  color: var(--text-secondary);
+
+}
 
 
-  if (value <= 1500) {
+.slider-group label strong {
 
-    setText(
-      "environment-status",
-      "Nominal Demonstration"
+  color: var(--pink-light);
+
+}
+
+
+input[type="range"] {
+
+  width: 100%;
+
+  height: 7px;
+
+  appearance: none;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--purple),
+      var(--pink)
     );
 
-  } else if (value <= 3000) {
+  outline: none;
 
-    setText(
-      "environment-status",
-      "Elevated Demonstration"
-    );
-
-  } else {
-
-    setText(
-      "environment-status",
-      "High Demonstration"
-    );
-
-  }
+}
 
 
-  setText(
-    "science-title",
-    "Interactive environmental adjustment"
-  );
+input[type="range"]::-webkit-slider-thumb {
 
-  setText(
-    "science-text",
-    "The slider changes the demonstration environmental value and a simulated performance indicator. These relationships are illustrative and are not validated physiological predictions."
-  );
+  appearance: none;
 
-  updateAnalysis();
+  width: 21px;
+  height: 21px;
+
+  border-radius: 50%;
+
+  border: 3px solid #fff;
+
+  background: var(--pink);
+
+  box-shadow:
+    0 0 15px var(--pink-glow);
+
+}
+
+
+input[type="range"]::-moz-range-thumb {
+
+  width: 21px;
+  height: 21px;
+
+  border-radius: 50%;
+
+  border: 3px solid #fff;
+
+  background: var(--pink);
+
+  box-shadow:
+    0 0 15px var(--pink-glow);
+
+}
+
+
+.slider-scale {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-top: 8px;
+
+  color: var(--text-muted);
+
+  font-size: 0.75rem;
+
+}
+
+
+.control-help {
+
+  margin-bottom: 0;
+
+  color: var(--text-muted);
+
+  font-size: 0.84rem;
 
 }
 
 
 /* =========================================================
-   CHART CREATION
+   METRICS
    ========================================================= */
 
-function createCharts() {
+.metric-grid {
 
-  if (
-    typeof Chart === "undefined"
-  ) {
+  display: grid;
 
-    const error = $("#chart-error");
+  grid-template-columns:
+    repeat(3, 1fr);
 
-    if (error) {
-      error.classList.remove("hidden");
-    }
+  gap: 16px;
 
-    return;
-  }
-
-
-  createEnvironmentChart();
-  createPerformanceChart();
+  margin-bottom: 18px;
 
 }
 
 
-function createEnvironmentChart() {
+.metric-card {
 
-  const canvas = $("#environmentChart");
+  min-height: 190px;
 
-  if (!canvas) {
-    return;
-  }
+  padding: 22px;
 
-  try {
+  border-radius: 20px;
 
-    state.charts.environment =
-      new Chart(canvas, {
-
-        type: "line",
-
-        data: {
-          labels: DEMO_DATA.labels,
-
-          datasets: [{
-            label: "CO₂",
-            data: DEMO_DATA.environment,
-            borderColor: "#ff5da8",
-            backgroundColor: "rgba(255, 93, 168, 0.12)",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.35,
-            pointRadius: 4,
-            pointHoverRadius: 6
-          }]
-        },
-
-        options: {
-
-          responsive: true,
-
-          maintainAspectRatio: false,
-
-          interaction: {
-            intersect: false,
-            mode: "index"
-          },
-
-          plugins: {
-            legend: {
-              labels: {
-                color: "#f8ecf9"
-              }
-            }
-          },
-
-          scales: {
-
-            x: {
-              ticks: {
-                color: "#b79bd0"
-              },
-
-              grid: {
-                color: "rgba(255,255,255,0.06)"
-              }
-            },
-
-            y: {
-              ticks: {
-                color: "#b79bd0"
-              },
-
-              grid: {
-                color: "rgba(255,255,255,0.06)"
-              }
-            }
-
-          }
-
-        }
-
-      });
-
-  } catch (error) {
-
-    console.error(
-      "Environment chart error:",
-      error
-    );
-
-    showChartError();
-
-  }
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
 
 }
 
 
-function createPerformanceChart() {
+.metric-card:hover {
 
-  const canvas = $("#performanceChart");
+  transform: translateY(-3px);
 
-  if (!canvas) {
-    return;
-  }
+  border-color:
+    rgba(255, 79, 163, 0.3);
 
-  if (
-    typeof Chart === "undefined"
-  ) {
-    return;
-  }
+}
 
-  try {
 
-    state.charts.performance =
-      new Chart(canvas, {
+.metric-header {
 
-        type: "line",
+  display: flex;
 
-        data: {
-          labels: DEMO_DATA.labels,
+  align-items: center;
 
-          datasets: [{
-            label: "Reaction Time",
-            data: DEMO_DATA.performance,
-            borderColor: "#9b6bff",
-            backgroundColor: "rgba(155, 107, 255, 0.12)",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.35,
-            pointRadius: 4,
-            pointHoverRadius: 6
-          }]
-        },
+  gap: 10px;
 
-        options: {
+}
 
-          responsive: true,
 
-          maintainAspectRatio: false,
+.metric-icon {
 
-          plugins: {
-            legend: {
-              labels: {
-                color: "#f8ecf9"
-              }
-            }
-          },
+  font-size: 1.25rem;
 
-          scales: {
+}
 
-            x: {
-              ticks: {
-                color: "#b79bd0"
-              },
 
-              grid: {
-                color: "rgba(255,255,255,0.06)"
-              }
-            },
+.metric-label {
 
-            y: {
-              ticks: {
-                color: "#b79bd0"
-              },
+  color: var(--text-muted);
 
-              grid: {
-                color: "rgba(255,255,255,0.06)"
-              }
-            }
+  font-size: 0.82rem;
 
-          }
+}
 
-        }
 
-      });
+.metric-value {
 
-  } catch (error) {
+  margin-top: 20px;
 
-    console.error(
-      "Performance chart error:",
-      error
-    );
+  color: var(--pink-light);
 
-  }
+  font-size: 2.6rem;
+
+  font-weight: 850;
+
+  line-height: 1;
+
+}
+
+
+.metric-unit {
+
+  margin-top: 7px;
+
+  color: var(--text-muted);
+
+  font-size: 0.8rem;
+
+}
+
+
+.metric-status {
+
+  margin-top: 16px;
+
+  color: var(--text-secondary);
+
+  font-size: 0.84rem;
+
+}
+
+
+.safe-text {
+  color: var(--safe) !important;
+}
+
+
+/* =========================================================
+   CHART
+   ========================================================= */
+
+.chart-card {
+
+  padding: 25px;
+
+  border-radius: 22px;
+
+  margin-bottom: 18px;
+
+}
+
+
+.chart-container {
+
+  position: relative;
+
+  height: 330px;
+
+  margin-top: 25px;
+
+}
+
+
+.chart-error {
+
+  position: absolute;
+
+  inset: 0;
+
+  display: grid;
+
+  place-items: center;
+
+  color: var(--danger);
+
+}
+
+
+.hidden {
+  display: none !important;
+}
+
+
+.chart-disclaimer {
+
+  margin-bottom: 0;
+
+  color: var(--text-muted);
+
+  font-size: 0.78rem;
 
 }
 
 
 /* =========================================================
-   CHART UPDATE
+   SCIENCE CARD
    ========================================================= */
 
-function updateEnvironmentChartForScenario() {
+.science-card {
 
-  const chart = state.charts.environment;
+  display: flex;
 
-  if (!chart) {
-    return;
-  }
+  gap: 20px;
 
-  // Custom datasets own the chart's data — a scenario click
-  // should not silently overwrite a user's uploaded series.
-  if (state.customDataset) {
-    return;
-  }
+  padding: 25px;
 
+  border-radius: 22px;
 
-  const scenario = SCENARIOS[state.activeScenario];
-
-  if (!scenario) {
-    return;
-  }
-
-
-  chart.data.labels = DEMO_DATA.labels;
-
-  chart.data.datasets[0].data =
-    SERIES_OFFSETS.map(offset =>
-      Math.max(0, scenario.co2 + offset)
-    );
-
-
-  chart.update();
+  margin-bottom: 18px;
 
 }
 
 
-function resizeCharts() {
+.science-icon {
 
-  setTimeout(() => {
+  display: grid;
 
-    if (state.charts.environment) {
-      state.charts.environment.resize();
-    }
+  place-items: center;
 
-    if (state.charts.performance) {
-      state.charts.performance.resize();
-    }
+  flex: 0 0 55px;
 
-  }, 100);
+  width: 55px;
+  height: 55px;
+
+  border-radius: 16px;
+
+  background:
+    rgba(255, 79, 163, 0.1);
+
+  font-size: 1.5rem;
 
 }
 
 
-function showChartError() {
+.science-card h3 {
 
-  const error = $("#chart-error");
+  margin: 0 0 8px;
 
-  if (error) {
-    error.classList.remove("hidden");
-  }
+}
+
+
+.science-card p {
+
+  margin:
+    0;
+
+  color: var(--text-secondary);
 
 }
 
 
 /* =========================================================
-   STATISTICS
+   PIPELINE
    ========================================================= */
 
-function calculateStatistics(values) {
+.pipeline-card {
 
-  if (!values.length) {
+  padding: 25px;
 
-    return {
-      mean: 0,
-      min: 0,
-      max: 0,
-      count: 0
-    };
+  border-radius: 22px;
 
-  }
-
-
-  const sum =
-    values.reduce(
-      (total, value) =>
-        total + value,
-      0
-    );
-
-
-  return {
-
-    mean: sum / values.length,
-
-    min: Math.min(...values),
-
-    max: Math.max(...values),
-
-    count: values.length
-
-  };
+  margin-bottom: 18px;
 
 }
 
 
-function updateStatistics(values) {
+.pipeline {
 
-  const stats =
-    calculateStatistics(values);
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+
+  margin-top: 20px;
+
+}
 
 
-  setText(
-    "mean-co2",
-    `${formatNumber(stats.mean)} ppm`
-  );
+.pipeline-step {
 
-  setText(
-    "peak-co2",
-    `${formatNumber(stats.max)} ppm`
-  );
+  flex: 1;
 
-  setText(
-    "min-co2",
-    `${formatNumber(stats.min)} ppm`
-  );
+}
 
-  setText(
-    "data-points",
-    String(stats.count)
-  );
+
+.pipeline-step > span {
+
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: var(--pink);
+
+  font-size: 0.72rem;
+
+  font-weight: 900;
+
+}
+
+
+.pipeline-step strong {
+
+  display: block;
+
+}
+
+
+.pipeline-step p {
+
+  margin: 5px 0 0;
+
+  color: var(--text-muted);
+
+  font-size: 0.8rem;
+
+}
+
+
+.pipeline-arrow {
+
+  color: var(--pink);
+
+  font-size: 1.5rem;
 
 }
 
@@ -839,1573 +1086,1128 @@ function updateStatistics(values) {
    ANALYSIS
    ========================================================= */
 
-function calculateTrend(values) {
+.analysis-grid {
 
-  if (values.length < 2) {
-    return "Insufficient data";
-  }
+  display: grid;
 
+  grid-template-columns:
+    repeat(3, 1fr);
 
-  const first =
-    values[0];
+  gap: 16px;
 
-  const last =
-    values[values.length - 1];
-
-  const difference =
-    last - first;
-
-
-  const threshold =
-    Math.max(
-      1,
-      Math.abs(first) * 0.01
-    );
-
-
-  if (difference > threshold) {
-    return "Increasing";
-  }
-
-  if (difference < -threshold) {
-    return "Decreasing";
-  }
-
-  return "Stable";
+  margin-bottom: 18px;
 
 }
 
 
-function updateAnalysis() {
+.analysis-card {
 
-  // Same series the environment chart is currently showing,
-  // so Analysis/Statistics never disagree with the Dashboard.
-  const values =
-    getActiveEnvironmentSeries();
+  padding: 23px;
 
+  border-radius: 20px;
 
-  const trend =
-    calculateTrend(values);
+}
 
 
-  setText(
-    "trend-result",
-    trend
-  );
+.analysis-icon {
+
+  font-size: 1.4rem;
+
+}
 
 
-  const difference =
-    ((state.currentCO2 -
-      SCENARIOS.baseline.co2) /
-      SCENARIOS.baseline.co2) *
-    100;
+.analysis-card h3 {
+
+  margin:
+    15px 0 8px;
+
+}
 
 
-  setText(
-    "baseline-result",
-    `${difference >= 0 ? "+" : ""}${difference.toFixed(1)}%`
-  );
+.analysis-card > div {
+
+  color: var(--pink-light);
+
+  font-size: 1.7rem;
+
+  font-weight: 800;
+
+}
 
 
-  setText(
-    "analysis-result",
-    state.customDataset
-      ? "User dataset"
-      : "Exploratory"
-  );
+.analysis-card p {
 
+  color: var(--text-muted);
 
-  updateStatistics(values);
+  font-size: 0.84rem;
 
 }
 
 
 /* =========================================================
-   CSV UPLOAD
+   STATISTICS
    ========================================================= */
 
-function setupCSV() {
+.statistics-card {
 
-  const browse =
-    $("#browse-csv-btn");
+  padding: 25px;
 
-  const input =
-    $("#csv-file-input");
+  border-radius: 22px;
 
-  const clear =
-    $("#clear-csv-btn");
-
-  const dropZone =
-    $("#drop-zone");
-
-
-  if (!browse || !input) {
-    return;
-  }
-
-
-  browse.addEventListener(
-    "click",
-    () => input.click()
-  );
-
-
-  input.addEventListener(
-    "change",
-    event => {
-
-      const file =
-        event.target.files?.[0];
-
-      if (file) {
-        processCSV(file);
-      }
-
-    }
-  );
-
-
-  if (clear) {
-
-    clear.addEventListener(
-      "click",
-      clearDataset
-    );
-
-  }
-
-
-  if (dropZone) {
-
-    [
-      "dragenter",
-      "dragover"
-    ].forEach(eventName => {
-
-      dropZone.addEventListener(
-        eventName,
-        event => {
-
-          event.preventDefault();
-
-          dropZone.classList.add(
-            "drag-active"
-          );
-
-        }
-      );
-
-    });
-
-
-    [
-      "dragleave",
-      "drop"
-    ].forEach(eventName => {
-
-      dropZone.addEventListener(
-        eventName,
-        event => {
-
-          event.preventDefault();
-
-          dropZone.classList.remove(
-            "drag-active"
-          );
-
-        }
-      );
-
-    });
-
-
-    dropZone.addEventListener(
-      "drop",
-      event => {
-
-        const file =
-          event.dataTransfer.files?.[0];
-
-        if (!file) {
-          return;
-        }
-
-        if (
-          !file.name
-            .toLowerCase()
-            .endsWith(".csv")
-        ) {
-
-          setFileStatus(
-            "Please upload a CSV file."
-          );
-
-          return;
-
-        }
-
-        processCSV(file);
-
-      }
-    );
-
-  }
+  margin-bottom: 18px;
 
 }
 
 
-function processCSV(file) {
+.statistics-grid {
 
-  if (
-    !file.name
-      .toLowerCase()
-      .endsWith(".csv")
-  ) {
+  display: grid;
 
-    setFileStatus(
-      "Invalid file. Please select a CSV file."
-    );
+  grid-template-columns:
+    repeat(4, 1fr);
 
-    return;
+  gap: 12px;
 
-  }
+  margin-top: 20px;
+
+}
 
 
-  const reader =
-    new FileReader();
+.stat-item {
+
+  padding: 17px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 14px;
+
+  background:
+    rgba(255, 79, 163, 0.035);
+
+}
 
 
-  reader.onload = event => {
+.stat-item span {
 
-    try {
+  display: block;
 
-      const text =
-        event.target.result;
+  color: var(--text-muted);
 
-      const parsed =
-        parseCSV(text);
+  font-size: 0.76rem;
 
-
-      if (!parsed.success) {
-
-        setFileStatus(
-          parsed.message
-        );
-
-        return;
-
-      }
+}
 
 
-      state.customDataset = {
-        name: file.name,
-        values: parsed.values,
-        labels: parsed.labels,
-        co2Column: parsed.co2Column,
-        timeColumn: parsed.timeColumn
-      };
+.stat-item strong {
 
+  display: block;
 
-      updateDatasetInformation();
-      updateCustomCharts();
-      updateAnalysis();
+  margin-top: 5px;
 
-
-      const clear =
-        $("#clear-csv-btn");
-
-      if (clear) {
-        clear.disabled = false;
-      }
-
-
-      setFileStatus(
-        `Loaded ${file.name}: ${parsed.values.length} valid CO₂ values detected.`
-      );
-
-    } catch (error) {
-
-      console.error(
-        "CSV processing error:",
-        error
-      );
-
-      setFileStatus(
-        "The CSV could not be processed. Check its formatting."
-      );
-
-    }
-
-  };
-
-
-  reader.onerror = () => {
-
-    setFileStatus(
-      "The browser could not read this file."
-    );
-
-  };
-
-
-  reader.readAsText(file);
+  color: var(--pink-light);
 
 }
 
 
 /* =========================================================
-   CSV PARSER
+   PVT
    ========================================================= */
 
-function parseCSV(text) {
+.pvt-card {
 
-  const rows =
-    parseCSVRows(text);
+  padding: 25px;
 
+  border-radius: 22px;
 
-  if (rows.length < 2) {
+  margin-bottom: 18px;
 
-    return {
-      success: false,
-      message:
-        "The CSV must contain a header row and at least one data row."
-    };
-
-  }
+}
 
 
-  const headers =
-    rows[0].map(
-      header =>
-        header.trim()
+.pvt-description {
+
+  color: var(--text-secondary);
+
+}
+
+
+.pvt-box {
+
+  display: grid;
+
+  place-items: center;
+
+  min-height: 170px;
+
+  margin-top: 20px;
+
+  padding: 20px;
+
+  border:
+    1px solid
+    rgba(255, 79, 163, 0.2);
+
+  border-radius: 18px;
+
+  background:
+    rgba(111, 45, 189, 0.15);
+
+  color: var(--text-secondary);
+
+  font-weight: 800;
+
+  text-align: center;
+
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+
+}
+
+
+.pvt-box.ready {
+
+  background:
+    linear-gradient(
+      135deg,
+      #6f2dbd,
+      #ff4fa3
     );
 
+  color: white;
 
-  const normalizedHeaders =
-    headers.map(
-      header =>
-        header
-          .toLowerCase()
-          .replace(/[^a-z0-9]/g, "")
+  box-shadow:
+    0 0 35px
+    rgba(255, 79, 163, 0.35);
+
+}
+
+
+.pvt-box.false-start {
+
+  background:
+    rgba(255, 107, 138, 0.15);
+
+  color: var(--danger);
+
+}
+
+
+.pvt-controls {
+
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 15px;
+
+  margin-top: 18px;
+
+}
+
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn {
+
+  border-radius: 12px;
+
+  padding: 11px 17px;
+
+  font-weight: 800;
+
+  transition:
+    0.2s ease;
+
+}
+
+
+.primary-btn {
+
+  border:
+    1px solid
+    rgba(255, 79, 163, 0.5);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--purple),
+      var(--pink)
     );
 
+  color: white;
 
-  const co2Keywords = [
-    "co2",
-    "carbon dioxide",
-    "carbon_dioxide",
-    "co2ppm",
-    "co2concentration",
-    "environment"
-  ];
+  box-shadow:
+    0 8px 25px
+    rgba(255, 79, 163, 0.18);
+
+}
 
 
-  let co2Index = -1;
+.primary-btn:hover {
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 30px
+    rgba(255, 79, 163, 0.28);
+
+}
 
 
-  for (
-    let i = 0;
-    i < normalizedHeaders.length;
-    i++
-  ) {
+.primary-btn:disabled {
 
-    const header =
-      normalizedHeaders[i];
+  opacity: 0.45;
 
-    if (
-      co2Keywords.some(
-        keyword =>
-          header.includes(
-            keyword
-              .toLowerCase()
-              .replace(/[^a-z0-9]/g, "")
-          )
-      )
-    ) {
+  cursor: not-allowed;
 
-      co2Index = i;
-      break;
+  transform: none;
 
-    }
-
-  }
+}
 
 
-  if (co2Index === -1) {
+.secondary-btn {
 
-    for (
-      let i = 0;
-      i < normalizedHeaders.length;
-      i++
-    ) {
+  border:
+    1px solid
+    rgba(255, 79, 163, 0.35);
 
-      if (
-        normalizedHeaders[i]
-          .includes("carbon")
-      ) {
+  background:
+    rgba(255, 79, 163, 0.08);
 
-        co2Index = i;
-        break;
+  color: var(--pink-light);
 
-      }
-
-    }
-
-  }
+}
 
 
-  if (co2Index === -1) {
+.secondary-btn:hover {
 
-    return {
-      success: false,
-      message:
-        "No CO₂ measurement column was detected. Try a column named CO2, carbon_dioxide, CO2_ppm, or environment."
-    };
+  background:
+    rgba(255, 79, 163, 0.15);
 
-  }
+}
 
 
-  let timeIndex =
-    normalizedHeaders.findIndex(
-      header =>
-        header.includes("time") ||
-        header.includes("date") ||
-        header.includes("timestamp") ||
-        header.includes("label")
-    );
+.ghost-btn {
+
+  border:
+    1px solid var(--border);
+
+  background: transparent;
+
+  color: var(--text-muted);
+
+}
 
 
-  const values = [];
-  const labels = [];
+.ghost-btn:hover:not(:disabled) {
+
+  color: var(--pink-light);
+
+  border-color:
+    var(--border-strong);
+
+}
 
 
-  for (
-    let rowIndex = 1;
-    rowIndex < rows.length;
-    rowIndex++
-  ) {
+.ghost-btn:disabled {
 
-    const row =
-      rows[rowIndex];
+  opacity: 0.35;
 
+  cursor: not-allowed;
 
-    if (!row.length) {
-      continue;
-    }
+}
 
 
-    const rawValue =
-      row[co2Index];
+.pvt-score {
+
+  color: var(--text-muted);
+
+}
 
 
-    const value =
-      parseFloat(
-        String(rawValue)
-          .replace(/,/g, "")
-          .trim()
-      );
+.pvt-score strong {
+
+  color: var(--pink-light);
+
+}
 
 
-    if (
-      !Number.isFinite(value)
-    ) {
-      continue;
-    }
+.pvt-results {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 10px;
+
+  margin-top: 20px;
+
+}
 
 
-    values.push(value);
+.pvt-results > div {
+
+  padding: 15px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 14px;
+
+  background:
+    rgba(111, 45, 189, 0.07);
+
+}
 
 
-    if (
-      timeIndex >= 0 &&
-      row[timeIndex]
-    ) {
+.pvt-results span {
 
-      labels.push(
-        row[timeIndex]
-      );
+  display: block;
 
-    } else {
+  color: var(--text-muted);
 
-      labels.push(
-        `Row ${values.length}`
-      );
+  font-size: 0.76rem;
 
-    }
-
-  }
+}
 
 
-  if (!values.length) {
+.pvt-results strong {
 
-    return {
-      success: false,
-      message:
-        "A CO₂ column was found, but no valid numeric values were detected."
-    };
+  display: block;
 
-  }
+  margin-top: 4px;
+
+  color: var(--pink-light);
+
+}
 
 
-  return {
+.pvt-disclaimer {
 
-    success: true,
+  color: var(--text-muted);
 
-    values,
-
-    labels,
-
-    co2Column:
-      headers[co2Index],
-
-    timeColumn:
-      timeIndex >= 0
-        ? headers[timeIndex]
-        : "Not detected"
-
-  };
+  font-size: 0.78rem;
 
 }
 
 
 /* =========================================================
-   SIMPLE CSV ROW PARSER
-   Handles quoted commas.
+   UPLOAD
    ========================================================= */
 
-function parseCSVRows(text) {
+.upload-card,
+.data-card,
+.info-card,
+.limitation-card,
+.method-card,
+.research-gap,
+.about-card,
+.future-card,
+.export-card {
 
-  const rows = [];
+  padding: 25px;
 
-  let row = [];
-  let cell = "";
-  let insideQuotes = false;
+  border-radius: 22px;
 
+  margin-bottom: 18px;
 
-  for (
-    let i = 0;
-    i < text.length;
-    i++
-  ) {
-
-    const char =
-      text[i];
-
-    const next =
-      text[i + 1];
+}
 
 
-    if (
-      char === '"' &&
-      insideQuotes &&
-      next === '"'
-    ) {
+.upload-card {
 
-      cell += '"';
-      i++;
-      continue;
+  border-style: dashed;
 
-    }
+}
 
 
-    if (char === '"') {
+.upload-card.drag-active {
 
-      insideQuotes =
-        !insideQuotes;
+  border-color: var(--pink);
 
-      continue;
+  background:
+    rgba(255, 79, 163, 0.08);
 
-    }
+  box-shadow:
+    0 0 30px
+    rgba(255, 79, 163, 0.1);
 
-
-    if (
-      char === "," &&
-      !insideQuotes
-    ) {
-
-      row.push(cell);
-      cell = "";
-
-      continue;
-
-    }
+}
 
 
-    if (
-      (char === "\n" ||
-       char === "\r") &&
-      !insideQuotes
-    ) {
+.upload-card h3,
+.info-card h3,
+.method-card h3,
+.research-gap h3,
+.future-card h3,
+.about-card h3 {
 
-      if (
-        char === "\r" &&
-        next === "\n"
-      ) {
-        i++;
-      }
+  margin-top: 5px;
+
+}
 
 
-      row.push(cell);
+.upload-card p,
+.info-card p,
+.research-gap p,
+.future-card p,
+.about-card p {
 
-      if (
-        row.some(
-          value =>
-            value.trim() !== ""
-        )
-      ) {
+  color: var(--text-secondary);
 
-        rows.push(row);
-
-      }
-
-      row = [];
-      cell = "";
-
-      continue;
-
-    }
+}
 
 
-    cell += char;
+.upload-actions {
 
-  }
+  display: flex;
 
+  flex-wrap: wrap;
 
-  if (
-    cell !== "" ||
-    row.length
-  ) {
+  gap: 10px;
 
-    row.push(cell);
+  margin-top: 20px;
 
-    if (
-      row.some(
-        value =>
-          value.trim() !== ""
-      )
-    ) {
-
-      rows.push(row);
-
-    }
-
-  }
+}
 
 
-  return rows;
+.file-status {
+
+  margin-top: 15px;
+
+  color: var(--text-muted);
+
+  font-size: 0.84rem;
 
 }
 
 
 /* =========================================================
-   DATASET INFORMATION
+   DATA TABLE
    ========================================================= */
 
-function updateDatasetInformation() {
+.data-table {
 
-  if (!state.customDataset) {
+  margin-top: 20px;
 
-    setText(
-      "dataset-badge",
-      "DEMONSTRATION"
-    );
-
-    setText(
-      "dataset-name",
-      "Built-in demonstration data"
-    );
-
-    setText(
-      "dataset-rows",
-      "7"
-    );
-
-    setText(
-      "dataset-co2-column",
-      "environment"
-    );
-
-    setText(
-      "dataset-time-column",
-      "labels"
-    );
-
-    setText(
-      "dataset-validation",
-      "Demonstration dataset"
-    );
-
-    const validation =
-      $("#dataset-validation");
-
-    if (validation) {
-      validation.classList.add(
-        "safe-text"
-      );
-    }
-
-    setText(
-      "statistics-source",
-      "Demonstration dataset"
-    );
-
-    return;
-
-  }
+}
 
 
-  const dataset =
-    state.customDataset;
+.data-row {
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(150px, 0.7fr)
+    minmax(0, 1.3fr);
+
+  gap: 20px;
+
+  padding: 14px 0;
+
+  border-bottom:
+    1px solid var(--border);
+
+}
 
 
-  setText(
-    "dataset-badge",
-    "CUSTOM DATA"
-  );
+.data-row:last-child {
+  border-bottom: 0;
+}
 
-  setText(
-    "dataset-name",
-    dataset.name
-  );
 
-  setText(
-    "dataset-rows",
-    String(dataset.values.length)
-  );
+.data-row span {
 
-  setText(
-    "dataset-co2-column",
-    dataset.co2Column
-  );
+  color: var(--text-muted);
 
-  setText(
-    "dataset-time-column",
-    dataset.timeColumn
-  );
+}
 
-  setText(
-    "dataset-validation",
-    "Format validated locally"
-  );
 
-  const validation =
-    $("#dataset-validation");
+.data-row strong {
 
-  if (validation) {
-    validation.classList.add(
-      "safe-text"
-    );
-  }
+  color: var(--pink-light);
 
-  setText(
-    "statistics-source",
-    "Custom local dataset"
-  );
+  word-break: break-word;
 
 }
 
 
 /* =========================================================
-   CUSTOM CHARTS
+   QUESTIONS
    ========================================================= */
 
-function updateCustomCharts() {
+.question-grid {
 
-  const dataset =
-    state.customDataset;
+  display: grid;
 
+  grid-template-columns:
+    repeat(2, 1fr);
 
-  if (!dataset) {
-    return;
-  }
+  gap: 12px;
 
+  margin-top: 20px;
 
-  if (state.charts.environment) {
-
-    state.charts.environment.data.labels =
-      dataset.labels;
-
-    state.charts.environment.data.datasets[0].data =
-      dataset.values;
-
-    state.charts.environment.update();
-
-  }
+}
 
 
-  if (state.charts.performance) {
+.question-grid > div {
 
-    const estimatedReference =
-      dataset.values.map(
-        value => {
+  padding: 17px;
 
-          const relative =
-            (value - 1200) /
-            1200;
+  border:
+    1px solid var(--border);
 
-          return Math.round(
-            240 +
-            relative * 70
-          );
+  border-radius: 15px;
 
-        }
-      );
+  background:
+    rgba(111, 45, 189, 0.06);
+
+}
 
 
-    state.charts.performance.data.labels =
-      dataset.labels;
+.question-grid span {
 
-    state.charts.performance.data.datasets[0].data =
-      estimatedReference;
+  color: var(--pink);
 
-    state.charts.performance.update();
+  font-weight: 900;
 
-  }
+}
 
 
-  state.currentCO2 =
-    dataset.values[
-      dataset.values.length - 1
-    ];
+.question-grid p {
 
-  setText(
-    "environment-value",
-    formatNumber(state.currentCO2)
-  );
-
-  setText(
-    "co2-slider-value",
-    `${formatNumber(state.currentCO2)} ppm`
-  );
-
-
-  const slider =
-    $("#co2-slider");
-
-  if (slider) {
-
-    slider.value =
-      Math.min(
-        Number(slider.max),
-        Math.max(
-          Number(slider.min),
-          state.currentCO2
-        )
-      );
-
-  }
+  margin-bottom: 0;
 
 }
 
 
 /* =========================================================
-   CLEAR DATASET
+   LIMITATIONS
    ========================================================= */
 
-function clearDataset() {
+.limitation-card {
 
-  state.customDataset = null;
+  border-color:
+    rgba(255, 209, 102, 0.18);
 
-  const input =
-    $("#csv-file-input");
-
-  if (input) {
-    input.value = "";
-  }
+}
 
 
-  const clear =
-    $("#clear-csv-btn");
+.limitation-title {
 
-  if (clear) {
-    clear.disabled = true;
-  }
+  color: var(--warning);
 
+  font-weight: 800;
 
-  setFileStatus(
-    "Custom dataset cleared. Demonstration dataset restored."
-  );
+}
 
 
-  updateDatasetInformation();
+.limitation-card li {
 
+  margin: 8px 0;
 
-  if (state.charts.performance) {
-
-    state.charts.performance.data.labels =
-      DEMO_DATA.labels;
-
-    state.charts.performance.data.datasets[0].data =
-      DEMO_DATA.performance;
-
-    state.charts.performance.update();
-
-  }
-
-
-  state.currentCO2 =
-    SCENARIOS[state.activeScenario].co2;
-
-
-  applyScenario(
-    SCENARIOS[state.activeScenario]
-  );
-
-
-  updateAnalysis();
+  color: var(--text-secondary);
 
 }
 
 
 /* =========================================================
-   FILE STATUS
+   METHODOLOGY
    ========================================================= */
 
-function setFileStatus(message) {
+.method-flow {
 
-  const element =
-    $("#file-status-msg");
+  display: flex;
 
-  if (element) {
-    element.textContent = message;
-  }
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 25px;
+
+}
+
+
+.method-flow > div:not(.method-line) {
+
+  flex: 1;
+
+  text-align: center;
+
+}
+
+
+.method-flow span {
+
+  display: grid;
+
+  place-items: center;
+
+  width: 42px;
+  height: 42px;
+
+  margin: 0 auto 8px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--purple),
+      var(--pink)
+    );
+
+  color: white;
+
+  font-weight: 900;
+
+}
+
+
+.method-flow p {
+
+  margin: 0;
+
+  color: var(--text-secondary);
+
+  font-size: 0.8rem;
+
+}
+
+
+.method-line {
+
+  width: 30px;
+
+  height: 1px;
+
+  background:
+    rgba(255, 79, 163, 0.3);
+
+}
+
+
+.science-context {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 16px;
+
+  margin-bottom: 18px;
+
+}
+
+
+.context-card {
+
+  padding: 23px;
+
+  border-radius: 20px;
+
+}
+
+
+.context-icon {
+
+  font-size: 1.6rem;
+
+}
+
+
+.context-card h3 {
+
+  margin:
+    13px 0 8px;
+
+}
+
+
+.context-card p {
+
+  color: var(--text-secondary);
+
+  font-size: 0.88rem;
 
 }
 
 
 /* =========================================================
-   PVT TEST
+   ABOUT
    ========================================================= */
 
-function setupPVT() {
+.about-card {
 
-  const startButton =
-    $("#pvt-start-btn");
+  display: flex;
 
-  const box =
-    $("#pvt-box");
-
-
-  if (!startButton || !box) {
-    return;
-  }
-
-
-  startButton.addEventListener(
-    "click",
-    startPVT
-  );
-
-
-  box.addEventListener(
-    "click",
-    handlePVTClick
-  );
-
-
-  box.addEventListener(
-    "keydown",
-    event => {
-
-      if (
-        event.key === "Enter" ||
-        event.key === " "
-      ) {
-
-        event.preventDefault();
-
-        handlePVTClick();
-
-      }
-
-    }
-  );
+  gap: 20px;
 
 }
 
 
-function startPVT() {
+.about-icon {
 
-  const pvt =
-    state.pvt;
+  display: grid;
 
+  place-items: center;
 
-  if (pvt.running) {
-    return;
-  }
+  flex: 0 0 60px;
 
+  width: 60px;
+  height: 60px;
 
-  pvt.running = true;
-  pvt.ready = false;
-  pvt.startTime = null;
+  border-radius: 17px;
 
+  background:
+    rgba(255, 79, 163, 0.1);
 
-  const box =
-    $("#pvt-box");
-
-  const button =
-    $("#pvt-start-btn");
-
-
-  if (box) {
-
-    box.classList.remove(
-      "ready",
-      "false-start"
-    );
-
-    box.textContent =
-      "Wait for pink...";
-
-  }
-
-
-  if (button) {
-    button.disabled = true;
-  }
-
-
-  const delay =
-    1200 +
-    Math.random() * 3000;
-
-
-  pvt.timer =
-    setTimeout(
-      makePVTReady,
-      delay
-    );
+  font-size: 1.7rem;
 
 }
 
 
-function makePVTReady() {
+.about-grid {
 
-  const pvt =
-    state.pvt;
+  display: grid;
 
+  grid-template-columns:
+    repeat(4, 1fr);
 
-  if (!pvt.running) {
-    return;
-  }
+  gap: 15px;
 
-
-  pvt.ready = true;
-
-  pvt.startTime =
-    performance.now();
-
-
-  const box =
-    $("#pvt-box");
-
-
-  if (box) {
-
-    box.classList.add(
-      "ready"
-    );
-
-    box.textContent =
-      "CLICK NOW";
-
-  }
+  margin-bottom: 18px;
 
 }
 
 
-function handlePVTClick() {
+.about-small-card {
 
-  const pvt =
-    state.pvt;
+  padding: 20px;
 
-
-  if (!pvt.running) {
-    return;
-  }
-
-
-  if (!pvt.ready) {
-
-    if (pvt.timer) {
-      clearTimeout(pvt.timer);
-    }
-
-
-    pvt.running = false;
-    pvt.ready = false;
-
-
-    pvt.lapses++;
-
-
-    const box =
-      $("#pvt-box");
-
-
-    if (box) {
-
-      box.classList.add(
-        "false-start"
-      );
-
-      box.textContent =
-        "False start — press Start Test";
-
-    }
-
-
-    const button =
-      $("#pvt-start-btn");
-
-    if (button) {
-      button.disabled = false;
-    }
-
-
-    updatePVTResults();
-
-    return;
-
-  }
-
-
-  const reactionTime =
-    Math.round(
-      performance.now() -
-      pvt.startTime
-    );
-
-
-  pvt.trials.push(
-    reactionTime
-  );
-
-
-  if (reactionTime > 500) {
-    pvt.lapses++;
-  }
-
-
-  pvt.running = false;
-  pvt.ready = false;
-
-
-  const box =
-    $("#pvt-box");
-
-
-  if (box) {
-
-    box.classList.remove(
-      "ready"
-    );
-
-    box.textContent =
-      `${reactionTime} ms — press Start Test for another trial`;
-
-  }
-
-
-  const button =
-    $("#pvt-start-btn");
-
-  if (button) {
-    button.disabled = false;
-  }
-
-
-  updatePVTResults();
+  border-radius: 18px;
 
 }
 
 
-function updatePVTResults() {
+.about-small-card > span {
 
-  const trials =
-    state.pvt.trials;
+  font-size: 1.5rem;
 
-
-  const count =
-    trials.length;
+}
 
 
-  setText(
-    "pvt-trials",
-    String(count)
-  );
+.about-small-card h3 {
+
+  margin:
+    10px 0 5px;
+
+}
 
 
-  if (!count) {
+.about-small-card p {
 
-    setText(
-      "pvt-score",
-      "-- ms"
-    );
+  color: var(--text-muted);
 
-    setText(
-      "pvt-average",
-      "-- ms"
-    );
+  font-size: 0.82rem;
 
-    setText(
-      "pvt-best",
-      "-- ms"
-    );
-
-    setText(
-      "pvt-lapses",
-      String(state.pvt.lapses)
-    );
-
-    return;
-
-  }
+}
 
 
-  const last =
-    trials[trials.length - 1];
+.export-card {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+}
 
 
-  const average =
-    trials.reduce(
-      (sum, value) =>
-        sum + value,
-      0
-    ) / count;
+.export-card p {
 
-
-  const best =
-    Math.min(...trials);
-
-
-  setText(
-    "pvt-score",
-    `${last} ms`
-  );
-
-  setText(
-    "pvt-average",
-    `${Math.round(average)} ms`
-  );
-
-  setText(
-    "pvt-best",
-    `${best} ms`
-  );
-
-  setText(
-    "pvt-lapses",
-    String(state.pvt.lapses)
-  );
+  max-width: 700px;
 
 }
 
 
 /* =========================================================
-   EXPORT / PRINT / COPY
+   FOOTER
    ========================================================= */
 
-function setupExport() {
+footer {
 
-  const printButton =
-    $("#export-btn");
+  display: flex;
 
-  const copyButton =
-    $("#copy-summary-btn");
+  justify-content: space-between;
 
+  gap: 20px;
 
-  if (printButton) {
+  padding: 28px 5px 5px;
 
-    printButton.addEventListener(
-      "click",
-      exportSummary
-    );
+  color: var(--text-muted);
 
-  }
-
-
-  if (copyButton) {
-
-    copyButton.addEventListener(
-      "click",
-      copySummary
-    );
-
-  }
+  font-size: 0.78rem;
 
 }
 
 
-function buildSummaryText() {
+footer strong {
 
-  const currentScenario =
-    SCENARIOS[state.activeScenario];
+  display: block;
 
+  margin-bottom: 3px;
 
-  return `Space NeuroHealth
-
-Scenario: ${currentScenario.name}
-CO₂: ${formatNumber(state.currentCO2)} ppm
-Performance indicator: ${$("#performance-value")?.textContent || "--"} ms
-Change from baseline: ${$("#change-value")?.textContent || "--"}
-
-Dataset:
-${state.customDataset
-  ? state.customDataset.name
-  : "Built-in demonstration data"}
-
-PVT trials:
-${state.pvt.trials.length}
-
-PVT average:
-${state.pvt.trials.length
-  ? `${Math.round(
-      state.pvt.trials.reduce(
-        (a, b) => a + b,
-        0
-      ) / state.pvt.trials.length
-    )} ms`
-  : "--"}
-
-This report contains demonstration/interface data
-unless a validated dataset has been loaded.`;
+  color: var(--pink-light);
 
 }
 
 
-function exportSummary() {
+.footer-note {
 
-  const message =
-    buildSummaryText();
-
-
-  const originalTitle =
-    document.title;
-
-
-  document.title =
-    "Space NeuroHealth Research Summary";
-
-
-  const shouldPrint =
-    window.confirm(
-      `${message}\n\nOpen the print dialog to save this summary as PDF?`
-    );
-
-
-  if (shouldPrint) {
-
-    window.print();
-
-  }
-
-
-  setTimeout(
-    () => {
-      document.title =
-        originalTitle;
-    },
-    1000
-  );
-
-}
-
-
-function copySummary() {
-
-  const message =
-    buildSummaryText();
-
-  const button =
-    $("#copy-summary-btn");
-
-
-  const showCopied = () => {
-
-    if (!button) {
-      return;
-    }
-
-    const original =
-      button.textContent;
-
-    button.textContent =
-      "Copied!";
-
-    setTimeout(() => {
-      button.textContent =
-        original;
-    }, 1800);
-
-  };
-
-
-  if (
-    navigator.clipboard &&
-    navigator.clipboard.writeText
-  ) {
-
-    navigator.clipboard
-      .writeText(message)
-      .then(showCopied)
-      .catch(() => {
-
-        setFileStatus(
-          "Could not copy automatically. Use the print option instead."
-        );
-
-      });
-
-    return;
-
-  }
-
-
-  // Fallback for browsers without the async Clipboard API.
-  try {
-
-    const textarea =
-      document.createElement("textarea");
-
-    textarea.value = message;
-    textarea.style.position = "fixed";
-    textarea.style.opacity = "0";
-
-    document.body.appendChild(textarea);
-
-    textarea.focus();
-    textarea.select();
-
-    document.execCommand("copy");
-
-    document.body.removeChild(textarea);
-
-    showCopied();
-
-  } catch (error) {
-
-    console.error(
-      "Copy summary error:",
-      error
-    );
-
-  }
+  text-align: right;
 
 }
 
 
 /* =========================================================
-   KEYBOARD ACCESSIBILITY
+   FOCUS ACCESSIBILITY
    ========================================================= */
 
-function setupKeyboardNavigation() {
+button:focus-visible,
+input:focus-visible,
+.pvt-box:focus-visible {
 
-  document.addEventListener(
-    "keydown",
-    event => {
+  outline:
+    3px solid
+    rgba(255, 79, 163, 0.55);
 
-      if (
-        event.key === "Escape" &&
-        state.pvt.running
-      ) {
-
-        if (state.pvt.timer) {
-          clearTimeout(
-            state.pvt.timer
-          );
-        }
-
-
-        state.pvt.running = false;
-        state.pvt.ready = false;
-
-
-        const box =
-          $("#pvt-box");
-
-        if (box) {
-          box.textContent =
-            "Test cancelled — press Start Test";
-          box.classList.remove(
-            "ready"
-          );
-        }
-
-
-        const button =
-          $("#pvt-start-btn");
-
-        if (button) {
-          button.disabled = false;
-        }
-
-      }
-
-    }
-  );
+  outline-offset: 3px;
 
 }
 
 
 /* =========================================================
-   INITIALIZATION
+   RESPONSIVE
    ========================================================= */
 
-function initializeApp() {
+@media (max-width: 900px) {
 
-  setupNavigation();
+  .metric-grid,
+  .analysis-grid {
 
-  setupScenarios();
+    grid-template-columns:
+      repeat(2, 1fr);
 
-  setupSlider();
-
-  setupCSV();
-
-  setupPVT();
-
-  setupExport();
-
-  setupKeyboardNavigation();
+  }
 
 
-  updateStatistics(
-    DEMO_DATA.environment
-  );
+  .statistics-grid {
+
+    grid-template-columns:
+      repeat(2, 1fr);
+
+  }
 
 
-  updateDatasetInformation();
+  .science-context {
+
+    grid-template-columns:
+      1fr;
+
+  }
 
 
-  /*
-    Chart.js is loaded with defer before this script,
-    so DOMContentLoaded is sufficient for initialization.
-  */
+  .about-grid {
 
-  createCharts();
+    grid-template-columns:
+      repeat(2, 1fr);
 
-
-  applyScenario(
-    SCENARIOS.baseline
-  );
-
-
-  updateAnalysis();
+  }
 
 }
 
 
-if (
-  document.readyState === "loading"
-) {
+@media (max-width: 700px) {
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    initializeApp
-  );
+  .app {
 
-} else {
+    width:
+      min(100% - 20px, 1200px);
 
-  initializeApp();
+    padding-top: 10px;
+
+  }
+
+
+  .hero {
+
+    padding:
+      35px 22px;
+
+    border-radius: 22px;
+
+  }
+
+
+  .section-heading {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+
+  }
+
+
+  .metric-grid,
+  .analysis-grid,
+  .statistics-grid,
+  .question-grid,
+  .about-grid {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+
+  .pipeline {
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+  }
+
+
+  .pipeline-arrow {
+
+    transform:
+      rotate(90deg);
+
+    text-align: center;
+
+  }
+
+
+  .method-flow {
+
+    flex-direction: column;
+
+  }
+
+
+  .method-line {
+
+    width: 1px;
+
+    height: 25px;
+
+  }
+
+
+  .control-header,
+  .card-title-row,
+  .data-card-header,
+  .chart-header {
+
+    flex-direction: column;
+
+  }
+
+
+  .science-card,
+  .about-card {
+
+    flex-direction: column;
+
+  }
+
+
+  .export-card {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+
+  }
+
+
+  .data-row {
+
+    grid-template-columns:
+      1fr;
+
+    gap: 4px;
+
+  }
+
+
+  .pvt-results {
+
+    grid-template-columns:
+      repeat(2, 1fr);
+
+  }
+
+
+  footer {
+
+    flex-direction: column;
+
+  }
+
+
+  .footer-note {
+
+    text-align: left;
+
+  }
 
 }
+
+
+@media (max-width: 450px) {
+
+  .navigation {
+
+    border-radius: 14px;
+
+  }
+
+
+  .nav-btn {
+
+    min-width: 95px;
+
+    padding:
+      10px 12px;
+
+    font-size: 0.82rem;
+
+  }
+
+
+  .pvt-results {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+
+  .chart-container {
+
+    height: 270px;
+
+  }
+
+   }
