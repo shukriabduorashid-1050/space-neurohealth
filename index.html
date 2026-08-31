@@ -52,7 +52,7 @@
 
 
   <!-- =====================================================
-       HORIZONTAL NAVIGATION
+       NAVIGATION
        ===================================================== -->
 
   <nav class="navigation" aria-label="Main navigation">
@@ -109,10 +109,14 @@
 
 
   <!-- =====================================================
-       DASHBOARD
+       MAIN
        ===================================================== -->
 
   <main>
+
+    <!-- ===================================================
+         DASHBOARD
+         =================================================== -->
 
     <section
       id="dashboard"
@@ -202,7 +206,7 @@
       </article>
 
 
-      <!-- ENVIRONMENT CONTROLS -->
+      <!-- ENVIRONMENT SIMULATOR -->
 
       <article class="control-card">
 
@@ -381,6 +385,7 @@
 
           <div class="metric-header">
             <span class="metric-icon">CO₂</span>
+
             <span class="metric-label">
               Environmental CO₂
             </span>
@@ -414,6 +419,7 @@
 
           <div class="metric-header">
             <span class="metric-icon">◈</span>
+
             <span class="metric-label">
               Performance Indicator
             </span>
@@ -444,6 +450,7 @@
 
           <div class="metric-header">
             <span class="metric-icon">◎</span>
+
             <span class="metric-label">
               Environment Index
             </span>
@@ -472,7 +479,7 @@
       </div>
 
 
-      <!-- CHANGE -->
+      <!-- BASELINE DIFFERENCE -->
 
       <article class="analysis-card single-analysis-card">
 
@@ -568,7 +575,7 @@
       </article>
 
 
-      <!-- SCIENCE INTERPRETATION -->
+      <!-- SCIENCE -->
 
       <article class="science-card">
 
@@ -722,7 +729,7 @@
       </div>
 
 
-      <!-- LAG CORRELATION -->
+      <!-- CORRELATION -->
 
       <article class="control-card">
 
@@ -751,11 +758,27 @@
           </label>
 
           <select id="lag-select">
-            <option value="0">0 hours</option>
-            <option value="1">1 hour</option>
-            <option value="2">2 hours</option>
-            <option value="3">3 hours</option>
-            <option value="4">4 hours</option>
+
+            <option value="0">
+              0 hours
+            </option>
+
+            <option value="1">
+              1 hour
+            </option>
+
+            <option value="2">
+              2 hours
+            </option>
+
+            <option value="3">
+              3 hours
+            </option>
+
+            <option value="4">
+              4 hours
+            </option>
+
           </select>
 
           <button
@@ -824,7 +847,7 @@
       </article>
 
 
-      <!-- RISK -->
+      <!-- RISK PROFILE -->
 
       <article class="chart-card">
 
@@ -838,7 +861,10 @@
             <h3>Environmental Risk Profile</h3>
           </div>
 
-          <span id="risk-badge" class="small-badge">
+          <span
+            id="risk-badge"
+            class="small-badge"
+          >
             NOMINAL
           </span>
 
@@ -849,49 +875,66 @@
 
           <div class="risk-bar-row">
             <span>CO₂</span>
+
             <div>
               <i id="risk-co2-bar"></i>
             </div>
+
             <strong id="risk-co2-score">0</strong>
           </div>
 
+
           <div class="risk-bar-row">
             <span>Radiation</span>
+
             <div>
               <i id="risk-radiation-bar"></i>
             </div>
+
             <strong id="risk-radiation-score">0</strong>
           </div>
 
+
           <div class="risk-bar-row">
             <span>Pressure</span>
+
             <div>
               <i id="risk-pressure-bar"></i>
             </div>
+
             <strong id="risk-pressure-score">0</strong>
           </div>
 
+
           <div class="risk-bar-row">
             <span>Temperature</span>
+
             <div>
               <i id="risk-temperature-bar"></i>
             </div>
+
             <strong id="risk-temperature-score">0</strong>
           </div>
 
+
           <div class="risk-bar-row">
             <span>Humidity</span>
+
             <div>
               <i id="risk-humidity-bar"></i>
             </div>
+
             <strong id="risk-humidity-score">0</strong>
           </div>
 
+
           <div class="risk-bar-row">
             <span>Wakefulness</span>
+
             <div>
               <i id="risk-sleep-bar"></i>
             </div>
+
             <strong id="risk-sleep-score">0</strong>
           </div>
 
@@ -1161,32 +1204,43 @@
 
           <div class="data-row">
             <span>Name</span>
+
             <strong id="dataset-name">
               Built-in demonstration data
             </strong>
           </div>
 
+
           <div class="data-row">
             <span>Rows</span>
-            <strong id="dataset-rows">7</strong>
+
+            <strong id="dataset-rows">
+              7
+            </strong>
           </div>
+
 
           <div class="data-row">
             <span>CO₂ column</span>
+
             <strong id="dataset-co2-column">
               environment
             </strong>
           </div>
 
+
           <div class="data-row">
             <span>Time column</span>
+
             <strong id="dataset-time-column">
               labels
             </strong>
           </div>
 
+
           <div class="data-row">
             <span>Validation</span>
+
             <strong
               id="dataset-validation"
               class="safe-text"
@@ -1300,8 +1354,6 @@
       </article>
 
 
-      <!-- RISK FORMULA -->
-
       <article class="info-card">
 
         <div class="context-icon">
@@ -1343,8 +1395,6 @@
 
       </article>
 
-
-      <!-- THRESHOLDS -->
 
       <article class="science-context">
 
@@ -1395,8 +1445,6 @@
       </article>
 
 
-      <!-- CORRELATION -->
-
       <article class="info-card">
 
         <div class="context-icon">
@@ -1427,8 +1475,6 @@
 
       </article>
 
-
-      <!-- PVT -->
 
       <article class="info-card">
 
@@ -1520,31 +1566,42 @@
 
         <article class="about-small-card">
           <span>◈</span>
+
           <h3>Environment</h3>
+
           <p>
             Multi-variable cabin environment monitoring.
           </p>
         </article>
 
+
         <article class="about-small-card">
           <span>∿</span>
+
           <h3>Time Series</h3>
+
           <p>
             Temporal patterns and configurable lag analysis.
           </p>
         </article>
 
+
         <article class="about-small-card">
           <span>RT</span>
+
           <h3>Human Performance</h3>
+
           <p>
             Interactive reaction-time assessment.
           </p>
         </article>
 
+
         <article class="about-small-card">
           <span>CSV</span>
+
           <h3>Open Data Workflow</h3>
+
           <p>
             Local data ingestion and export-ready analysis.
           </p>
@@ -1552,8 +1609,6 @@
 
       </div>
 
-
-      <!-- EXPORT -->
 
       <article class="export-card">
 
@@ -1625,11 +1680,7 @@
 </div>
 
 
-<!-- =======================================================
-     JAVASCRIPT
-     ======================================================= -->
-
 <script src="script.js"></script>
 
 </body>
-              </html>
+  </html>
