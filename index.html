@@ -13,27 +13,12 @@
     content="Space NeuroHealth research and visualization prototype exploring environmental conditions and human cognitive performance."
   >
 
-  <meta name="theme-color" content="#150a26">
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Space NeuroHealth">
-  <meta property="og:description" content="An interactive research prototype exploring environmental conditions and human cognitive performance in space.">
-  <meta property="og:image" content="assets/hero-space.jpg">
-  <meta property="og:type" content="website">
+  <meta
+    name="theme-color"
+    content="#160b24"
+  >
 
   <title>Space NeuroHealth</title>
-
-  <link
-    rel="icon"
-    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23150a26'/%3E%3Ccircle cx='30' cy='30' r='16' fill='%23ff5da8'/%3E%3Cellipse cx='30' cy='30' rx='26' ry='7' fill='none' stroke='%239b6bff' stroke-width='2.5' transform='rotate(-18 30 30)'/%3E%3C/svg%3E"
-  >
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -42,15 +27,11 @@
 
   <div class="app">
 
-    <!-- HEADER -->
-    <header class="hero">
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
 
-      <span class="twinkle" style="width:3px;height:3px;top:14%;left:12%;animation-delay:0s;" aria-hidden="true"></span>
-      <span class="twinkle" style="width:2px;height:2px;top:22%;left:78%;animation-delay:0.6s;" aria-hidden="true"></span>
-      <span class="twinkle" style="width:4px;height:4px;top:38%;left:45%;animation-delay:1.2s;" aria-hidden="true"></span>
-      <span class="twinkle" style="width:2px;height:2px;top:10%;left:60%;animation-delay:1.8s;" aria-hidden="true"></span>
-      <span class="twinkle" style="width:3px;height:3px;top:30%;left:88%;animation-delay:2.4s;" aria-hidden="true"></span>
-      <span class="twinkle" style="width:2px;height:2px;top:48%;left:20%;animation-delay:0.9s;" aria-hidden="true"></span>
+    <header class="hero">
 
       <div class="mission-badge">
         NASA SPACE APPS • RESEARCH PROTOTYPE
@@ -64,16 +45,32 @@
       </p>
 
       <div class="status-row">
-        <span class="status-dot" aria-hidden="true"></span>
+
+        <span
+          class="status-dot"
+          aria-hidden="true"
+        ></span>
+
         <span>Interactive prototype</span>
-        <span class="separator" aria-hidden="true">•</span>
-        <span class="demo-label">DEMONSTRATION DATA</span>
+
+        <span
+          class="separator"
+          aria-hidden="true"
+        >•</span>
+
+        <span class="demo-label">
+          DEMONSTRATION DATA
+        </span>
+
       </div>
 
     </header>
 
 
-    <!-- NAVIGATION -->
+    <!-- =====================================================
+         NAVIGATION
+         ===================================================== -->
+
     <nav
       class="navigation"
       aria-label="Main navigation"
@@ -143,7 +140,10 @@
     </nav>
 
 
-    <!-- DASHBOARD -->
+    <!-- =====================================================
+         DASHBOARD
+         ===================================================== -->
+
     <main
       id="dashboard"
       class="section active-section"
@@ -152,33 +152,38 @@
     >
 
       <div class="section-heading">
+
         <div>
-          <span class="eyebrow">LIVE MONITORING</span>
+          <span class="eyebrow">
+            LIVE MONITORING
+          </span>
 
           <h2>
             Environmental & Cognitive Overview
           </h2>
         </div>
 
-        <span class="data-status">DEMO MODE</span>
+        <span class="data-status">
+          DEMO MODE
+        </span>
+
       </div>
 
 
-      <!-- SCENARIOS -->
-      <div
-        class="scenario-container"
-        role="radiogroup"
-        aria-label="Environmental scenario"
-      >
+      <!-- SCENARIO PRESETS -->
+
+      <div class="scenario-container">
 
         <button
           type="button"
           class="scenario-btn active"
           data-scenario="baseline"
-          role="radio"
-          aria-checked="true"
         >
-          <span class="scenario-dot safe"></span>
+          <span
+            class="scenario-dot safe"
+            aria-hidden="true"
+          ></span>
+
           Baseline
         </button>
 
@@ -186,10 +191,12 @@
           type="button"
           class="scenario-btn"
           data-scenario="elevated"
-          role="radio"
-          aria-checked="false"
         >
-          <span class="scenario-dot warning"></span>
+          <span
+            class="scenario-dot warning"
+            aria-hidden="true"
+          ></span>
+
           Elevated
         </button>
 
@@ -197,42 +204,57 @@
           type="button"
           class="scenario-btn"
           data-scenario="high"
-          role="radio"
-          aria-checked="false"
         >
-          <span class="scenario-dot danger"></span>
+          <span
+            class="scenario-dot danger"
+            aria-hidden="true"
+          ></span>
+
           High
         </button>
 
       </div>
 
 
-      <!-- ENVIRONMENTAL CONTROLS -->
+      <!-- =================================================
+           LIVE ENVIRONMENTAL CONTROLS
+           ================================================= -->
+
       <section class="control-card">
 
         <div class="control-header">
+
           <div>
-            <span class="eyebrow">INTERACTIVE SIMULATOR</span>
+
+            <span class="eyebrow">
+              INTERACTIVE SIMULATOR
+            </span>
 
             <h3>
               Environmental Parameters
             </h3>
+
           </div>
 
           <span class="demo-pill">
             DEMONSTRATION MODEL
           </span>
+
         </div>
 
 
         <div class="slider-group">
 
           <label for="co2-slider">
-            <span>Target CO₂ Concentration</span>
+
+            <span>
+              Target CO₂ Concentration
+            </span>
 
             <strong id="co2-slider-value">
               1200 ppm
             </strong>
+
           </label>
 
           <input
@@ -246,9 +268,11 @@
           >
 
           <div class="slider-scale">
+
             <span>400 ppm</span>
             <span>2,500 ppm</span>
             <span>5,000 ppm</span>
+
           </div>
 
           <p id="co2-help" class="control-help">
@@ -262,17 +286,25 @@
       </section>
 
 
-      <!-- METRICS -->
+      <!-- =================================================
+           METRICS
+           ================================================= -->
+
       <div class="metric-grid">
 
         <article class="metric-card">
 
           <div class="metric-header">
-            <span class="metric-icon">🌬️</span>
+
+            <span
+              class="metric-icon"
+              aria-hidden="true"
+            >🌬️</span>
 
             <span class="metric-label">
               Environmental Measurement
             </span>
+
           </div>
 
           <div
@@ -302,11 +334,16 @@
         <article class="metric-card">
 
           <div class="metric-header">
-            <span class="metric-icon">⚡</span>
+
+            <span
+              class="metric-icon"
+              aria-hidden="true"
+            >⚡</span>
 
             <span class="metric-label">
               Performance Indicator
             </span>
+
           </div>
 
           <div
@@ -333,11 +370,16 @@
         <article class="metric-card">
 
           <div class="metric-header">
-            <span class="metric-icon">📊</span>
+
+            <span
+              class="metric-icon"
+              aria-hidden="true"
+            >📊</span>
 
             <span class="metric-label">
               Change From Baseline
             </span>
+
           </div>
 
           <div
@@ -363,20 +405,27 @@
       </div>
 
 
-      <!-- ENVIRONMENT CHART -->
+      <!-- =================================================
+           ENVIRONMENT CHART
+           ================================================= -->
+
       <section class="chart-card">
 
         <div class="chart-header">
 
           <div>
-            <span class="eyebrow">ENVIRONMENT</span>
+            <span class="eyebrow">
+              ENVIRONMENT
+            </span>
 
             <h3>
               CO₂ Time Series
             </h3>
           </div>
 
-          <span class="chart-unit">ppm</span>
+          <span class="chart-unit">
+            ppm
+          </span>
 
         </div>
 
@@ -405,10 +454,18 @@
       </section>
 
 
-      <!-- SCIENTIFIC INTERPRETATION -->
+      <!-- =================================================
+           SCIENTIFIC INTERPRETATION
+           ================================================= -->
+
       <section class="science-card">
 
-        <div class="science-icon">🔬</div>
+        <div
+          class="science-icon"
+          aria-hidden="true"
+        >
+          🔬
+        </div>
 
         <div>
 
@@ -432,7 +489,10 @@
       </section>
 
 
-      <!-- PIPELINE -->
+      <!-- =================================================
+           DATA PIPELINE
+           ================================================= -->
+
       <section class="pipeline-card">
 
         <span class="eyebrow">
@@ -444,23 +504,39 @@
           <div class="pipeline-step">
             <span>01</span>
             <strong>Environment</strong>
-            <p>CO₂ and other environmental measurements</p>
+            <p>
+              CO₂ and other environmental measurements
+            </p>
           </div>
 
-          <div class="pipeline-arrow">→</div>
+          <div
+            class="pipeline-arrow"
+            aria-hidden="true"
+          >
+            →
+          </div>
 
           <div class="pipeline-step">
             <span>02</span>
             <strong>Processing</strong>
-            <p>Validation and time-series analysis</p>
+            <p>
+              Validation and time-series analysis
+            </p>
           </div>
 
-          <div class="pipeline-arrow">→</div>
+          <div
+            class="pipeline-arrow"
+            aria-hidden="true"
+          >
+            →
+          </div>
 
           <div class="pipeline-step">
             <span>03</span>
             <strong>Cognition</strong>
-            <p>Performance indicators and PVT results</p>
+            <p>
+              Performance indicators and PVT results
+            </p>
           </div>
 
         </div>
@@ -470,7 +546,10 @@
     </main>
 
 
-    <!-- ANALYSIS -->
+    <!-- =====================================================
+         ANALYSIS
+         ===================================================== -->
+
     <section
       id="analysis"
       class="section"
@@ -482,6 +561,7 @@
       <div class="section-heading">
 
         <div>
+
           <span class="eyebrow">
             EXPLORATORY ANALYSIS
           </span>
@@ -489,6 +569,7 @@
           <h2>
             Cognitive Performance Analysis
           </h2>
+
         </div>
 
         <span class="data-status">
@@ -501,9 +582,17 @@
       <div class="analysis-grid">
 
         <article class="analysis-card">
-          <span class="analysis-icon">📈</span>
 
-          <h3>Current Trend</h3>
+          <span
+            class="analysis-icon"
+            aria-hidden="true"
+          >
+            📈
+          </span>
+
+          <h3>
+            Current Trend
+          </h3>
 
           <div id="trend-result">
             Stable
@@ -513,13 +602,22 @@
             Direction of the selected demonstration
             environmental series.
           </p>
+
         </article>
 
 
         <article class="analysis-card">
-          <span class="analysis-icon">🎯</span>
 
-          <h3>Baseline Difference</h3>
+          <span
+            class="analysis-icon"
+            aria-hidden="true"
+          >
+            🎯
+          </span>
+
+          <h3>
+            Baseline Difference
+          </h3>
 
           <div id="baseline-result">
             0%
@@ -529,13 +627,22 @@
             Relative difference from the reference
             demonstration condition.
           </p>
+
         </article>
 
 
         <article class="analysis-card">
-          <span class="analysis-icon">🧪</span>
 
-          <h3>Analysis Type</h3>
+          <span
+            class="analysis-icon"
+            aria-hidden="true"
+          >
+            🧪
+          </span>
+
+          <h3>
+            Analysis Type
+          </h3>
 
           <div id="analysis-result">
             Exploratory
@@ -544,6 +651,7 @@
           <p>
             This prototype does not establish causation.
           </p>
+
         </article>
 
       </div>
@@ -554,6 +662,7 @@
         <div class="card-title-row">
 
           <div>
+
             <span class="eyebrow">
               TIME-SERIES STATISTICS
             </span>
@@ -561,6 +670,7 @@
             <h3>
               Environmental Summary
             </h3>
+
           </div>
 
           <span
@@ -605,6 +715,7 @@
         <div class="chart-header">
 
           <div>
+
             <span class="eyebrow">
               PERFORMANCE
             </span>
@@ -612,9 +723,12 @@
             <h3>
               Reaction-Time Reference
             </h3>
+
           </div>
 
-          <span class="chart-unit">ms</span>
+          <span class="chart-unit">
+            ms
+          </span>
 
         </div>
 
@@ -628,21 +742,19 @@
         </div>
 
         <p class="chart-disclaimer">
-          This graph displays a demonstration reference curve,
-          not measured reaction-time data — even when a custom
-          CO₂ dataset is loaded, this line is estimated from it,
-          not independently measured.
+          This graph displays demonstration/reference values
+          unless a validated dataset has been loaded.
         </p>
 
       </section>
 
 
-      <!-- PVT -->
       <section class="pvt-card">
 
         <div class="card-title-row">
 
           <div>
+
             <span class="eyebrow">
               INTERACTIVE ASSESSMENT
             </span>
@@ -650,6 +762,7 @@
             <h3>
               Psychomotor Vigilance Task (PVT) Tester
             </h3>
+
           </div>
 
           <span class="small-badge">
@@ -659,9 +772,11 @@
         </div>
 
         <p class="pvt-description">
-          Start the test and wait for the box to turn pink.
+          Start the test and wait for the box to turn green.
           Click it as soon as it changes. The measured latency
-          is displayed in milliseconds.
+          is displayed in milliseconds. Responses above 500 ms
+          are flagged as simulated vigilance lapses for this
+          prototype.
         </p>
 
         <div
@@ -685,8 +800,12 @@
           </button>
 
           <div class="pvt-score">
+
             Last Score:
-            <strong id="pvt-score">-- ms</strong>
+            <strong id="pvt-score">
+              -- ms
+            </strong>
+
           </div>
 
         </div>
@@ -725,7 +844,10 @@
     </section>
 
 
-    <!-- NASA DATA -->
+    <!-- =====================================================
+         NASA DATA
+         ===================================================== -->
+
     <section
       id="data"
       class="section"
@@ -737,6 +859,7 @@
       <div class="section-heading">
 
         <div>
+
           <span class="eyebrow">
             DATA INGESTION
           </span>
@@ -744,6 +867,7 @@
           <h2>
             NASA & Research Dataset
           </h2>
+
         </div>
 
         <span class="data-status">
@@ -818,6 +942,7 @@
         <div class="data-card-header">
 
           <div>
+
             <span class="eyebrow">
               ACTIVE DATASET
             </span>
@@ -825,6 +950,7 @@
             <h3>
               Dataset Information
             </h3>
+
           </div>
 
           <span
@@ -848,7 +974,9 @@
 
           <div class="data-row">
             <span>Rows detected</span>
-            <strong id="dataset-rows">7</strong>
+            <strong id="dataset-rows">
+              7
+            </strong>
           </div>
 
           <div class="data-row">
@@ -936,6 +1064,7 @@
         </div>
 
         <ul>
+
           <li>
             Uploaded CSV files are processed locally in
             the browser.
@@ -956,6 +1085,7 @@
             Correlation or temporal association does not
             by itself establish causation.
           </li>
+
         </ul>
 
       </section>
@@ -963,7 +1093,10 @@
     </section>
 
 
-    <!-- METHODOLOGY -->
+    <!-- =====================================================
+         METHODOLOGY
+         ===================================================== -->
+
     <section
       id="methodology"
       class="section"
@@ -975,6 +1108,7 @@
       <div class="section-heading">
 
         <div>
+
           <span class="eyebrow">
             RESEARCH DESIGN
           </span>
@@ -982,6 +1116,7 @@
           <h2>
             Methodology
           </h2>
+
         </div>
 
       </div>
@@ -1040,9 +1175,17 @@
       <section class="science-context">
 
         <article class="context-card">
-          <div class="context-icon">🌌</div>
 
-          <h3>Space Environment</h3>
+          <div
+            class="context-icon"
+            aria-hidden="true"
+          >
+            🌌
+          </div>
+
+          <h3>
+            Space Environment
+          </h3>
 
           <p>
             Spaceflight exposes crew members to a combination
@@ -1055,13 +1198,22 @@
             for exploring these relationships using validated
             mission datasets.
           </p>
+
         </article>
 
 
         <article class="context-card">
-          <div class="context-icon">🧠</div>
 
-          <h3>Human Performance</h3>
+          <div
+            class="context-icon"
+            aria-hidden="true"
+          >
+            🧠
+          </div>
+
+          <h3>
+            Human Performance
+          </h3>
 
           <p>
             Reaction time and vigilance can be represented
@@ -1074,13 +1226,22 @@
             interactive performance measurement could fit
             into the research interface.
           </p>
+
         </article>
 
 
         <article class="context-card">
-          <div class="context-icon">📐</div>
 
-          <h3>Statistical Analysis</h3>
+          <div
+            class="context-icon"
+            aria-hidden="true"
+          >
+            📐
+          </div>
+
+          <h3>
+            Statistical Analysis
+          </h3>
 
           <p>
             Mean, minimum, maximum, and time-series trends
@@ -1091,6 +1252,7 @@
             A future research version could add formal
             statistical tests and validated predictive models.
           </p>
+
         </article>
 
       </section>
@@ -1126,6 +1288,7 @@
         </div>
 
         <ul>
+
           <li>
             Identify the official NASA or mission dataset.
           </li>
@@ -1148,6 +1311,7 @@
           <li>
             Report statistical uncertainty and limitations.
           </li>
+
         </ul>
 
       </section>
@@ -1155,7 +1319,10 @@
     </section>
 
 
-    <!-- ABOUT -->
+    <!-- =====================================================
+         ABOUT
+         ===================================================== -->
+
     <section
       id="about"
       class="section"
@@ -1167,6 +1334,7 @@
       <div class="section-heading">
 
         <div>
+
           <span class="eyebrow">
             PROJECT INFORMATION
           </span>
@@ -1174,6 +1342,7 @@
           <h2>
             About Space NeuroHealth
           </h2>
+
         </div>
 
       </div>
@@ -1181,7 +1350,10 @@
 
       <section class="about-card">
 
-        <div class="about-icon">
+        <div
+          class="about-icon"
+          aria-hidden="true"
+        >
           🛰️
         </div>
 
@@ -1215,39 +1387,66 @@
       <div class="about-grid">
 
         <article class="about-small-card">
+
           <span>🧪</span>
-          <h3>Reproducible</h3>
+
+          <h3>
+            Reproducible
+          </h3>
+
           <p>
             Data processing rules should be documented so
             another researcher can reproduce the analysis.
           </p>
+
         </article>
 
+
         <article class="about-small-card">
+
           <span>📊</span>
-          <h3>Interactive</h3>
+
+          <h3>
+            Interactive
+          </h3>
+
           <p>
             Users can explore environmental conditions,
             charts, statistics, and performance testing.
           </p>
+
         </article>
 
+
         <article class="about-small-card">
+
           <span>🔐</span>
-          <h3>Local Processing</h3>
+
+          <h3>
+            Local Processing
+          </h3>
+
           <p>
             Uploaded CSV files are processed directly in
             the browser by this prototype.
           </p>
+
         </article>
 
+
         <article class="about-small-card">
+
           <span>🔬</span>
-          <h3>Scientific Caution</h3>
+
+          <h3>
+            Scientific Caution
+          </h3>
+
           <p>
             Simulated relationships are clearly separated
             from validated scientific evidence.
           </p>
+
         </article>
 
       </div>
@@ -1291,47 +1490,45 @@
           <p>
             Generate a print-ready summary of the current
             simulation, dataset statistics, and PVT results.
-            Your browser can save the result as a PDF, or
-            copy the summary as text.
+            Your browser can save the result as a PDF.
           </p>
 
         </div>
 
-        <div class="export-actions">
-
-          <button
-            type="button"
-            id="copy-summary-btn"
-            class="secondary-btn"
-          >
-            Copy Summary
-          </button>
-
-          <button
-            type="button"
-            id="export-btn"
-            class="primary-btn"
-          >
-            Export PDF Summary
-          </button>
-
-        </div>
+        <button
+          type="button"
+          id="export-btn"
+          class="primary-btn"
+        >
+          Export PDF Summary
+        </button>
 
       </section>
 
     </section>
 
 
-    <!-- FOOTER -->
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
     <footer>
 
       <div>
-        <strong>Space NeuroHealth</strong>
+
+        <strong>
+          Space NeuroHealth
+        </strong>
+
         NASA Space Apps Challenge Prototype
+
       </div>
 
       <div class="footer-note">
-        Demonstration interface • Scientific validation required
+
+        Demonstration interface •
+        Scientific validation required
+
       </div>
 
     </footer>
@@ -1339,14 +1536,20 @@
   </div>
 
 
-  <!-- CHART.JS -->
+  <!-- =====================================================
+       CHART.JS
+       ===================================================== -->
+
   <script
     src="https://cdn.jsdelivr.net/npm/chart.js"
     defer
   ></script>
 
-  <!-- APPLICATION -->
+  <!-- =====================================================
+       APPLICATION JAVASCRIPT
+       ===================================================== -->
+
   <script src="script.js" defer></script>
 
 </body>
-</html>
+            </html>
