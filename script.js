@@ -1,7 +1,6 @@
 /* =========================================================
    SPACE NEUROHEALTH
-   APPLICATION JAVASCRIPT
-   FINAL INTEGRATED VERSION
+   FINAL APPLICATION JAVASCRIPT
    ========================================================= */
 
 "use strict";
@@ -44,69 +43,81 @@ const DEMO_DATA = {
   ],
 
   radiation: [
+    1.4,
     1.5,
     1.6,
     1.7,
     1.8,
-    1.9,
     1.8,
     1.8
   ],
 
   temperature: [
+    21.5,
     21.8,
-    21.9,
-    22.0,
+    22,
     22.1,
-    22.0,
-    22.0,
-    22.0
+    22,
+    22,
+    22
   ],
 
   humidity: [
+    42,
     43,
     44,
     45,
-    46,
     45,
     45,
     45
   ],
 
   pressure: [
+    101.3,
     101.2,
     101.3,
     101.3,
     101.4,
     101.3,
-    101.3,
     101.3
   ],
 
   wakefulness: [
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    14
+    1,
+    1.2,
+    1.5,
+    1.7,
+    1.8,
+    2,
+    2
+  ],
+
+  circadian: [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
   ]
 
 };
 
 
 /* =========================================================
-   BUILT-IN SIMULATED DATASETS
+   LOCAL BENCHMARK DATASETS
+   No external library required.
    ========================================================= */
 
-const BUILT_IN_DATASETS = {
+const BENCHMARK_DATASETS = {
 
   iss: {
 
-    name: "Simulated ISS Environment",
+    name: "ISS Environment — Simulated Benchmark",
 
     labels: [
+      "T-7h",
       "T-6h",
       "T-5h",
       "T-4h",
@@ -117,57 +128,63 @@ const BUILT_IN_DATASETS = {
     ],
 
     environment: [
-      1100,
+      1050,
+      1120,
+      1180,
+      1260,
+      1320,
+      1380,
       1350,
-      1500,
-      1750,
-      1600,
-      1900,
-      1800
+      1410
     ],
 
     performance: [
-      238,
+      235,
+      237,
+      239,
       241,
-      243,
+      244,
       247,
-      245,
       249,
-      248
+      252
     ],
 
     radiation: [
+      1.2,
+      1.3,
+      1.4,
       1.5,
+      1.6,
       1.7,
       1.8,
-      2.0,
-      2.1,
-      2.2,
-      2.0
+      1.9
     ],
 
     temperature: [
+      21.5,
+      21.6,
       21.8,
       21.9,
+      22,
+      22,
       22.1,
-      22.2,
-      22.0,
-      22.1,
-      22.0
+      22.1
     ],
 
     humidity: [
+      41,
       42,
+      43,
       44,
       45,
-      47,
+      45,
       46,
-      48,
       46
     ],
 
     pressure: [
-      101.2,
+      101.3,
+      101.3,
       101.2,
       101.3,
       101.3,
@@ -177,13 +194,25 @@ const BUILT_IN_DATASETS = {
     ],
 
     wakefulness: [
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16
+      1,
+      2,
+      2.5,
+      3,
+      3.5,
+      4,
+      4.5,
+      5
+    ],
+
+    circadian: [
+      0,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7
     ]
 
   },
@@ -191,49 +220,54 @@ const BUILT_IN_DATASETS = {
 
   sleep: {
 
-    name: "Simulated Sleep-Deprivation",
+    name: "Sleep / Wakefulness — Simulated Benchmark",
 
     labels: [
-      "Wake 8h",
-      "Wake 10h",
-      "Wake 12h",
-      "Wake 14h",
-      "Wake 16h",
-      "Wake 18h",
-      "Wake 20h"
+      "T-7h",
+      "T-6h",
+      "T-5h",
+      "T-4h",
+      "T-3h",
+      "T-2h",
+      "T-1h",
+      "Current"
     ],
 
     environment: [
+      900,
+      950,
+      1000,
       1100,
-      1120,
       1150,
-      1180,
       1200,
-      1210,
-      1220
+      1250,
+      1300
     ],
 
     performance: [
+      225,
+      230,
       235,
-      240,
-      246,
-      255,
-      267,
-      281,
-      298
+      242,
+      250,
+      258,
+      268,
+      278
     ],
 
     radiation: [
-      1.6,
-      1.6,
-      1.6,
-      1.6,
-      1.6,
-      1.6,
-      1.6
+      1.2,
+      1.2,
+      1.2,
+      1.2,
+      1.2,
+      1.2,
+      1.2,
+      1.2
     ],
 
     temperature: [
+      22,
       22,
       22,
       22,
@@ -244,16 +278,18 @@ const BUILT_IN_DATASETS = {
     ],
 
     humidity: [
+      43,
+      43,
+      44,
+      44,
       45,
       45,
       45,
-      45,
-      45,
-      45,
-      45
+      46
     ],
 
     pressure: [
+      101.3,
       101.3,
       101.3,
       101.3,
@@ -264,13 +300,140 @@ const BUILT_IN_DATASETS = {
     ],
 
     wakefulness: [
-      8,
-      10,
-      12,
-      14,
-      16,
-      18,
-      20
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+
+    circadian: [
+      0,
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1,
+      1.2,
+      1.4
+    ]
+
+  },
+
+
+  combined: {
+
+    name: "Combined Mission — Simulated Benchmark",
+
+    labels: [
+      "T-8h",
+      "T-7h",
+      "T-6h",
+      "T-5h",
+      "T-4h",
+      "T-3h",
+      "T-2h",
+      "T-1h",
+      "Current"
+    ],
+
+    environment: [
+      1050,
+      1100,
+      1160,
+      1230,
+      1320,
+      1450,
+      1580,
+      1700,
+      1820
+    ],
+
+    performance: [
+      230,
+      232,
+      235,
+      239,
+      244,
+      250,
+      258,
+      266,
+      275
+    ],
+
+    radiation: [
+      1.2,
+      1.3,
+      1.4,
+      1.5,
+      1.7,
+      1.8,
+      2,
+      2.1,
+      2.2
+    ],
+
+    temperature: [
+      21.5,
+      21.6,
+      21.8,
+      22,
+      22.2,
+      22.3,
+      22.5,
+      22.6,
+      22.8
+    ],
+
+    humidity: [
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      47,
+      48,
+      49
+    ],
+
+    pressure: [
+      101.3,
+      101.3,
+      101.2,
+      101.3,
+      101.2,
+      101.2,
+      101.1,
+      101.1,
+      101
+    ],
+
+    wakefulness: [
+      1,
+      1.5,
+      2,
+      2.5,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+
+    circadian: [
+      0,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.7,
+      0.9,
+      1.1
     ]
 
   }
@@ -285,95 +448,57 @@ const BUILT_IN_DATASETS = {
 const SCENARIOS = {
 
   baseline: {
-
     name: "Baseline",
-
     co2: 1200,
-
     performance: 240,
-
     radiation: 1.8,
-
     temperature: 22,
-
     humidity: 45,
-
     pressure: 101.3,
-
-    wakefulness: 14,
-
+    wakefulness: 2,
+    circadian: 0,
     status: "Nominal Demonstration",
-
     statusClass: "safe-text",
-
     interpretationTitle:
       "Baseline environmental condition",
-
     interpretationText:
       "This demonstration represents a baseline environmental condition. The simulated performance value is an interface reference and is not a validated physiological model."
-
   },
-
 
   elevated: {
-
     name: "Elevated",
-
     co2: 2500,
-
     performance: 275,
-
-    radiation: 2.5,
-
+    radiation: 2.4,
     temperature: 24,
-
     humidity: 55,
-
-    pressure: 99.5,
-
-    wakefulness: 18,
-
+    pressure: 100.5,
+    wakefulness: 5,
+    circadian: 1.2,
     status: "Elevated Demonstration",
-
     statusClass: "warning-text",
-
     interpretationTitle:
       "Elevated demonstration condition",
-
     interpretationText:
       "The simulator represents a higher environmental measurement. The associated performance value is illustrative and should not be interpreted as evidence of a physiological effect."
-
   },
 
-
   high: {
-
     name: "High",
-
     co2: 4000,
-
     performance: 330,
-
     radiation: 3.5,
-
     temperature: 27,
-
     humidity: 65,
-
-    pressure: 96,
-
-    wakefulness: 21,
-
+    pressure: 99.5,
+    wakefulness: 8,
+    circadian: 2,
     status: "High Demonstration",
-
     statusClass: "danger-text",
-
     interpretationTitle:
       "High demonstration condition",
-
     interpretationText:
       "This scenario represents a substantially elevated demonstration value. A validated dataset and documented scientific model would be required before drawing conclusions about human performance."
-
   }
 
 };
@@ -389,17 +514,19 @@ const state = {
 
   currentCO2: 1200,
 
-  environment: {
-    radiation: 1.8,
-    temperature: 22,
-    humidity: 45,
-    pressure: 101.3,
-    wakefulness: 14
-  },
-
   customDataset: null,
 
-  lag: 0,
+  activeDataset: {
+    ...DEMO_DATA,
+    name: "Built-in demonstration data"
+  },
+
+  correlation: {
+    lag: 3,
+    r: null,
+    n: 0,
+    interpretation: "Awaiting data"
+  },
 
   pvt: {
 
@@ -435,16 +562,12 @@ const state = {
    ========================================================= */
 
 function $(selector) {
-
   return document.querySelector(selector);
-
 }
 
 
 function $all(selector) {
-
   return document.querySelectorAll(selector);
-
 }
 
 
@@ -460,40 +583,17 @@ function setText(id, value) {
 }
 
 
-function formatNumber(value, decimals = 2) {
+function formatNumber(value) {
 
   if (!Number.isFinite(Number(value))) {
-    return "0";
+    return "--";
   }
 
   return Number(value).toLocaleString(
     "en-US",
     {
-      maximumFractionDigits: decimals
+      maximumFractionDigits: 2
     }
-  );
-
-}
-
-
-/* =========================================================
-   SAFE ARRAY HELPERS
-   ========================================================= */
-
-function numericArray(values) {
-
-  return (values || [])
-    .map(Number)
-    .filter(Number.isFinite);
-
-}
-
-
-function clamp(value, min, max) {
-
-  return Math.min(
-    max,
-    Math.max(min, value)
   );
 
 }
@@ -508,7 +608,6 @@ function setupNavigation() {
   const buttons =
     $all(".nav-btn");
 
-
   buttons.forEach(button => {
 
     button.addEventListener(
@@ -521,7 +620,6 @@ function setupNavigation() {
         if (!sectionId) {
           return;
         }
-
 
         buttons.forEach(btn => {
 
@@ -541,8 +639,8 @@ function setupNavigation() {
         });
 
 
-        $all(".section")
-          .forEach(section => {
+        $all(".section").forEach(
+          section => {
 
             const active =
               section.id === sectionId;
@@ -550,7 +648,13 @@ function setupNavigation() {
             section.hidden =
               !active;
 
-          });
+            section.classList.toggle(
+              "active-section",
+              active
+            );
+
+          }
+        );
 
 
         if (sectionId === "analysis") {
@@ -563,7 +667,6 @@ function setupNavigation() {
 
 
         resizeCharts();
-
 
         window.scrollTo({
           top: 0,
@@ -591,20 +694,24 @@ function setupScenarios() {
         "click",
         () => {
 
-          const name =
+          const scenarioName =
             button.dataset.scenario;
 
-          if (!SCENARIOS[name]) {
+          if (!SCENARIOS[scenarioName]) {
             return;
           }
 
-
           state.activeScenario =
-            name;
+            scenarioName;
 
           state.customDataset =
             null;
 
+          state.activeDataset = {
+            ...DEMO_DATA,
+            name:
+              "Built-in demonstration data"
+          };
 
           $all(".scenario-btn")
             .forEach(btn => {
@@ -616,9 +723,8 @@ function setupScenarios() {
 
             });
 
-
           applyScenario(
-            SCENARIOS[name]
+            SCENARIOS[scenarioName]
           );
 
         }
@@ -629,31 +735,14 @@ function setupScenarios() {
 }
 
 
+/* =========================================================
+   SCENARIO APPLICATION
+   ========================================================= */
+
 function applyScenario(scenario) {
 
   state.currentCO2 =
     scenario.co2;
-
-
-  state.environment = {
-
-    radiation:
-      scenario.radiation,
-
-    temperature:
-      scenario.temperature,
-
-    humidity:
-      scenario.humidity,
-
-    pressure:
-      scenario.pressure,
-
-    wakefulness:
-      scenario.wakefulness
-
-  };
-
 
   const slider =
     $("#co2-slider");
@@ -666,18 +755,51 @@ function applyScenario(scenario) {
 
   setText(
     "co2-slider-value",
-    `${formatNumber(scenario.co2, 0)} ppm`
+    `${formatNumber(scenario.co2)} ppm`
+  );
+
+  setText(
+    "environment-value",
+    formatNumber(scenario.co2)
+  );
+
+  setText(
+    "environment-unit",
+    "ppm CO₂"
+  );
+
+  setText(
+    "environment-status",
+    scenario.status
   );
 
 
-  updateEnvironmentMetrics();
+  const status =
+    $("#environment-status");
+
+  if (status) {
+
+    status.classList.remove(
+      "safe-text",
+      "warning-text",
+      "danger-text"
+    );
+
+    if (scenario.statusClass) {
+
+      status.classList.add(
+        scenario.statusClass
+      );
+
+    }
+
+  }
 
 
   setText(
     "performance-value",
     formatNumber(
-      scenario.performance,
-      0
+      scenario.performance
     )
   );
 
@@ -688,8 +810,57 @@ function applyScenario(scenario) {
   );
 
 
-  updatePerformanceDifference(
-    scenario.performance
+  setText(
+    "radiation-value",
+    `${scenario.radiation} mSv/day`
+  );
+
+  setText(
+    "temperature-value",
+    `${scenario.temperature} °C`
+  );
+
+  setText(
+    "humidity-value",
+    `${scenario.humidity} %`
+  );
+
+  setText(
+    "pressure-value",
+    `${scenario.pressure} kPa`
+  );
+
+  setText(
+    "wake-value",
+    `${scenario.wakefulness} h`
+  );
+
+  setText(
+    "circadian-value",
+    `${scenario.circadian} h`
+  );
+
+
+  const baselineDifference =
+    (
+      (scenario.performance -
+        SCENARIOS.baseline.performance)
+      /
+      SCENARIOS.baseline.performance
+    ) * 100;
+
+
+  setText(
+    "change-value",
+    `${baselineDifference >= 0 ? "+" : ""}${baselineDifference.toFixed(1)}%`
+  );
+
+
+  setText(
+    "change-status",
+    baselineDifference === 0
+      ? "No change"
+      : "Demonstration difference"
   );
 
 
@@ -698,539 +869,17 @@ function applyScenario(scenario) {
     scenario.interpretationTitle
   );
 
-
   setText(
     "science-text",
     scenario.interpretationText
   );
 
 
+  updateEnvironmentIndex();
+
   updateEnvironmentChartForScenario();
 
   updateAnalysis();
-
-}
-
-
-/* =========================================================
-   ENVIRONMENT METRICS
-   ========================================================= */
-
-function updateEnvironmentMetrics() {
-
-  const env =
-    state.environment;
-
-
-  setText(
-    "environment-value",
-    formatNumber(
-      state.currentCO2,
-      0
-    )
-  );
-
-
-  setText(
-    "environment-unit",
-    "ppm CO₂"
-  );
-
-
-  const co2State =
-    getCO2State(
-      state.currentCO2
-    );
-
-
-  setMetricStatus(
-    "environment-status",
-    co2State.label,
-    co2State.className
-  );
-
-
-  setText(
-    "radiation-value",
-    formatNumber(
-      env.radiation,
-      1
-    )
-  );
-
-
-  setMetricStatus(
-    "radiation-status",
-    getRadiationState(
-      env.radiation
-    ).label,
-    getRadiationState(
-      env.radiation
-    ).className
-  );
-
-
-  setText(
-    "temperature-value",
-    formatNumber(
-      env.temperature,
-      1
-    )
-  );
-
-
-  const temperatureState =
-    getTemperatureState(
-      env.temperature
-    );
-
-  setMetricStatus(
-    "temperature-status",
-    temperatureState.label,
-    temperatureState.className
-  );
-
-
-  setText(
-    "humidity-value",
-    formatNumber(
-      env.humidity,
-      0
-    )
-  );
-
-
-  const humidityState =
-    getHumidityState(
-      env.humidity
-    );
-
-  setMetricStatus(
-    "humidity-status",
-    humidityState.label,
-    humidityState.className
-  );
-
-
-  setText(
-    "pressure-value",
-    formatNumber(
-      env.pressure,
-      1
-    )
-  );
-
-
-  const pressureState =
-    getPressureState(
-      env.pressure
-    );
-
-  setMetricStatus(
-    "pressure-status",
-    pressureState.label,
-    pressureState.className
-  );
-
-
-  setText(
-    "wakefulness-value",
-    formatNumber(
-      env.wakefulness,
-      0
-    )
-  );
-
-
-  const wakeState =
-    getWakefulnessState(
-      env.wakefulness
-    );
-
-  setMetricStatus(
-    "wakefulness-status",
-    wakeState.label,
-    wakeState.className
-  );
-
-
-  const index =
-    calculateEnvironmentIndex();
-
-
-  setText(
-    "environment-index",
-    `${Math.round(index)} / 100`
-  );
-
-
-  const indexState =
-    getIndexState(index);
-
-
-  setMetricStatus(
-    "environment-index-state",
-    indexState.label,
-    indexState.className
-  );
-
-}
-
-
-function setMetricStatus(
-  id,
-  text,
-  className
-) {
-
-  const element =
-    document.getElementById(id);
-
-  if (!element) {
-    return;
-  }
-
-
-  element.textContent =
-    text;
-
-
-  element.classList.remove(
-    "safe-text",
-    "warning-text",
-    "danger-text"
-  );
-
-
-  if (className) {
-    element.classList.add(
-      className
-    );
-  }
-
-}
-
-
-/* =========================================================
-   ENVIRONMENT STATES
-   ========================================================= */
-
-function getCO2State(value) {
-
-  if (value <= 1500) {
-
-    return {
-      label: "Nominal Demonstration",
-      className: "safe-text"
-    };
-
-  }
-
-  if (value <= 3000) {
-
-    return {
-      label: "Elevated Demonstration",
-      className: "warning-text"
-    };
-
-  }
-
-  return {
-    label: "High Demonstration",
-    className: "danger-text"
-  };
-
-}
-
-
-function getRadiationState(value) {
-
-  if (value <= 2) {
-
-    return {
-      label: "Nominal exposure",
-      className: "safe-text"
-    };
-
-  }
-
-  if (value <= 3) {
-
-    return {
-      label: "Elevated exposure",
-      className: "warning-text"
-    };
-
-  }
-
-  return {
-    label: "High demonstration",
-    className: "danger-text"
-  };
-
-}
-
-
-function getTemperatureState(value) {
-
-  const deviation =
-    Math.abs(
-      value - 22
-    );
-
-  if (deviation <= 2) {
-
-    return {
-      label: "Nominal range",
-      className: "safe-text"
-    };
-
-  }
-
-  if (deviation <= 4) {
-
-    return {
-      label: "Elevated deviation",
-      className: "warning-text"
-    };
-
-  }
-
-  return {
-    label: "High deviation",
-    className: "danger-text"
-  };
-
-}
-
-
-function getHumidityState(value) {
-
-  if (
-    value >= 30 &&
-    value <= 60
-  ) {
-
-    return {
-      label: "Nominal range",
-      className: "safe-text"
-    };
-
-  }
-
-  if (
-    value >= 20 &&
-    value <= 70
-  ) {
-
-    return {
-      label: "Elevated deviation",
-      className: "warning-text"
-    };
-
-  }
-
-  return {
-    label: "High deviation",
-    className: "danger-text"
-  };
-
-}
-
-
-function getPressureState(value) {
-
-  const deviation =
-    Math.abs(
-      value - 101.3
-    );
-
-  if (deviation <= 3) {
-
-    return {
-      label: "Nominal range",
-      className: "safe-text"
-    };
-
-  }
-
-  if (deviation <= 6) {
-
-    return {
-      label: "Elevated deviation",
-      className: "warning-text"
-    };
-
-  }
-
-  return {
-    label: "High deviation",
-    className: "danger-text"
-  };
-
-}
-
-
-function getWakefulnessState(value) {
-
-  if (value <= 16) {
-
-    return {
-      label: "Normal wake period",
-      className: "safe-text"
-    };
-
-  }
-
-  if (value <= 20) {
-
-    return {
-      label: "Extended wake period",
-      className: "warning-text"
-    };
-
-  }
-
-  return {
-    label: "Very extended wake period",
-    className: "danger-text"
-  };
-
-}
-
-
-/* =========================================================
-   ENVIRONMENT INDEX
-   ========================================================= */
-
-function normalizeDeviation(
-  value,
-  reference,
-  tolerance,
-  maximum
-) {
-
-  const deviation =
-    Math.abs(
-      value - reference
-    );
-
-  return clamp(
-    deviation / maximum,
-    0,
-    1
-  ) * 100;
-
-}
-
-
-function calculateEnvironmentIndex() {
-
-  const co2 =
-    clamp(
-      ((state.currentCO2 - 1200) /
-        2800) *
-        100,
-      0,
-      100
-    );
-
-
-  const radiation =
-    clamp(
-      ((state.environment.radiation - 1.8) /
-        2.2) *
-        100,
-      0,
-      100
-    );
-
-
-  const temperature =
-    normalizeDeviation(
-      state.environment.temperature,
-      22,
-      2,
-      8
-    );
-
-
-  const humidity =
-    normalizeDeviation(
-      state.environment.humidity,
-      45,
-      15,
-      40
-    );
-
-
-  const pressure =
-    normalizeDeviation(
-      state.environment.pressure,
-      101.3,
-      3,
-      12
-    );
-
-
-  const wakefulness =
-    clamp(
-      ((state.environment.wakefulness - 14) /
-        8) *
-        100,
-      0,
-      100
-    );
-
-
-  const score =
-
-    co2 * 0.30 +
-
-    radiation * 0.20 +
-
-    wakefulness * 0.20 +
-
-    temperature * 0.10 +
-
-    humidity * 0.10 +
-
-    pressure * 0.10;
-
-
-  return clamp(
-    score,
-    0,
-    100
-  );
-
-}
-
-
-function getIndexState(index) {
-
-  if (index < 30) {
-
-    return {
-      label: "Nominal",
-      className: "safe-text"
-    };
-
-  }
-
-  if (index < 60) {
-
-    return {
-      label: "Caution",
-      className: "warning-text"
-    };
-
-  }
-
-  return {
-    label: "Elevated Risk",
-    className: "danger-text"
-  };
 
 }
 
@@ -1256,26 +905,21 @@ function setupSlider() {
       const value =
         Number(slider.value);
 
-
       state.currentCO2 =
         value;
-
 
       state.customDataset =
         null;
 
-
       setText(
         "co2-slider-value",
-        `${formatNumber(value, 0)} ppm`
+        `${formatNumber(value)} ppm`
       );
-
 
       setText(
         "environment-value",
-        formatNumber(value, 0)
+        formatNumber(value)
       );
-
 
       updateFromSlider(value);
 
@@ -1294,54 +938,103 @@ function updateFromSlider(value) {
 
     performance =
       240 -
-      ((value - 400) /
-        800) *
-        5;
+      ((value - 400) / 800) * 5;
 
   } else {
 
     performance =
       240 +
-      ((value - 1200) /
-        3800) *
-        110;
+      ((value - 1200) / 3800) * 110;
 
   }
 
 
   performance =
     Math.round(
-      clamp(
-        performance,
+      Math.max(
         220,
-        360
+        Math.min(
+          360,
+          performance
+        )
       )
     );
 
 
   setText(
     "performance-value",
-    formatNumber(
-      performance,
-      0
-    )
+    formatNumber(performance)
   );
 
 
-  updatePerformanceDifference(
-    performance
+  const baselineDifference =
+    (
+      (performance -
+        SCENARIOS.baseline.performance)
+      /
+      SCENARIOS.baseline.performance
+    ) * 100;
+
+
+  setText(
+    "change-value",
+    `${baselineDifference >= 0 ? "+" : ""}${baselineDifference.toFixed(1)}%`
+  );
+
+
+  let statusText;
+  let statusClass;
+
+
+  if (value <= 1500) {
+
+    statusText =
+      "Nominal Demonstration";
+
+    statusClass =
+      "safe-text";
+
+  } else if (value <= 3000) {
+
+    statusText =
+      "Elevated Demonstration";
+
+    statusClass =
+      "warning-text";
+
+  } else {
+
+    statusText =
+      "High Demonstration";
+
+    statusClass =
+      "danger-text";
+
+  }
+
+
+  setText(
+    "environment-status",
+    statusText
   );
 
 
   const status =
-    getCO2State(value);
+    $("#environment-status");
 
+  if (status) {
 
-  setMetricStatus(
-    "environment-status",
-    status.label,
-    status.className
-  );
+    status.classList.remove(
+      "safe-text",
+      "warning-text",
+      "danger-text"
+    );
+
+    status.classList.add(
+      statusClass
+    );
+
+  }
 
 
   setText(
@@ -1356,79 +1049,370 @@ function updateFromSlider(value) {
   );
 
 
-  updateEnvironmentMetrics();
+  updateEnvironmentIndex();
 
   updateAnalysis();
 
 }
 
 
-function updatePerformanceDifference(
-  performance
+/* =========================================================
+   ENVIRONMENT INDEX
+   ========================================================= */
+
+function clamp(
+  value,
+  minimum,
+  maximum
 ) {
 
-  const baseline =
-    SCENARIOS.baseline.performance;
+  return Math.min(
+    maximum,
+    Math.max(
+      minimum,
+      value
+    )
+  );
+
+}
 
 
-  const difference =
-    ((performance - baseline) /
-      baseline) *
-      100;
+function normalizeDeviation(
+  value,
+  reference,
+  scale
+) {
+
+  return clamp(
+    Math.abs(value - reference) /
+      scale *
+      100,
+    0,
+    100
+  );
+
+}
+
+
+function calculateEnvironmentIndex() {
+
+  const scenario =
+    SCENARIOS[
+      state.activeScenario
+    ];
+
+
+  let radiation =
+    scenario
+      ? scenario.radiation
+      : 1.8;
+
+  let temperature =
+    scenario
+      ? scenario.temperature
+      : 22;
+
+  let humidity =
+    scenario
+      ? scenario.humidity
+      : 45;
+
+  let pressure =
+    scenario
+      ? scenario.pressure
+      : 101.3;
+
+  let wakefulness =
+    scenario
+      ? scenario.wakefulness
+      : 2;
+
+
+  if (state.customDataset) {
+
+    const dataset =
+      state.customDataset;
+
+    radiation =
+      lastOr(
+        dataset.radiation,
+        radiation
+      );
+
+    temperature =
+      lastOr(
+        dataset.temperature,
+        temperature
+      );
+
+    humidity =
+      lastOr(
+        dataset.humidity,
+        humidity
+      );
+
+    pressure =
+      lastOr(
+        dataset.pressure,
+        pressure
+      );
+
+    wakefulness =
+      lastOr(
+        dataset.wakefulness,
+        wakefulness
+      );
+
+  }
+
+
+  const co2Score =
+    normalizeDeviation(
+      state.currentCO2,
+      1200,
+      3800
+    );
+
+
+  const radiationScore =
+    normalizeDeviation(
+      radiation,
+      1.8,
+      2.5
+    );
+
+
+  const temperatureScore =
+    normalizeDeviation(
+      temperature,
+      22,
+      8
+    );
+
+
+  const humidityScore =
+    normalizeDeviation(
+      humidity,
+      45,
+      40
+    );
+
+
+  const pressureScore =
+    normalizeDeviation(
+      pressure,
+      101.3,
+      10
+    );
+
+
+  const sleepScore =
+    clamp(
+      (wakefulness / 8) * 100,
+      0,
+      100
+    );
+
+
+  const index =
+    (
+      0.35 * co2Score +
+      0.20 * radiationScore +
+      0.15 * temperatureScore +
+      0.10 * humidityScore +
+      0.10 * pressureScore +
+      0.10 * sleepScore
+    );
+
+
+  return Math.round(
+    clamp(index, 0, 100)
+  );
+
+}
+
+
+function updateEnvironmentIndex() {
+
+  const index =
+    calculateEnvironmentIndex();
 
 
   setText(
-    "change-value",
-    `${difference >= 0 ? "+" : ""}${difference.toFixed(1)}%`
+    "environment-index",
+    String(index)
   );
 
 
-  setText(
-    "change-status",
-    difference === 0
-      ? "No change"
-      : "Demonstration difference"
+  const status =
+    $("#environment-index-status");
+
+  if (!status) {
+    return;
+  }
+
+
+  status.classList.remove(
+    "safe-text",
+    "warning-text",
+    "danger-text"
   );
+
+
+  if (index <= 30) {
+
+    status.textContent =
+      "Nominal";
+
+    status.classList.add(
+      "safe-text"
+    );
+
+  } else if (index <= 60) {
+
+    status.textContent =
+      "Caution";
+
+    status.classList.add(
+      "warning-text"
+    );
+
+  } else {
+
+    status.textContent =
+      "Elevated Risk";
+
+    status.classList.add(
+      "danger-text"
+    );
+
+  }
+
+}
+
+
+function lastOr(array, fallback) {
+
+  if (
+    Array.isArray(array) &&
+    array.length
+  ) {
+
+    return array[
+      array.length - 1
+    ];
+
+  }
+
+  return fallback;
 
 }
 
 
 /* =========================================================
-   CHART CREATION
+   CHART SYSTEM
    ========================================================= */
 
-function destroyChart(
-  chartName
-) {
-
-  const chart =
-    state.charts[chartName];
-
-  if (!chart) {
-    return;
-  }
-
-
-  try {
-    chart.destroy();
-  } catch (error) {
-    console.warn(
-      "Chart cleanup warning:",
-      error
-    );
-  }
-
-
-  state.charts[chartName] =
-    null;
-
-}
+/*
+   The charts below use native Canvas.
+   This removes the external Chart.js dependency entirely.
+   The dashboard therefore remains functional offline.
+*/
 
 
 function createCharts() {
 
+  drawEnvironmentChart();
+
+  drawPerformanceChart();
+
+}
+
+
+function getChartCanvas(
+  id
+) {
+
+  return document.getElementById(id);
+
+}
+
+
+function prepareCanvas(canvas) {
+
+  if (!canvas) {
+    return null;
+  }
+
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+
+  const width =
+    Math.max(
+      300,
+      Math.floor(rect.width || 600)
+    );
+
+
+  const height =
+    Math.max(
+      220,
+      Math.floor(
+        parseFloat(
+          getComputedStyle(canvas)
+            .height
+        ) || 310
+      )
+    );
+
+
+  const dpr =
+    window.devicePixelRatio || 1;
+
+
+  canvas.width =
+    width * dpr;
+
+  canvas.height =
+    height * dpr;
+
+
+  const context =
+    canvas.getContext("2d");
+
+
+  context.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
+
+  return {
+    context,
+    width,
+    height
+  };
+
+}
+
+
+function drawLineChart(
+  canvas,
+  labels,
+  values,
+  title
+) {
+
   if (
-    typeof Chart === "undefined"
+    !canvas ||
+    !Array.isArray(values) ||
+    values.length < 1
   ) {
 
     showChartError();
@@ -1438,316 +1422,352 @@ function createCharts() {
   }
 
 
-  createEnvironmentChart();
+  const prepared =
+    prepareCanvas(canvas);
 
-  createPerformanceChart();
-
-}
-
-
-function createEnvironmentChart() {
-
-  const canvas =
-    $("#environmentChart");
-
-  if (!canvas) {
+  if (!prepared) {
     return;
   }
 
 
-  destroyChart(
-    "environment"
+  const {
+    context,
+    width,
+    height
+  } = prepared;
+
+
+  context.clearRect(
+    0,
+    0,
+    width,
+    height
   );
 
 
-  try {
+  const left =
+    52;
 
-    state.charts.environment =
-      new Chart(
-        canvas,
-        {
+  const right =
+    18;
 
-          type: "line",
+  const top =
+    28;
 
-          data: {
+  const bottom =
+    42;
 
-            labels:
-              DEMO_DATA.labels,
 
-            datasets: [{
+  const chartWidth =
+    width -
+    left -
+    right;
 
-              label: "CO₂",
+  const chartHeight =
+    height -
+    top -
+    bottom;
 
-              data:
-                DEMO_DATA.environment,
 
-              borderColor:
-                "#51d7e8",
+  const numericValues =
+    values
+      .map(Number)
+      .filter(Number.isFinite);
 
-              backgroundColor:
-                "rgba(81, 215, 232, 0.10)",
 
-              borderWidth: 2,
-
-              fill: true,
-
-              tension: 0.35,
-
-              pointRadius: 4,
-
-              pointHoverRadius: 6
-
-            }]
-
-          },
-
-          options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            interaction: {
-
-              intersect: false,
-
-              mode: "index"
-
-            },
-
-            plugins: {
-
-              legend: {
-
-                labels: {
-
-                  color:
-                    "#edf4ff"
-
-                }
-
-              }
-
-            },
-
-            scales: {
-
-              x: {
-
-                ticks: {
-
-                  color:
-                    "#8f9caf"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255,255,255,0.06)"
-
-                }
-
-              },
-
-              y: {
-
-                ticks: {
-
-                  color:
-                    "#8f9caf"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255,255,255,0.06)"
-
-                }
-
-              }
-
-            }
-
-          }
-
-        }
-      );
-
-  } catch (error) {
-
-    console.error(
-      "Environment chart error:",
-      error
-    );
+  if (!numericValues.length) {
 
     showChartError();
 
-  }
-
-}
-
-
-function createPerformanceChart() {
-
-  const canvas =
-    $("#performanceChart");
-
-  if (!canvas) {
     return;
+
   }
 
 
-  if (
-    typeof Chart === "undefined"
+  let min =
+    Math.min(
+      ...numericValues
+    );
+
+  let max =
+    Math.max(
+      ...numericValues
+    );
+
+
+  if (min === max) {
+
+    min -= 1;
+
+    max += 1;
+
+  }
+
+
+  const padding =
+    (max - min) * 0.12;
+
+  min -= padding;
+  max += padding;
+
+
+  context.font =
+    "12px system-ui";
+
+
+  context.strokeStyle =
+    "rgba(255,255,255,0.08)";
+
+  context.fillStyle =
+    "#8f9caf";
+
+  context.lineWidth =
+    1;
+
+
+  const gridLines =
+    5;
+
+
+  for (
+    let i = 0;
+    i <= gridLines;
+    i++
   ) {
-    return;
-  }
+
+    const y =
+      top +
+      chartHeight *
+      (i / gridLines);
 
 
-  destroyChart(
-    "performance"
-  );
+    context.beginPath();
+
+    context.moveTo(
+      left,
+      y
+    );
+
+    context.lineTo(
+      width - right,
+      y
+    );
+
+    context.stroke();
 
 
-  try {
+    const value =
+      max -
+      (max - min) *
+      (i / gridLines);
 
-    state.charts.performance =
-      new Chart(
-        canvas,
-        {
 
-          type: "line",
-
-          data: {
-
-            labels:
-              DEMO_DATA.labels,
-
-            datasets: [{
-
-              label:
-                "Reaction Time",
-
-              data:
-                DEMO_DATA.performance,
-
-              borderColor:
-                "#4ea1ff",
-
-              backgroundColor:
-                "rgba(78, 161, 255, 0.10)",
-
-              borderWidth: 2,
-
-              fill: true,
-
-              tension: 0.35,
-
-              pointRadius: 4,
-
-              pointHoverRadius: 6
-
-            }]
-
-          },
-
-          options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            interaction: {
-
-              intersect: false,
-
-              mode: "index"
-
-            },
-
-            plugins: {
-
-              legend: {
-
-                labels: {
-
-                  color:
-                    "#edf4ff"
-
-                }
-
-              }
-
-            },
-
-            scales: {
-
-              x: {
-
-                ticks: {
-
-                  color:
-                    "#8f9caf"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255,255,255,0.06)"
-
-                }
-
-              },
-
-              y: {
-
-                ticks: {
-
-                  color:
-                    "#8f9caf"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255,255,255,0.06)"
-
-                }
-
-              }
-
-            }
-
-          }
-
-        }
-      );
-
-  } catch (error) {
-
-    console.error(
-      "Performance chart error:",
-      error
+    context.fillText(
+      formatNumber(value),
+      5,
+      y + 4
     );
 
   }
 
+
+  if (labels.length > 0) {
+
+    labels.forEach(
+      (label, index) => {
+
+        if (
+          index !== 0 &&
+          index !== labels.length - 1 &&
+          index % 2 !== 0
+        ) {
+          return;
+        }
+
+
+        const x =
+          labels.length === 1
+            ? left
+            : left +
+              chartWidth *
+              (
+                index /
+                (labels.length - 1)
+              );
+
+
+        context.fillText(
+          label,
+          x - 15,
+          height - 12
+        );
+
+      }
+    );
+
+  }
+
+
+  context.strokeStyle =
+    title === "CO₂"
+      ? "#51d7e8"
+      : "#4ea1ff";
+
+
+  context.lineWidth =
+    2.5;
+
+
+  context.beginPath();
+
+
+  numericValues.forEach(
+    (value, index) => {
+
+      const x =
+        numericValues.length === 1
+          ? left
+          : left +
+            chartWidth *
+            (
+              index /
+              (numericValues.length - 1)
+            );
+
+
+      const y =
+        top +
+        chartHeight *
+        (
+          1 -
+          (value - min) /
+          (max - min)
+        );
+
+
+      if (index === 0) {
+        context.moveTo(x, y);
+      } else {
+        context.lineTo(x, y);
+      }
+
+    }
+  );
+
+
+  context.stroke();
+
+
+  context.fillStyle =
+    title === "CO₂"
+      ? "#51d7e8"
+      : "#4ea1ff";
+
+
+  numericValues.forEach(
+    (value, index) => {
+
+      const x =
+        numericValues.length === 1
+          ? left
+          : left +
+            chartWidth *
+            (
+              index /
+              (numericValues.length - 1)
+            );
+
+
+      const y =
+        top +
+        chartHeight *
+        (
+          1 -
+          (value - min) /
+          (max - min)
+        );
+
+
+      context.beginPath();
+
+      context.arc(
+        x,
+        y,
+        4,
+        0,
+        Math.PI * 2
+      );
+
+      context.fill();
+
+    }
+  );
+
+
+  context.fillStyle =
+    "#edf4ff";
+
+  context.font =
+    "700 12px system-ui";
+
+  context.fillText(
+    title,
+    left,
+    15
+  );
+
 }
 
 
-/* =========================================================
-   CHART UPDATES
-   ========================================================= */
+function drawEnvironmentChart() {
+
+  const canvas =
+    getChartCanvas(
+      "environmentChart"
+    );
+
+  const dataset =
+    state.activeDataset ||
+    DEMO_DATA;
+
+
+  drawLineChart(
+    canvas,
+    dataset.labels,
+    dataset.environment,
+    "CO₂"
+  );
+
+}
+
+
+function drawPerformanceChart() {
+
+  const canvas =
+    getChartCanvas(
+      "performanceChart"
+    );
+
+  const dataset =
+    state.activeDataset ||
+    DEMO_DATA;
+
+
+  drawLineChart(
+    canvas,
+    dataset.labels,
+    dataset.performance,
+    "Reaction Time"
+  );
+
+}
+
 
 function updateEnvironmentChartForScenario() {
 
-  if (
-    !state.charts.environment
-  ) {
+  if (state.customDataset) {
+    drawEnvironmentChart();
+    drawPerformanceChart();
     return;
   }
 
@@ -1774,139 +1794,45 @@ function updateEnvironmentChartForScenario() {
   ];
 
 
-  state.charts.environment
-    .data
-    .labels =
-      DEMO_DATA.labels;
-
-
-  state.charts.environment
-    .data
-    .datasets[0]
-    .data =
-      offsets.map(
-        offset =>
-          Math.max(
-            0,
-            scenario.co2 +
-            offset
-          )
-      );
-
-
-  state.charts.environment.update(
-    "none"
-  );
-
-
-  if (
-    state.charts.performance
-  ) {
-
-    state.charts.performance
-      .data
-      .labels =
-        DEMO_DATA.labels;
-
-    state.charts.performance
-      .data
-      .datasets[0]
-      .data =
-        DEMO_DATA.performance;
-
-    state.charts.performance.update(
-      "none"
+  const values =
+    offsets.map(
+      offset =>
+        Math.max(
+          0,
+          scenario.co2 +
+          offset
+        )
     );
 
-  }
 
-}
+  state.activeDataset = {
 
+    ...DEMO_DATA,
 
-function updateCustomCharts() {
+    name:
+      "Built-in demonstration data",
 
-  const dataset =
-    state.customDataset;
+    environment:
+      values,
 
-
-  if (!dataset) {
-    return;
-  }
-
-
-  if (
-    state.charts.environment
-  ) {
-
-    state.charts.environment
-      .data
-      .labels =
-        dataset.labels;
-
-    state.charts.environment
-      .data
-      .datasets[0]
-      .data =
-        dataset.values;
-
-    state.charts.environment.update(
-      "none"
-    );
-
-  }
-
-
-  if (
-    state.charts.performance
-  ) {
-
-    const performance =
-      dataset.performance ||
-      dataset.values.map(
+    performance:
+      values.map(
         value =>
-          estimatePerformance(
-            value
+          Math.round(
+            240 +
+            (
+              (value - 1200) /
+              3800
+            ) * 110
           )
-      );
+      )
+
+  };
 
 
-    state.charts.performance
-      .data
-      .labels =
-        dataset.labels;
+  drawEnvironmentChart();
 
-    state.charts.performance
-      .data
-      .datasets[0]
-      .data =
-        performance;
-
-    state.charts.performance.update(
-      "none"
-    );
-
-  }
-
-}
-
-
-function estimatePerformance(
-  value
-) {
-
-  const relative =
-    (value - 1200) /
-    1200;
-
-
-  return Math.round(
-    clamp(
-      240 +
-      relative * 70,
-      180,
-      450
-    )
-  );
+  drawPerformanceChart();
 
 }
 
@@ -1916,20 +1842,12 @@ function resizeCharts() {
   setTimeout(
     () => {
 
-      if (
-        state.charts.environment
-      ) {
-        state.charts.environment.resize();
-      }
+      drawEnvironmentChart();
 
-      if (
-        state.charts.performance
-      ) {
-        state.charts.performance.resize();
-      }
+      drawPerformanceChart();
 
     },
-    150
+    120
   );
 
 }
@@ -1958,25 +1876,18 @@ function calculateStatistics(
 ) {
 
   const clean =
-    numericArray(values);
+    values
+      .map(Number)
+      .filter(Number.isFinite);
 
 
   if (!clean.length) {
 
     return {
-
       mean: 0,
-
       min: 0,
-
       max: 0,
-
-      standardDeviation: 0,
-
-      count: 0,
-
-      range: 0
-
+      count: 0
     };
 
   }
@@ -1990,51 +1901,19 @@ function calculateStatistics(
     );
 
 
-  const mean =
-    sum / clean.length;
-
-
-  const variance =
-    clean.reduce(
-      (total, value) =>
-        total +
-        Math.pow(
-          value - mean,
-          2
-        ),
-      0
-    ) /
-    clean.length;
-
-
-  const standardDeviation =
-    Math.sqrt(
-      variance
-    );
-
-
-  const min =
-    Math.min(...clean);
-
-  const max =
-    Math.max(...clean);
-
-
   return {
 
-    mean,
+    mean:
+      sum / clean.length,
 
-    min,
+    min:
+      Math.min(...clean),
 
-    max,
-
-    standardDeviation,
+    max:
+      Math.max(...clean),
 
     count:
-      clean.length,
-
-    range:
-      max - min
+      clean.length
 
   };
 
@@ -2056,45 +1935,26 @@ function updateStatistics(
     `${formatNumber(stats.mean)} ppm`
   );
 
-
   setText(
     "peak-co2",
     `${formatNumber(stats.max)} ppm`
   );
-
 
   setText(
     "min-co2",
     `${formatNumber(stats.min)} ppm`
   );
 
-
   setText(
     "data-points",
     String(stats.count)
-  );
-
-
-  setText(
-    "co2-standard-deviation",
-    `${formatNumber(
-      stats.standardDeviation
-    )} ppm`
-  );
-
-
-  setText(
-    "co2-range",
-    `${formatNumber(
-      stats.range
-    )} ppm`
   );
 
 }
 
 
 /* =========================================================
-   TREND / PATTERN
+   TREND
    ========================================================= */
 
 function calculateTrend(
@@ -2102,7 +1962,9 @@ function calculateTrend(
 ) {
 
   const clean =
-    numericArray(values);
+    values
+      .map(Number)
+      .filter(Number.isFinite);
 
 
   if (clean.length < 2) {
@@ -2128,19 +1990,13 @@ function calculateTrend(
     );
 
 
-  if (
-    difference > threshold
-  ) {
+  if (difference > threshold) {
     return "Increasing";
   }
 
-
-  if (
-    difference < -threshold
-  ) {
+  if (difference < -threshold) {
     return "Decreasing";
   }
-
 
   return "Stable";
 
@@ -2148,13 +2004,16 @@ function calculateTrend(
 
 
 /* =========================================================
-   CORRELATION
+   PEARSON CORRELATION
    ========================================================= */
 
 function pearsonCorrelation(
   x,
   y
 ) {
+
+  const pairs = [];
+
 
   const length =
     Math.min(
@@ -2163,64 +2022,83 @@ function pearsonCorrelation(
     );
 
 
-  if (length < 2) {
-    return null;
-  }
-
-
-  const xs =
-    x.slice(0, length)
-      .map(Number);
-
-  const ys =
-    y.slice(0, length)
-      .map(Number);
-
-
-  const meanX =
-    xs.reduce(
-      (a, b) => a + b,
-      0
-    ) / length;
-
-
-  const meanY =
-    ys.reduce(
-      (a, b) => a + b,
-      0
-    ) / length;
-
-
-  let numerator = 0;
-
-  let denominatorX = 0;
-
-  let denominatorY = 0;
-
-
   for (
     let i = 0;
     i < length;
     i++
   ) {
 
-    const dx =
-      xs[i] - meanX;
+    const a =
+      Number(x[i]);
 
-    const dy =
-      ys[i] - meanY;
+    const b =
+      Number(y[i]);
 
 
-    numerator +=
-      dx * dy;
+    if (
+      Number.isFinite(a) &&
+      Number.isFinite(b)
+    ) {
 
-    denominatorX +=
-      dx * dx;
+      pairs.push([
+        a,
+        b
+      ]);
 
-    denominatorY +=
-      dy * dy;
+    }
 
   }
+
+
+  if (pairs.length < 2) {
+    return null;
+  }
+
+
+  const meanX =
+    pairs.reduce(
+      (sum, pair) =>
+        sum + pair[0],
+      0
+    ) /
+    pairs.length;
+
+
+  const meanY =
+    pairs.reduce(
+      (sum, pair) =>
+        sum + pair[1],
+      0
+    ) /
+    pairs.length;
+
+
+  let numerator = 0;
+  let denominatorX = 0;
+  let denominatorY = 0;
+
+
+  pairs.forEach(
+    ([a, b]) => {
+
+      const dx =
+        a - meanX;
+
+      const dy =
+        b - meanY;
+
+
+      numerator +=
+        dx * dy;
+
+      denominatorX +=
+        dx * dx;
+
+      denominatorY +=
+        dy * dy;
+
+    }
+  );
 
 
   const denominator =
@@ -2230,146 +2108,99 @@ function pearsonCorrelation(
     );
 
 
-  if (
-    denominator === 0
-  ) {
-    return 0;
+  if (denominator === 0) {
+    return null;
   }
 
 
-  return (
-    numerator /
-    denominator
-  );
+  return numerator /
+    denominator;
 
 }
 
 
-function lagArrays(
+function calculateLaggedCorrelation(
   environment,
   performance,
   lag
 ) {
 
-  const env =
-    numericArray(
-      environment
-    );
-
-  const perf =
-    numericArray(
-      performance
-    );
+  const x = [];
+  const y = [];
 
 
-  if (
-    env.length !==
-    perf.length
+  /*
+    Positive lag means environmental values at an earlier
+    point are paired with performance values later in time.
+  */
+
+  for (
+    let i = 0;
+    i < environment.length - lag;
+    i++
   ) {
 
-    const n =
-      Math.min(
-        env.length,
-        perf.length
+    const environmentValue =
+      Number(
+        environment[i]
       );
 
-    return lagArrays(
-      env.slice(0, n),
-      perf.slice(0, n),
-      lag
-    );
-
-  }
+    const performanceValue =
+      Number(
+        performance[i + lag]
+      );
 
 
-  if (
-    lag <= 0
-  ) {
+    if (
+      Number.isFinite(
+        environmentValue
+      ) &&
+      Number.isFinite(
+        performanceValue
+      )
+    ) {
 
-    return {
-      x: env,
-      y: perf
-    };
+      x.push(
+        environmentValue
+      );
 
-  }
+      y.push(
+        performanceValue
+      );
 
-
-  if (
-    lag >= env.length
-  ) {
-
-    return {
-      x: [],
-      y: []
-    };
+    }
 
   }
 
 
   return {
 
-    x:
-      env.slice(
-        0,
-        env.length - lag
+    r:
+      pearsonCorrelation(
+        x,
+        y
       ),
 
-    y:
-      perf.slice(
-        lag
-      )
-
-  };
-
-}
-
-
-function calculateLagCorrelation(
-  lag
-) {
-
-  const dataset =
-    getActiveDataset();
-
-
-  const paired =
-    lagArrays(
-      dataset.values,
-      dataset.performance,
-      lag
-    );
-
-
-  const r =
-    pearsonCorrelation(
-      paired.x,
-      paired.y
-    );
-
-
-  return {
-
-    r,
-
     n:
-      paired.x.length,
-
-    lag
+      x.length
 
   };
 
 }
 
 
-function correlationInterpretation(
-  r
+function interpretCorrelation(
+  r,
+  n
 ) {
 
   if (
     r === null ||
-    !Number.isFinite(r)
+    n < 3
   ) {
+
     return "Insufficient data";
+
   }
 
 
@@ -2377,177 +2208,81 @@ function correlationInterpretation(
     Math.abs(r);
 
 
-  if (
-    absolute < 0.2
-  ) {
-    return "Very weak association";
+  if (absolute < 0.2) {
+    return "Very weak";
   }
 
-
-  if (
-    absolute < 0.4
-  ) {
-    return "Weak association";
+  if (absolute < 0.4) {
+    return "Weak";
   }
 
-
-  if (
-    absolute < 0.6
-  ) {
-    return "Moderate association";
+  if (absolute < 0.7) {
+    return "Moderate";
   }
 
-
-  if (
-    absolute < 0.8
-  ) {
-    return "Strong association";
+  if (absolute < 0.9) {
+    return "Strong";
   }
 
-
-  return "Very strong association";
-
-}
-
-
-function setupLagSlider() {
-
-  const slider =
-    $("#lag-slider");
-
-  if (!slider) {
-    return;
-  }
-
-
-  slider.addEventListener(
-    "input",
-    () => {
-
-      state.lag =
-        Number(slider.value);
-
-      updateCorrelation();
-
-    }
-  );
+  return "Very strong";
 
 }
 
 
 function updateCorrelation() {
 
+  const dataset =
+    state.activeDataset ||
+    DEMO_DATA;
+
+
+  const lag =
+    Number(
+      state.correlation.lag
+    );
+
+
   const result =
-    calculateLagCorrelation(
-      state.lag
+    calculateLaggedCorrelation(
+      dataset.environment,
+      dataset.performance,
+      lag
+    );
+
+
+  state.correlation.r =
+    result.r;
+
+  state.correlation.n =
+    result.n;
+
+  state.correlation.interpretation =
+    interpretCorrelation(
+      result.r,
+      result.n
     );
 
 
   setText(
-    "lag-value",
-    `${state.lag} hour${
-      state.lag === 1
-        ? ""
-        : "s"
-    }`
-  );
-
-
-  setText(
-    "correlation-r",
+    "correlation-value",
     result.r === null
       ? "--"
       : result.r.toFixed(3)
   );
 
-
   setText(
     "correlation-lag",
-    `${result.lag} h`
+    `${lag} h`
   );
-
 
   setText(
     "correlation-n",
     String(result.n)
   );
 
-
   setText(
     "correlation-interpretation",
-    correlationInterpretation(
-      result.r
-    )
-  );
-
-}
-
-
-/* =========================================================
-   PREDICTIVE LATENCY
-   ========================================================= */
-
-function calculatePredictedLatency() {
-
-  const co2 =
-    state.currentCO2;
-
-  const radiation =
-    state.environment.radiation;
-
-  const wakefulness =
-    state.environment.wakefulness;
-
-
-  const co2Effect =
-    clamp(
-      (co2 - 1200) /
-      2800,
-      0,
-      1
-    );
-
-
-  const radiationEffect =
-    clamp(
-      (radiation - 1.8) /
-      2.2,
-      0,
-      1
-    );
-
-
-  const sleepEffect =
-    clamp(
-      (wakefulness - 14) /
-      8,
-      0,
-      1
-    );
-
-
-  const prediction =
-    240 +
-
-    co2Effect * 55 +
-
-    radiationEffect * 20 +
-
-    sleepEffect * 45;
-
-
-  return Math.round(
-    prediction
-  );
-
-}
-
-
-function updatePrediction() {
-
-  setText(
-    "predicted-latency",
-    `${calculatePredictedLatency()} ms`
+    state.correlation.interpretation
   );
 
 }
@@ -2557,61 +2292,19 @@ function updatePrediction() {
    ANALYSIS
    ========================================================= */
 
-function getActiveDataset() {
-
-  if (
-    state.customDataset
-  ) {
-
-    return {
-
-      values:
-        numericArray(
-          state.customDataset.values
-        ),
-
-      performance:
-        numericArray(
-          state.customDataset.performance ||
-          state.customDataset.values.map(
-            estimatePerformance
-          )
-        ),
-
-      labels:
-        state.customDataset.labels
-
-    };
-
-  }
-
-
-  return {
-
-    values:
-      DEMO_DATA.environment,
-
-    performance:
-      DEMO_DATA.performance,
-
-    labels:
-      DEMO_DATA.labels
-
-  };
-
-}
-
-
 function updateAnalysis() {
 
   const dataset =
-    getActiveDataset();
+    state.activeDataset ||
+    DEMO_DATA;
+
+
+  const values =
+    dataset.environment;
 
 
   const trend =
-    calculateTrend(
-      dataset.values
-    );
+    calculateTrend(values);
 
 
   setText(
@@ -2621,10 +2314,12 @@ function updateAnalysis() {
 
 
   const difference =
-    ((state.currentCO2 -
-      SCENARIOS.baseline.co2) /
-      SCENARIOS.baseline.co2) *
-      100;
+    (
+      (state.currentCO2 -
+        SCENARIOS.baseline.co2)
+      /
+      SCENARIOS.baseline.co2
+    ) * 100;
 
 
   setText(
@@ -2642,21 +2337,18 @@ function updateAnalysis() {
 
 
   updateStatistics(
-    dataset.values
+    values
   );
-
 
   updateCorrelation();
 
-  updatePrediction();
-
-  updateEnvironmentMetrics();
+  updateEnvironmentIndex();
 
 }
 
 
 /* =========================================================
-   CSV UPLOAD
+   CSV SETUP
    ========================================================= */
 
 function setupCSV() {
@@ -2673,36 +2365,33 @@ function setupCSV() {
   const dropZone =
     $("#drop-zone");
 
-
-  if (
-    !browse ||
-    !input
-  ) {
-    return;
-  }
+  const template =
+    $("#download-template-btn");
 
 
-  browse.addEventListener(
-    "click",
-    () => input.click()
-  );
+  if (browse && input) {
+
+    browse.addEventListener(
+      "click",
+      () => input.click()
+    );
 
 
-  input.addEventListener(
-    "change",
-    event => {
+    input.addEventListener(
+      "change",
+      event => {
 
-      const file =
-        event.target
-          .files?.[0];
+        const file =
+          event.target.files?.[0];
 
+        if (file) {
+          processCSV(file);
+        }
 
-      if (file) {
-        processCSV(file);
       }
+    );
 
-    }
-  );
+  }
 
 
   if (clear) {
@@ -2710,6 +2399,16 @@ function setupCSV() {
     clear.addEventListener(
       "click",
       clearDataset
+    );
+
+  }
+
+
+  if (template) {
+
+    template.addEventListener(
+      "click",
+      downloadCSVTemplate
     );
 
   }
@@ -2840,9 +2539,7 @@ function processCSV(file) {
           parseCSV(text);
 
 
-        if (
-          !parsed.success
-        ) {
+        if (!parsed.success) {
 
           setFileStatus(
             parsed.message
@@ -2864,8 +2561,29 @@ function processCSV(file) {
           labels:
             parsed.labels,
 
+          environment:
+            parsed.values,
+
           performance:
             parsed.performance,
+
+          radiation:
+            parsed.radiation,
+
+          temperature:
+            parsed.temperature,
+
+          humidity:
+            parsed.humidity,
+
+          pressure:
+            parsed.pressure,
+
+          wakefulness:
+            parsed.wakefulness,
+
+          circadian:
+            parsed.circadian,
 
           co2Column:
             parsed.co2Column,
@@ -2876,8 +2594,15 @@ function processCSV(file) {
         };
 
 
-        state.activeScenario =
-          "baseline";
+        state.activeDataset =
+          state.customDataset;
+
+
+        state.currentCO2 =
+          lastOr(
+            parsed.values,
+            state.currentCO2
+          );
 
 
         updateDatasetInformation();
@@ -2887,21 +2612,11 @@ function processCSV(file) {
         updateAnalysis();
 
 
-        const latest =
-          parsed.values[
-            parsed.values.length - 1
-          ];
+        const clear =
+          $("#clear-csv-btn");
 
-
-        if (
-          Number.isFinite(
-            latest
-          )
-        ) {
-
-          state.currentCO2 =
-            latest;
-
+        if (clear) {
+          clear.disabled = false;
         }
 
 
@@ -2909,20 +2624,12 @@ function processCSV(file) {
           `Loaded ${file.name}: ${parsed.values.length} valid CO₂ values detected.`
         );
 
-
-        if (clear) {
-          clear.disabled =
-            false;
-        }
-
-
       } catch (error) {
 
         console.error(
           "CSV processing error:",
           error
         );
-
 
         setFileStatus(
           "The CSV could not be processed. Check its formatting."
@@ -2933,14 +2640,13 @@ function processCSV(file) {
     };
 
 
-  reader.onerror =
-    () => {
+  reader.onerror = () => {
 
-      setFileStatus(
-        "The browser could not read this file."
-      );
+    setFileStatus(
+      "The browser could not read this file."
+    );
 
-    };
+  };
 
 
   reader.readAsText(file);
@@ -2958,9 +2664,7 @@ function parseCSV(text) {
     parseCSVRows(text);
 
 
-  if (
-    rows.length < 2
-  ) {
+  if (rows.length < 2) {
 
     return {
 
@@ -2993,56 +2697,8 @@ function parseCSV(text) {
     );
 
 
-  const co2Keywords = [
-
-    "co2",
-
-    "carbondioxide",
-
-    "co2ppm",
-
-    "co2concentration",
-
-    "environment"
-
-  ];
-
-
-  let co2Index =
-    -1;
-
-
-  for (
-    let i = 0;
-    i < normalizedHeaders.length;
-    i++
-  ) {
-
-    const header =
-      normalizedHeaders[i];
-
-
-    if (
-      co2Keywords.some(
-        keyword =>
-          header.includes(
-            keyword
-          )
-      )
-    ) {
-
-      co2Index =
-        i;
-
-      break;
-
-    }
-
-  }
-
-
-  if (
-    co2Index === -1
+  function findColumn(
+    keywords
   ) {
 
     for (
@@ -3051,35 +2707,49 @@ function parseCSV(text) {
       i++
     ) {
 
+      const header =
+        normalizedHeaders[i];
+
+
       if (
-        normalizedHeaders[i]
-          .includes(
-            "carbon"
-          )
+        keywords.some(
+          keyword =>
+            header.includes(
+              keyword
+            )
+        )
       ) {
 
-        co2Index =
-          i;
-
-        break;
+        return i;
 
       }
 
     }
 
+
+    return -1;
+
   }
 
 
-  if (
-    co2Index === -1
-  ) {
+  const co2Index =
+    findColumn([
+      "co2",
+      "carbondioxide",
+      "co2ppm",
+      "co2concentration",
+      "environment"
+    ]);
+
+
+  if (co2Index === -1) {
 
     return {
 
       success: false,
 
       message:
-        "No CO₂ measurement column was detected. Try CO2, carbon_dioxide, CO2_ppm, or environment."
+        "No CO₂ measurement column was detected. Try CO2, CO2_ppm, carbon_dioxide or environment."
 
     };
 
@@ -3087,30 +2757,74 @@ function parseCSV(text) {
 
 
   const timeIndex =
-    normalizedHeaders.findIndex(
-      header =>
-        header.includes("time") ||
-        header.includes("date") ||
-        header.includes("timestamp") ||
-        header.includes("label")
-    );
+    findColumn([
+      "time",
+      "date",
+      "timestamp",
+      "label"
+    ]);
 
 
   const performanceIndex =
-    normalizedHeaders.findIndex(
-      header =>
-        header.includes("reactiontime") ||
-        header.includes("reaction") ||
-        header.includes("performance") ||
-        header.includes("rt")
-    );
+    findColumn([
+      "performance",
+      "reactiontime",
+      "reaction",
+      "rt"
+    ]);
+
+
+  const radiationIndex =
+    findColumn([
+      "radiation",
+      "radiationmsv",
+      "msv"
+    ]);
+
+
+  const temperatureIndex =
+    findColumn([
+      "temperature",
+      "temp"
+    ]);
+
+
+  const humidityIndex =
+    findColumn([
+      "humidity"
+    ]);
+
+
+  const pressureIndex =
+    findColumn([
+      "pressure"
+    ]);
+
+
+  const wakeIndex =
+    findColumn([
+      "wakefulness",
+      "awake",
+      "sleepless"
+    ]);
+
+
+  const circadianIndex =
+    findColumn([
+      "circadian",
+      "phaseoffset"
+    ]);
 
 
   const values = [];
-
   const labels = [];
-
   const performance = [];
+  const radiation = [];
+  const temperature = [];
+  const humidity = [];
+  const pressure = [];
+  const wakefulness = [];
+  const circadian = [];
 
 
   for (
@@ -3134,13 +2848,8 @@ function parseCSV(text) {
 
     const value =
       parseFloat(
-        String(
-          rawValue ?? ""
-        )
-          .replace(
-            /,/g,
-            ""
-          )
+        String(rawValue ?? "")
+          .replace(/,/g, "")
           .trim()
       );
 
@@ -3148,13 +2857,13 @@ function parseCSV(text) {
     if (
       !Number.isFinite(value)
     ) {
+
       continue;
+
     }
 
 
-    values.push(
-      value
-    );
+    values.push(value);
 
 
     if (
@@ -3175,61 +2884,72 @@ function parseCSV(text) {
     }
 
 
-    if (
-      performanceIndex >= 0
-    ) {
-
-      const performanceValue =
-        parseFloat(
-          String(
-            row[
-              performanceIndex
-            ] ?? ""
-          )
-            .replace(
-              /,/g,
-              ""
-            )
-            .trim()
-        );
+    performance.push(
+      readOptionalNumber(
+        row,
+        performanceIndex,
+        240
+      )
+    );
 
 
-      if (
-        Number.isFinite(
-          performanceValue
-        )
-      ) {
+    radiation.push(
+      readOptionalNumber(
+        row,
+        radiationIndex,
+        1.8
+      )
+    );
 
-        performance.push(
-          performanceValue
-        );
 
-      } else {
+    temperature.push(
+      readOptionalNumber(
+        row,
+        temperatureIndex,
+        22
+      )
+    );
 
-        performance.push(
-          estimatePerformance(
-            value
-          )
-        );
 
-      }
+    humidity.push(
+      readOptionalNumber(
+        row,
+        humidityIndex,
+        45
+      )
+    );
 
-    } else {
 
-      performance.push(
-        estimatePerformance(
-          value
-        )
-      );
+    pressure.push(
+      readOptionalNumber(
+        row,
+        pressureIndex,
+        101.3
+      )
+    );
 
-    }
+
+    wakefulness.push(
+      readOptionalNumber(
+        row,
+        wakeIndex,
+        2
+      )
+    );
+
+
+    circadian.push(
+      readOptionalNumber(
+        row,
+        circadianIndex,
+        0
+      )
+    );
 
   }
 
 
-  if (
-    !values.length
-  ) {
+  if (!values.length) {
 
     return {
 
@@ -3253,6 +2973,18 @@ function parseCSV(text) {
 
     performance,
 
+    radiation,
+
+    temperature,
+
+    humidity,
+
+    pressure,
+
+    wakefulness,
+
+    circadian,
+
     co2Column:
       headers[co2Index],
 
@@ -3266,8 +2998,35 @@ function parseCSV(text) {
 }
 
 
+function readOptionalNumber(
+  row,
+  index,
+  fallback
+) {
+
+  if (index < 0) {
+    return fallback;
+  }
+
+
+  const value =
+    parseFloat(
+      String(row[index] ?? "")
+        .replace(/,/g, "")
+        .trim()
+    );
+
+
+  return Number.isFinite(value)
+    ? value
+    : fallback;
+
+}
+
+
 /* =========================================================
    CSV ROW PARSER
+   Handles quoted commas and escaped quotes.
    ========================================================= */
 
 function parseCSVRows(text) {
@@ -3278,8 +3037,7 @@ function parseCSVRows(text) {
 
   let cell = "";
 
-  let insideQuotes =
-    false;
+  let insideQuotes = false;
 
 
   for (
@@ -3310,9 +3068,7 @@ function parseCSVRows(text) {
     }
 
 
-    if (
-      char === '"'
-    ) {
+    if (char === '"') {
 
       insideQuotes =
         !insideQuotes;
@@ -3327,9 +3083,7 @@ function parseCSVRows(text) {
       !insideQuotes
     ) {
 
-      row.push(
-        cell
-      );
+      row.push(cell);
 
       cell = "";
 
@@ -3350,13 +3104,13 @@ function parseCSVRows(text) {
         char === "\r" &&
         next === "\n"
       ) {
+
         i++;
+
       }
 
 
-      row.push(
-        cell
-      );
+      row.push(cell);
 
 
       if (
@@ -3366,9 +3120,7 @@ function parseCSVRows(text) {
         )
       ) {
 
-        rows.push(
-          row
-        );
+        rows.push(row);
 
       }
 
@@ -3392,9 +3144,7 @@ function parseCSVRows(text) {
     row.length
   ) {
 
-    row.push(
-      cell
-    );
+    row.push(cell);
 
 
     if (
@@ -3404,9 +3154,7 @@ function parseCSVRows(text) {
       )
     ) {
 
-      rows.push(
-        row
-      );
+      rows.push(row);
 
     }
 
@@ -3424,41 +3172,36 @@ function parseCSVRows(text) {
 
 function updateDatasetInformation() {
 
-  if (
-    !state.customDataset
-  ) {
+  if (!state.customDataset) {
 
     setText(
       "dataset-badge",
       "DEMONSTRATION"
     );
 
-
     setText(
       "dataset-name",
+      state.activeDataset.name ||
       "Built-in demonstration data"
     );
-
 
     setText(
       "dataset-rows",
       String(
-        DEMO_DATA.environment.length
+        state.activeDataset
+          .environment.length
       )
     );
-
 
     setText(
       "dataset-co2-column",
       "environment"
     );
 
-
     setText(
       "dataset-time-column",
       "labels"
     );
-
 
     setText(
       "dataset-validation",
@@ -3468,7 +3211,6 @@ function updateDatasetInformation() {
 
     const validation =
       $("#dataset-validation");
-
 
     if (validation) {
 
@@ -3486,9 +3228,9 @@ function updateDatasetInformation() {
 
     setText(
       "statistics-source",
+      state.activeDataset.name ||
       "Demonstration dataset"
     );
-
 
     return;
 
@@ -3504,12 +3246,10 @@ function updateDatasetInformation() {
     "CUSTOM DATA"
   );
 
-
   setText(
     "dataset-name",
     dataset.name
   );
-
 
   setText(
     "dataset-rows",
@@ -3518,18 +3258,15 @@ function updateDatasetInformation() {
     )
   );
 
-
   setText(
     "dataset-co2-column",
     dataset.co2Column
   );
 
-
   setText(
     "dataset-time-column",
     dataset.timeColumn
   );
-
 
   setText(
     "dataset-validation",
@@ -3539,7 +3276,6 @@ function updateDatasetInformation() {
 
   const validation =
     $("#dataset-validation");
-
 
   if (validation) {
 
@@ -3564,116 +3300,43 @@ function updateDatasetInformation() {
 
 
 /* =========================================================
-   BUILT-IN DATASETS
+   CUSTOM CHARTS
    ========================================================= */
 
-function setupBuiltInDatasets() {
+function updateCustomCharts() {
 
-  const issButton =
-    $("#load-iss-btn");
-
-  const sleepButton =
-    $("#load-sleep-btn");
+  const dataset =
+    state.customDataset;
 
 
-  if (issButton) {
-
-    issButton.addEventListener(
-      "click",
-      () =>
-        loadBuiltInDataset(
-          "iss"
-        )
-    );
-
-  }
-
-
-  if (sleepButton) {
-
-    sleepButton.addEventListener(
-      "click",
-      () =>
-        loadBuiltInDataset(
-          "sleep"
-        )
-    );
-
-  }
-
-}
-
-
-function loadBuiltInDataset(
-  name
-) {
-
-  const source =
-    BUILT_IN_DATASETS[name];
-
-
-  if (!source) {
+  if (!dataset) {
     return;
   }
 
 
-  state.customDataset = {
-
-    name:
-      source.name,
-
-    values:
-      [...source.environment],
-
-    labels:
-      [...source.labels],
-
-    performance:
-      [...source.performance],
-
-    co2Column:
-      "CO2",
-
-    timeColumn:
-      "Time"
-
-  };
+  state.activeDataset =
+    dataset;
 
 
   state.currentCO2 =
-    source.environment[
-      source.environment.length - 1
-    ];
+    lastOr(
+      dataset.values,
+      state.currentCO2
+    );
 
 
-  state.environment = {
+  setText(
+    "environment-value",
+    formatNumber(
+      state.currentCO2
+    )
+  );
 
-    radiation:
-      source.radiation[
-        source.radiation.length - 1
-      ],
 
-    temperature:
-      source.temperature[
-        source.temperature.length - 1
-      ],
-
-    humidity:
-      source.humidity[
-        source.humidity.length - 1
-      ],
-
-    pressure:
-      source.pressure[
-        source.pressure.length - 1
-      ],
-
-    wakefulness:
-      source.wakefulness[
-        source.wakefulness.length - 1
-      ]
-
-  };
+  setText(
+    "co2-slider-value",
+    `${formatNumber(state.currentCO2)} ppm`
+  );
 
 
   const slider =
@@ -3692,35 +3355,9 @@ function loadBuiltInDataset(
   }
 
 
-  updateDatasetInformation();
+  drawEnvironmentChart();
 
-  updateCustomCharts();
-
-  updateAnalysis();
-
-
-  setFileStatus(
-    `${source.name} loaded. This dataset is simulated demonstration data.`
-  );
-
-
-  const clear =
-    $("#clear-csv-btn");
-
-
-  if (clear) {
-    clear.disabled =
-      false;
-  }
-
-
-  setText(
-    "co2-slider-value",
-    `${formatNumber(
-      state.currentCO2,
-      0
-    )} ppm`
-  );
+  drawPerformanceChart();
 
 }
 
@@ -3735,39 +3372,10 @@ function clearDataset() {
     null;
 
 
-  state.currentCO2 =
-    SCENARIOS[
-      state.activeScenario
-    ].co2;
-
-
-  state.environment = {
-
-    radiation:
-      SCENARIOS[
-        state.activeScenario
-      ].radiation,
-
-    temperature:
-      SCENARIOS[
-        state.activeScenario
-      ].temperature,
-
-    humidity:
-      SCENARIOS[
-        state.activeScenario
-      ].humidity,
-
-    pressure:
-      SCENARIOS[
-        state.activeScenario
-      ].pressure,
-
-    wakefulness:
-      SCENARIOS[
-        state.activeScenario
-      ].wakefulness
-
+  state.activeDataset = {
+    ...DEMO_DATA,
+    name:
+      "Built-in demonstration data"
   };
 
 
@@ -3785,8 +3393,7 @@ function clearDataset() {
 
 
   if (clear) {
-    clear.disabled =
-      true;
+    clear.disabled = true;
   }
 
 
@@ -3798,48 +3405,10 @@ function clearDataset() {
   updateDatasetInformation();
 
 
-  if (
-    state.charts.environment
-  ) {
-
-    state.charts.environment
-      .data
-      .labels =
-        DEMO_DATA.labels;
-
-    state.charts.environment
-      .data
-      .datasets[0]
-      .data =
-        DEMO_DATA.environment;
-
-    state.charts.environment.update(
-      "none"
-    );
-
-  }
-
-
-  if (
-    state.charts.performance
-  ) {
-
-    state.charts.performance
-      .data
-      .labels =
-        DEMO_DATA.labels;
-
-    state.charts.performance
-      .data
-      .datasets[0]
-      .data =
-        DEMO_DATA.performance;
-
-    state.charts.performance.update(
-      "none"
-    );
-
-  }
+  state.currentCO2 =
+    SCENARIOS[
+      state.activeScenario
+    ].co2;
 
 
   applyScenario(
@@ -3848,8 +3417,137 @@ function clearDataset() {
     ]
   );
 
+
+  updateAnalysis();
+
 }
 
+
+/* =========================================================
+   BUILT-IN BENCHMARKS
+   ========================================================= */
+
+function setupBenchmarks() {
+
+  $all(".benchmark-btn")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const key =
+            button.dataset.benchmark;
+
+
+          if (
+            !BENCHMARK_DATASETS[key]
+          ) {
+
+            return;
+
+          }
+
+
+          loadBenchmark(
+            key
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+function loadBenchmark(
+  key
+) {
+
+  const source =
+    BENCHMARK_DATASETS[key];
+
+
+  if (!source) {
+    return;
+  }
+
+
+  state.customDataset =
+    null;
+
+
+  state.activeDataset = {
+    ...source
+  };
+
+
+  state.currentCO2 =
+    lastOr(
+      source.environment,
+      1200
+    );
+
+
+  const slider =
+    $("#co2-slider");
+
+
+  if (slider) {
+
+    slider.value =
+      clamp(
+        state.currentCO2,
+        Number(slider.min),
+        Number(slider.max)
+      );
+
+  }
+
+
+  setText(
+    "co2-slider-value",
+    `${formatNumber(state.currentCO2)} ppm`
+  );
+
+
+  setText(
+    "environment-value",
+    formatNumber(
+      state.currentCO2
+    )
+  );
+
+
+  setText(
+    "benchmark-status",
+    `Loaded: ${source.name}`
+  );
+
+
+  const clear =
+    $("#clear-csv-btn");
+
+  if (clear) {
+    clear.disabled = true;
+  }
+
+
+  updateDatasetInformation();
+
+  updateAnalysis();
+
+  drawEnvironmentChart();
+
+  drawPerformanceChart();
+
+}
+
+
+/* =========================================================
+   FILE STATUS
+   ========================================================= */
 
 function setFileStatus(
   message
@@ -3857,7 +3555,6 @@ function setFileStatus(
 
   const element =
     $("#file-status-msg");
-
 
   if (element) {
     element.textContent =
@@ -3868,56 +3565,43 @@ function setFileStatus(
 
 
 /* =========================================================
-   CSV TEMPLATE EXPORT
+   CSV TEMPLATE DOWNLOAD
    ========================================================= */
 
-function setupTemplateDownload() {
+function downloadCSVTemplate() {
 
-  const button =
-    $("#download-template-btn");
+  const csv = [
+    "time,CO2_ppm,performance_ms,radiation_mSv_day,temperature_C,humidity_percent,pressure_kPa,wakefulness_hours,circadian_offset_hours",
+    "T-6h,1100,235,1.4,21.5,42,101.3,1,0",
+    "T-5h,1150,238,1.5,21.8,43,101.3,1.2,0",
+    "T-4h,1180,240,1.6,22,44,101.3,1.5,0",
+    "T-3h,1200,242,1.7,22.1,45,101.3,1.7,0",
+    "T-2h,1210,244,1.8,22,45,101.4,1.8,0",
+    "T-1h,1190,241,1.8,22,45,101.3,2,0",
+    "Current,1200,240,1.8,22,45,101.3,2,0"
+  ].join("\n");
 
 
-  if (!button) {
-    return;
-  }
-
-
-  button.addEventListener(
-    "click",
-    downloadCSVTemplate
+  downloadTextFile(
+    csv,
+    "space-neurohealth-template.csv",
+    "text/csv;charset=utf-8"
   );
 
 }
 
 
-function downloadCSVTemplate() {
-
-  const content = [
-
-    "timestamp,CO2_ppm,reaction_time_ms",
-
-    "T-6h,1100,235",
-
-    "T-5h,1150,238",
-
-    "T-4h,1180,240",
-
-    "T-3h,1200,242",
-
-    "T-2h,1210,244",
-
-    "T-1h,1190,241",
-
-    "Current,1200,240"
-
-  ].join("\n");
-
+function downloadTextFile(
+  content,
+  filename,
+  type
+) {
 
   const blob =
     new Blob(
       [content],
       {
-        type: "text/csv;charset=utf-8;"
+        type
       }
     );
 
@@ -3928,32 +3612,37 @@ function downloadCSVTemplate() {
     );
 
 
-  const link =
+  const anchor =
     document.createElement(
       "a"
     );
 
 
-  link.href =
+  anchor.href =
     url;
 
-  link.download =
-    "space-neurohealth-template.csv";
+  anchor.download =
+    filename;
 
 
   document.body.appendChild(
-    link
+    anchor
   );
 
 
-  link.click();
+  anchor.click();
 
 
-  link.remove();
+  anchor.remove();
 
 
-  URL.revokeObjectURL(
-    url
+  setTimeout(
+    () => {
+      URL.revokeObjectURL(
+        url
+      );
+    },
+    1000
   );
 
 }
@@ -3972,10 +3661,7 @@ function setupPVT() {
     $("#pvt-box");
 
 
-  if (
-    !startButton ||
-    !box
-  ) {
+  if (!startButton || !box) {
     return;
   }
 
@@ -4019,10 +3705,17 @@ function startPVT() {
     state.pvt;
 
 
-  if (
-    pvt.running
-  ) {
+  if (pvt.running) {
     return;
+  }
+
+
+  if (pvt.timer) {
+
+    clearTimeout(
+      pvt.timer
+    );
+
   }
 
 
@@ -4057,15 +3750,13 @@ function startPVT() {
 
 
   if (button) {
-    button.disabled =
-      true;
+    button.disabled = true;
   }
 
 
   const delay =
     1200 +
-    Math.random() *
-    3000;
+    Math.random() * 3000;
 
 
   pvt.timer =
@@ -4083,9 +3774,7 @@ function makePVTReady() {
     state.pvt;
 
 
-  if (
-    !pvt.running
-  ) {
+  if (!pvt.running) {
     return;
   }
 
@@ -4122,24 +3811,21 @@ function handlePVTClick() {
     state.pvt;
 
 
-  if (
-    !pvt.running
-  ) {
+  if (!pvt.running) {
     return;
   }
 
 
-  if (
-    !pvt.ready
-  ) {
+  if (!pvt.ready) {
 
-    if (
-      pvt.timer
-    ) {
+    if (pvt.timer) {
 
       clearTimeout(
         pvt.timer
       );
+
+      pvt.timer =
+        null;
 
     }
 
@@ -4175,8 +3861,7 @@ function handlePVTClick() {
 
 
     if (button) {
-      button.disabled =
-        false;
+      button.disabled = false;
     }
 
 
@@ -4194,9 +3879,7 @@ function handlePVTClick() {
     );
 
 
-  if (
-    reactionTime < 150
-  ) {
+  if (reactionTime < 150) {
 
     pvt.falseStarts++;
 
@@ -4207,12 +3890,8 @@ function handlePVTClick() {
     );
 
 
-    if (
-      reactionTime > 500
-    ) {
-
+    if (reactionTime > 500) {
       pvt.lapses++;
-
     }
 
   }
@@ -4235,24 +3914,8 @@ function handlePVTClick() {
       "ready"
     );
 
-
-    if (
-      reactionTime < 150
-    ) {
-
-      box.classList.add(
-        "false-start"
-      );
-
-      box.textContent =
-        `${reactionTime} ms — anticipation detected`;
-
-    } else {
-
-      box.textContent =
-        `${reactionTime} ms — press Start Test for another trial`;
-
-    }
+    box.textContent =
+      `${reactionTime} ms — press Start Test for another trial`;
 
   }
 
@@ -4262,84 +3925,11 @@ function handlePVTClick() {
 
 
   if (button) {
-    button.disabled =
-      false;
+    button.disabled = false;
   }
 
 
   updatePVTResults();
-
-}
-
-
-function calculateMedian(
-  values
-) {
-
-  if (
-    !values.length
-  ) {
-    return null;
-  }
-
-
-  const sorted =
-    [...values]
-      .sort(
-        (a, b) =>
-          a - b
-      );
-
-
-  const middle =
-    Math.floor(
-      sorted.length / 2
-    );
-
-
-  if (
-    sorted.length % 2
-  ) {
-
-    return sorted[middle];
-
-  }
-
-
-  return (
-    sorted[middle - 1] +
-    sorted[middle]
-  ) / 2;
-
-}
-
-
-function calculateMeanRRT(
-  trials
-) {
-
-  if (
-    !trials.length
-  ) {
-    return null;
-  }
-
-
-  const rrts =
-    trials.map(
-      rt =>
-        1000 / rt
-    );
-
-
-  return (
-    rrts.reduce(
-      (sum, value) =>
-        sum + value,
-      0
-    ) /
-    rrts.length
-  );
 
 }
 
@@ -4361,14 +3951,6 @@ function updatePVTResults() {
 
 
   setText(
-    "pvt-false-starts",
-    String(
-      state.pvt.falseStarts
-    )
-  );
-
-
-  setText(
     "pvt-lapses",
     String(
       state.pvt.lapses
@@ -4376,9 +3958,15 @@ function updatePVTResults() {
   );
 
 
-  if (
-    !count
-  ) {
+  setText(
+    "pvt-false-starts",
+    String(
+      state.pvt.falseStarts
+    )
+  );
+
+
+  if (!count) {
 
     setText(
       "pvt-score",
@@ -4391,23 +3979,13 @@ function updatePVTResults() {
     );
 
     setText(
-      "pvt-best",
-      "-- ms"
-    );
-
-    setText(
-      "pvt-median",
-      "-- ms"
-    );
-
-    setText(
-      "pvt-mean-rrt",
-      "-- s⁻¹"
-    );
-
-    setText(
       "pvt-rrt",
       "-- s⁻¹"
+    );
+
+    setText(
+      "pvt-best",
+      "-- ms"
     );
 
     return;
@@ -4430,21 +4008,21 @@ function updatePVTResults() {
     count;
 
 
+  const meanRRT =
+    trials.reduce(
+      (sum, value) =>
+        sum +
+        (
+          1000 / value
+        ),
+      0
+    ) /
+    count;
+
+
   const best =
     Math.min(
       ...trials
-    );
-
-
-  const median =
-    calculateMedian(
-      trials
-    );
-
-
-  const meanRRT =
-    calculateMeanRRT(
-      trials
     );
 
 
@@ -4453,42 +4031,19 @@ function updatePVTResults() {
     `${last} ms`
   );
 
-
   setText(
     "pvt-average",
-    `${Math.round(
-      average
-    )} ms`
+    `${Math.round(average)} ms`
   );
 
+  setText(
+    "pvt-rrt",
+    `${meanRRT.toFixed(3)} s⁻¹`
+  );
 
   setText(
     "pvt-best",
     `${best} ms`
-  );
-
-
-  setText(
-    "pvt-median",
-    `${Math.round(
-      median
-    )} ms`
-  );
-
-
-  setText(
-    "pvt-mean-rrt",
-    `${meanRRT.toFixed(
-      3
-    )} s⁻¹`
-  );
-
-
-  setText(
-    "pvt-rrt",
-    `${meanRRT.toFixed(
-      3
-    )} s⁻¹`
   );
 
 }
@@ -4525,21 +4080,11 @@ function exportSummary() {
     ];
 
 
-  const correlation =
-    calculateLagCorrelation(
-      state.lag
-    );
-
-
-  const index =
-    calculateEnvironmentIndex();
-
-
   const pvt =
     state.pvt;
 
 
-  const averageRT =
+  const pvtAverage =
     pvt.trials.length
       ? Math.round(
           pvt.trials.reduce(
@@ -4552,10 +4097,24 @@ function exportSummary() {
       : null;
 
 
-  const meanRRT =
-    calculateMeanRRT(
-      pvt.trials
-    );
+  const pvtMeanRRT =
+    pvt.trials.length
+      ? (
+          pvt.trials.reduce(
+            (sum, value) =>
+              sum +
+              (
+                1000 / value
+              ),
+            0
+          ) /
+          pvt.trials.length
+        )
+      : null;
+
+
+  const correlation =
+    state.correlation;
 
 
   const originalTitle =
@@ -4566,99 +4125,68 @@ function exportSummary() {
     "Space NeuroHealth Research Summary";
 
 
-  const message = [
+  const message = `Space NeuroHealth
 
-    "SPACE NEUROHEALTH",
+SCENARIO
+${scenario.name}
 
-    "",
+ACTIVE CO₂
+${formatNumber(state.currentCO2)} ppm
 
-    `Scenario: ${scenario.name}`,
+ENVIRONMENT INDEX
+${$("#environment-index")?.textContent || "--"} / 100
+${$("#environment-index-status")?.textContent || "--"}
 
-    `CO₂: ${formatNumber(
-      state.currentCO2,
-      0
-    )} ppm`,
+RADIATION
+${$("#radiation-value")?.textContent || "--"}
 
-    `Radiation: ${formatNumber(
-      state.environment.radiation,
-      1
-    )} mSv/day`,
+TEMPERATURE
+${$("#temperature-value")?.textContent || "--"}
 
-    `Temperature: ${formatNumber(
-      state.environment.temperature,
-      1
-    )} °C`,
+HUMIDITY
+${$("#humidity-value")?.textContent || "--"}
 
-    `Humidity: ${formatNumber(
-      state.environment.humidity,
-      0
-    )}%`,
+PRESSURE
+${$("#pressure-value")?.textContent || "--"}
 
-    `Pressure: ${formatNumber(
-      state.environment.pressure,
-      1
-    )} kPa`,
+WAKEFULNESS
+${$("#wake-value")?.textContent || "--"}
 
-    `Wakefulness: ${formatNumber(
-      state.environment.wakefulness,
-      0
-    )} h`,
+CIRCADIAN OFFSET
+${$("#circadian-value")?.textContent || "--"}
 
-    "",
+TIME-LAGGED CORRELATION
+Pearson r: ${
+  correlation.r === null
+    ? "--"
+    : correlation.r.toFixed(3)
+}
+Lag: ${correlation.lag} h
+Sample size: ${correlation.n}
 
-    `Environment Index: ${Math.round(
-      index
-    )}/100`,
+PVT
+Trials: ${pvt.trials.length}
+Mean RT: ${
+  pvtAverage === null
+    ? "--"
+    : `${pvtAverage} ms`
+}
+Mean RRT: ${
+  pvtMeanRRT === null
+    ? "--"
+    : `${pvtMeanRRT.toFixed(3)} s⁻¹`
+}
+Lapses >500 ms: ${pvt.lapses}
+False starts <150 ms: ${pvt.falseStarts}
 
-    `Environment State: ${
-      getIndexState(index).label
-    }`,
+DATASET
+${
+  state.customDataset
+    ? state.customDataset.name
+    : state.activeDataset.name
+}
 
-    "",
-
-    `Lag: ${state.lag} h`,
-
-    `Pearson r: ${
-      correlation.r === null
-        ? "--"
-        : correlation.r.toFixed(3)
-    }`,
-
-    `Correlation sample size: ${correlation.n}`,
-
-    "",
-
-    `PVT trials: ${pvt.trials.length}`,
-
-    `Mean RT: ${
-      averageRT === null
-        ? "--"
-        : `${averageRT} ms`
-    }`,
-
-    `Mean RRT: ${
-      meanRRT === null
-        ? "--"
-        : `${meanRRT.toFixed(3)} s⁻¹`
-    }`,
-
-    `Lapses > 500 ms: ${pvt.lapses}`,
-
-    `False starts < 150 ms: ${pvt.falseStarts}`,
-
-    "",
-
-    `Dataset: ${
-      state.customDataset
-        ? state.customDataset.name
-        : "Built-in demonstration data"
-    }`,
-
-    "",
-
-    "This report contains demonstration/interface data unless a validated dataset has been loaded. Exploratory correlations do not establish causation."
-
-  ].join("\n");
+This report contains demonstration/interface data unless a validated dataset has been loaded.`;
 
 
   const shouldPrint =
@@ -4667,9 +4195,7 @@ function exportSummary() {
     );
 
 
-  if (
-    shouldPrint
-  ) {
+  if (shouldPrint) {
 
     window.print();
 
@@ -4704,13 +4230,14 @@ function setupKeyboardNavigation() {
         state.pvt.running
       ) {
 
-        if (
-          state.pvt.timer
-        ) {
+        if (state.pvt.timer) {
 
           clearTimeout(
             state.pvt.timer
           );
+
+          state.pvt.timer =
+            null;
 
         }
 
@@ -4743,10 +4270,7 @@ function setupKeyboardNavigation() {
 
 
         if (button) {
-
-          button.disabled =
-            false;
-
+          button.disabled = false;
         }
 
       }
@@ -4769,19 +4293,22 @@ function initializeApp() {
 
   setupSlider();
 
-  setupLagSlider();
-
   setupCSV();
 
-  setupBuiltInDatasets();
-
-  setupTemplateDownload();
+  setupBenchmarks();
 
   setupPVT();
 
   setupExport();
 
   setupKeyboardNavigation();
+
+
+  state.activeDataset = {
+    ...DEMO_DATA,
+    name:
+      "Built-in demonstration data"
+  };
 
 
   updateStatistics(
@@ -4802,19 +4329,24 @@ function initializeApp() {
 
   updatePVTResults();
 
+
   updateCorrelation();
 
+
   updateAnalysis();
+
+
+  window.addEventListener(
+    "resize",
+    resizeCharts
+  );
 
 }
 
 
-/* =========================================================
-   START APPLICATION
-   ========================================================= */
-
 if (
-  document.readyState === "loading"
+  document.readyState ===
+  "loading"
 ) {
 
   document.addEventListener(
@@ -4826,4 +4358,4 @@ if (
 
   initializeApp();
 
-}
+       }
