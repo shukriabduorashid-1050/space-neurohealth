@@ -121,7 +121,10 @@
     </nav>
 
 
-    <!-- DASHBOARD -->
+    <!-- =====================================================
+         DASHBOARD
+         ===================================================== -->
+
     <main
       id="dashboard"
       class="section active-section"
@@ -129,7 +132,40 @@
       aria-labelledby="tab-dashboard"
     >
 
+      <!-- ENVIRONMENTAL ALERT -->
+      <div
+        class="alert-banner warning-alert"
+        role="alert"
+        id="anomaly-alert"
+        aria-live="polite"
+      >
+
+        <span
+          class="alert-icon"
+          id="alert-icon"
+          aria-hidden="true"
+        >
+          ⚠️
+        </span>
+
+        <div class="alert-content">
+
+          <strong id="alert-title">
+            Environmental Threshold Exceeded
+          </strong>
+
+          <p id="alert-message">
+            Elevated CO₂ level detected (&gt;1,000 ppm).
+            Cognitive latency risk elevated by ~12%.
+          </p>
+
+        </div>
+
+      </div>
+
+
       <div class="section-heading">
+
         <div>
           <span class="eyebrow">LIVE MONITORING</span>
 
@@ -138,7 +174,10 @@
           </h2>
         </div>
 
-        <span class="data-status">DEMO MODE</span>
+        <span class="data-status">
+          DEMO MODE
+        </span>
+
       </div>
 
 
@@ -179,8 +218,11 @@
       <section class="control-card">
 
         <div class="control-header">
+
           <div>
-            <span class="eyebrow">INTERACTIVE SIMULATOR</span>
+            <span class="eyebrow">
+              INTERACTIVE SIMULATOR
+            </span>
 
             <h3>
               Environmental Parameters
@@ -190,17 +232,23 @@
           <span class="demo-pill">
             DEMONSTRATION MODEL
           </span>
+
         </div>
 
 
+        <!-- CO2 -->
         <div class="slider-group">
 
           <label for="co2-slider">
-            <span>Target CO₂ Concentration</span>
+
+            <span>
+              Target CO₂ Concentration
+            </span>
 
             <strong id="co2-slider-value">
               1200 ppm
             </strong>
+
           </label>
 
           <input
@@ -224,6 +272,70 @@
             The simulated performance indicator is not a validated
             physiological model.
           </p>
+
+        </div>
+
+
+        <!-- CABIN PRESSURE -->
+        <div class="slider-group">
+
+          <label for="pressure-slider">
+
+            <span>
+              Cabin Pressure
+            </span>
+
+            <strong id="pressure-slider-value">
+              101.3 kPa
+            </strong>
+
+          </label>
+
+          <input
+            type="range"
+            id="pressure-slider"
+            min="70"
+            max="110"
+            value="101.3"
+            step="0.5"
+            aria-describedby="pressure-help"
+          >
+
+          <div class="slider-scale">
+            <span>70 kPa</span>
+            <span>101.3 kPa</span>
+            <span>110 kPa</span>
+          </div>
+
+          <p id="pressure-help" class="control-help">
+            Simulate hypo/hyperbaric cabin conditions.
+          </p>
+
+        </div>
+
+
+        <!-- SIMULATOR STATE -->
+        <div class="simulator-state">
+
+          <div>
+            <span class="state-label">
+              SIMULATION STATE
+            </span>
+
+            <strong id="simulation-state">
+              Nominal
+            </strong>
+          </div>
+
+          <div>
+            <span class="state-label">
+              ENVIRONMENT SCORE
+            </span>
+
+            <strong id="environment-score">
+              100 / 100
+            </strong>
+          </div>
 
         </div>
 
@@ -337,14 +449,18 @@
         <div class="chart-header">
 
           <div>
-            <span class="eyebrow">ENVIRONMENT</span>
+            <span class="eyebrow">
+              ENVIRONMENT
+            </span>
 
             <h3>
               CO₂ Time Series
             </h3>
           </div>
 
-          <span class="chart-unit">ppm</span>
+          <span class="chart-unit">
+            ppm
+          </span>
 
         </div>
 
@@ -376,7 +492,9 @@
       <!-- SCIENTIFIC INTERPRETATION -->
       <section class="science-card">
 
-        <div class="science-icon">🔬</div>
+        <div class="science-icon">
+          🔬
+        </div>
 
         <div>
 
@@ -412,23 +530,33 @@
           <div class="pipeline-step">
             <span>01</span>
             <strong>Environment</strong>
-            <p>CO₂ and other environmental measurements</p>
+            <p>
+              CO₂, pressure, and other environmental measurements
+            </p>
           </div>
 
-          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-arrow">
+            →
+          </div>
 
           <div class="pipeline-step">
             <span>02</span>
             <strong>Processing</strong>
-            <p>Validation and time-series analysis</p>
+            <p>
+              Validation and time-series analysis
+            </p>
           </div>
 
-          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-arrow">
+            →
+          </div>
 
           <div class="pipeline-step">
             <span>03</span>
             <strong>Cognition</strong>
-            <p>Performance indicators and PVT results</p>
+            <p>
+              Performance indicators and PVT results
+            </p>
           </div>
 
         </div>
@@ -438,7 +566,10 @@
     </main>
 
 
-    <!-- ANALYSIS -->
+    <!-- =====================================================
+         ANALYSIS
+         ===================================================== -->
+
     <section
       id="analysis"
       class="section"
@@ -469,9 +600,14 @@
       <div class="analysis-grid">
 
         <article class="analysis-card">
-          <span class="analysis-icon">📈</span>
 
-          <h3>Current Trend</h3>
+          <span class="analysis-icon">
+            📈
+          </span>
+
+          <h3>
+            Current Trend
+          </h3>
 
           <div id="trend-result">
             Stable
@@ -481,13 +617,19 @@
             Direction of the selected demonstration
             environmental series.
           </p>
+
         </article>
 
 
         <article class="analysis-card">
-          <span class="analysis-icon">🎯</span>
 
-          <h3>Baseline Difference</h3>
+          <span class="analysis-icon">
+            🎯
+          </span>
+
+          <h3>
+            Baseline Difference
+          </h3>
 
           <div id="baseline-result">
             0%
@@ -497,13 +639,19 @@
             Relative difference from the reference
             demonstration condition.
           </p>
+
         </article>
 
 
         <article class="analysis-card">
-          <span class="analysis-icon">🧪</span>
 
-          <h3>Analysis Type</h3>
+          <span class="analysis-icon">
+            🧪
+          </span>
+
+          <h3>
+            Analysis Type
+          </h3>
 
           <div id="analysis-result">
             Exploratory
@@ -512,11 +660,108 @@
           <p>
             This prototype does not establish causation.
           </p>
+
         </article>
 
       </div>
 
 
+      <!-- COHORT FILTERS -->
+      <section class="filter-card">
+
+        <div class="filter-card-header">
+
+          <div>
+            <span class="eyebrow">
+              COHORT FILTERS
+            </span>
+
+            <h3>
+              Analysis Population
+            </h3>
+          </div>
+
+          <span
+            id="filter-count"
+            class="small-badge"
+          >
+            ALL SUBJECTS
+          </span>
+
+        </div>
+
+
+        <div class="filter-grid">
+
+          <div class="filter-group">
+
+            <label for="filter-subject">
+              Subject ID
+            </label>
+
+            <select
+              id="filter-subject"
+              class="select-input"
+            >
+
+              <option value="all">
+                All Subjects (n=8)
+              </option>
+
+              <option value="sub-01">
+                Subject 01 (Crew Lead)
+              </option>
+
+              <option value="sub-02">
+                Subject 02 (Payload Spec)
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="filter-group">
+
+            <label for="filter-phase">
+              Circadian Phase
+            </label>
+
+            <select
+              id="filter-phase"
+              class="select-input"
+            >
+
+              <option value="all">
+                All Phases
+              </option>
+
+              <option value="nominal">
+                Nominal Sleep Cycle
+              </option>
+
+              <option value="shifted">
+                Shift-Shifted (Night Shift)
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="filter-description"
+          class="filter-description"
+        >
+          Showing the complete demonstration cohort.
+        </div>
+
+      </section>
+
+
+      <!-- STATISTICS -->
       <section class="statistics-card">
 
         <div class="card-title-row">
@@ -545,22 +790,30 @@
 
           <div class="stat-item">
             <span>Mean CO₂</span>
-            <strong id="mean-co2">1,176 ppm</strong>
+            <strong id="mean-co2">
+              1,176 ppm
+            </strong>
           </div>
 
           <div class="stat-item">
             <span>Peak CO₂</span>
-            <strong id="peak-co2">1,210 ppm</strong>
+            <strong id="peak-co2">
+              1,210 ppm
+            </strong>
           </div>
 
           <div class="stat-item">
             <span>Minimum CO₂</span>
-            <strong id="min-co2">1,100 ppm</strong>
+            <strong id="min-co2">
+              1,100 ppm
+            </strong>
           </div>
 
           <div class="stat-item">
             <span>Data Points</span>
-            <strong id="data-points">7</strong>
+            <strong id="data-points">
+              7
+            </strong>
           </div>
 
         </div>
@@ -568,6 +821,7 @@
       </section>
 
 
+      <!-- PERFORMANCE CHART -->
       <section class="chart-card">
 
         <div class="chart-header">
@@ -582,7 +836,9 @@
             </h3>
           </div>
 
-          <span class="chart-unit">ms</span>
+          <span class="chart-unit">
+            ms
+          </span>
 
         </div>
 
@@ -652,7 +908,9 @@
 
           <div class="pvt-score">
             Last Score:
-            <strong id="pvt-score">-- ms</strong>
+            <strong id="pvt-score">
+              -- ms
+            </strong>
           </div>
 
         </div>
@@ -661,22 +919,30 @@
 
           <div>
             <span>Trials</span>
-            <strong id="pvt-trials">0</strong>
+            <strong id="pvt-trials">
+              0
+            </strong>
           </div>
 
           <div>
             <span>Average</span>
-            <strong id="pvt-average">-- ms</strong>
+            <strong id="pvt-average">
+              -- ms
+            </strong>
           </div>
 
           <div>
             <span>Best</span>
-            <strong id="pvt-best">-- ms</strong>
+            <strong id="pvt-best">
+              -- ms
+            </strong>
           </div>
 
           <div>
             <span>Lapses</span>
-            <strong id="pvt-lapses">0</strong>
+            <strong id="pvt-lapses">
+              0
+            </strong>
           </div>
 
         </div>
@@ -691,7 +957,10 @@
     </section>
 
 
-    <!-- NASA DATA -->
+    <!-- =====================================================
+         NASA DATA
+         ===================================================== -->
+
     <section
       id="data"
       class="section"
@@ -814,7 +1083,9 @@
 
           <div class="data-row">
             <span>Rows detected</span>
-            <strong id="dataset-rows">7</strong>
+            <strong id="dataset-rows">
+              7
+            </strong>
           </div>
 
           <div class="data-row">
@@ -902,6 +1173,7 @@
         </div>
 
         <ul>
+
           <li>
             Uploaded CSV files are processed locally in
             the browser.
@@ -922,6 +1194,7 @@
             Correlation or temporal association does not
             by itself establish causation.
           </li>
+
         </ul>
 
       </section>
@@ -929,7 +1202,10 @@
     </section>
 
 
-    <!-- METHODOLOGY -->
+    <!-- =====================================================
+         METHODOLOGY
+         ===================================================== -->
+
     <section
       id="methodology"
       class="section"
@@ -1006,9 +1282,14 @@
       <section class="science-context">
 
         <article class="context-card">
-          <div class="context-icon">🌌</div>
 
-          <h3>Space Environment</h3>
+          <div class="context-icon">
+            🌌
+          </div>
+
+          <h3>
+            Space Environment
+          </h3>
 
           <p>
             Spaceflight exposes crew members to a combination
@@ -1021,13 +1302,19 @@
             for exploring these relationships using validated
             mission datasets.
           </p>
+
         </article>
 
 
         <article class="context-card">
-          <div class="context-icon">🧠</div>
 
-          <h3>Human Performance</h3>
+          <div class="context-icon">
+            🧠
+          </div>
+
+          <h3>
+            Human Performance
+          </h3>
 
           <p>
             Reaction time and vigilance can be represented
@@ -1040,13 +1327,19 @@
             interactive performance measurement could fit
             into the research interface.
           </p>
+
         </article>
 
 
         <article class="context-card">
-          <div class="context-icon">📐</div>
 
-          <h3>Statistical Analysis</h3>
+          <div class="context-icon">
+            📐
+          </div>
+
+          <h3>
+            Statistical Analysis
+          </h3>
 
           <p>
             Mean, minimum, maximum, and time-series trends
@@ -1057,6 +1350,7 @@
             A future research version could add formal
             statistical tests and validated predictive models.
           </p>
+
         </article>
 
       </section>
@@ -1092,6 +1386,7 @@
         </div>
 
         <ul>
+
           <li>
             Identify the official NASA or mission dataset.
           </li>
@@ -1114,6 +1409,7 @@
           <li>
             Report statistical uncertainty and limitations.
           </li>
+
         </ul>
 
       </section>
@@ -1121,7 +1417,10 @@
     </section>
 
 
-    <!-- ABOUT -->
+    <!-- =====================================================
+         ABOUT
+         ===================================================== -->
+
     <section
       id="about"
       class="section"
@@ -1182,7 +1481,11 @@
 
         <article class="about-small-card">
           <span>🧪</span>
-          <h3>Reproducible</h3>
+
+          <h3>
+            Reproducible
+          </h3>
+
           <p>
             Data processing rules should be documented so
             another researcher can reproduce the analysis.
@@ -1191,7 +1494,11 @@
 
         <article class="about-small-card">
           <span>📊</span>
-          <h3>Interactive</h3>
+
+          <h3>
+            Interactive
+          </h3>
+
           <p>
             Users can explore environmental conditions,
             charts, statistics, and performance testing.
@@ -1200,7 +1507,11 @@
 
         <article class="about-small-card">
           <span>🔐</span>
-          <h3>Local Processing</h3>
+
+          <h3>
+            Local Processing
+          </h3>
+
           <p>
             Uploaded CSV files are processed directly in
             the browser by this prototype.
@@ -1209,7 +1520,11 @@
 
         <article class="about-small-card">
           <span>🔬</span>
-          <h3>Scientific Caution</h3>
+
+          <h3>
+            Scientific Caution
+          </h3>
+
           <p>
             Simulated relationships are clearly separated
             from validated scientific evidence.
@@ -1256,7 +1571,8 @@
 
           <p>
             Generate a print-ready summary of the current
-            simulation, dataset statistics, and PVT results.
+            simulation, dataset statistics, environmental
+            alert state, and PVT results.
             Your browser can save the result as a PDF.
           </p>
 
@@ -1279,7 +1595,10 @@
     <footer>
 
       <div>
-        <strong>Space NeuroHealth</strong>
+        <strong>
+          Space NeuroHealth
+        </strong>
+
         NASA Space Apps Challenge Prototype
       </div>
 
@@ -1299,7 +1618,10 @@
   ></script>
 
   <!-- APPLICATION -->
-  <script src="script.js" defer></script>
+  <script
+    src="script.js"
+    defer
+  ></script>
 
 </body>
-  </html>
+          </html>
