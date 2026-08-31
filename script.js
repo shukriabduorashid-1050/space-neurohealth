@@ -1,7 +1,6 @@
 /* =========================================================
    SPACE NEUROHEALTH
    APPLICATION JAVASCRIPT
-   PURPLE + PINK THEME
    ========================================================= */
 
 "use strict";
@@ -169,7 +168,6 @@ function setupNavigation() {
         const active = btn === button;
 
         btn.classList.toggle("active", active);
-
         btn.setAttribute(
           "aria-selected",
           String(active)
@@ -224,28 +222,22 @@ function setupScenarios() {
 
     button.addEventListener("click", () => {
 
-      const scenarioName =
-        button.dataset.scenario;
+      const scenarioName = button.dataset.scenario;
 
       if (!SCENARIOS[scenarioName]) {
         return;
       }
 
-      state.activeScenario =
-        scenarioName;
+      state.activeScenario = scenarioName;
 
       $all(".scenario-btn").forEach(btn => {
-
         btn.classList.toggle(
           "active",
           btn === button
         );
-
       });
 
-      applyScenario(
-        SCENARIOS[scenarioName]
-      );
+      applyScenario(SCENARIOS[scenarioName]);
 
     });
 
@@ -256,15 +248,12 @@ function setupScenarios() {
 
 function applyScenario(scenario) {
 
-  state.currentCO2 =
-    scenario.co2;
+  state.currentCO2 = scenario.co2;
 
-  const slider =
-    $("#co2-slider");
+  const slider = $("#co2-slider");
 
   if (slider) {
-    slider.value =
-      scenario.co2;
+    slider.value = scenario.co2;
   }
 
   setText(
@@ -287,21 +276,16 @@ function applyScenario(scenario) {
     scenario.status
   );
 
-  const status =
-    $("#environment-status");
+  const status = $("#environment-status");
 
   if (status) {
 
-    status.classList.remove(
-      "safe-text"
-    );
+    status.classList.remove("safe-text");
 
     if (scenario.statusClass) {
-
       status.classList.add(
         scenario.statusClass
       );
-
     }
 
   }
@@ -309,9 +293,7 @@ function applyScenario(scenario) {
 
   setText(
     "performance-value",
-    formatNumber(
-      scenario.performance
-    )
+    formatNumber(scenario.performance)
   );
 
   setText(
@@ -321,25 +303,15 @@ function applyScenario(scenario) {
 
 
   const baselineDifference =
-    (
-      (
-        scenario.performance -
-        SCENARIOS.baseline.performance
-      ) /
-      SCENARIOS.baseline.performance
-    ) *
+    ((scenario.performance -
+      SCENARIOS.baseline.performance) /
+      SCENARIOS.baseline.performance) *
     100;
-
 
   setText(
     "change-value",
-    `${
-      baselineDifference >= 0
-        ? "+"
-        : ""
-    }${baselineDifference.toFixed(1)}%`
+    `${baselineDifference >= 0 ? "+" : ""}${baselineDifference.toFixed(1)}%`
   );
-
 
   setText(
     "change-status",
@@ -361,7 +333,6 @@ function applyScenario(scenario) {
 
 
   updateEnvironmentChartForScenario();
-
   updateAnalysis();
 
 }
@@ -373,37 +344,31 @@ function applyScenario(scenario) {
 
 function setupSlider() {
 
-  const slider =
-    $("#co2-slider");
+  const slider = $("#co2-slider");
 
   if (!slider) {
     return;
   }
 
-  slider.addEventListener(
-    "input",
-    () => {
+  slider.addEventListener("input", () => {
 
-      const value =
-        Number(slider.value);
+    const value = Number(slider.value);
 
-      state.currentCO2 =
-        value;
+    state.currentCO2 = value;
 
-      setText(
-        "co2-slider-value",
-        `${formatNumber(value)} ppm`
-      );
+    setText(
+      "co2-slider-value",
+      `${formatNumber(value)} ppm`
+    );
 
-      setText(
-        "environment-value",
-        formatNumber(value)
-      );
+    setText(
+      "environment-value",
+      formatNumber(value)
+    );
 
-      updateFromSlider(value);
+    updateFromSlider(value);
 
-    }
-  );
+  });
 
 }
 
@@ -414,8 +379,7 @@ function updateFromSlider(value) {
 
   if (value <= 1200) {
 
-    performance =
-      240 -
+    performance = 240 -
       ((value - 400) / 800) * 5;
 
   } else {
@@ -426,16 +390,9 @@ function updateFromSlider(value) {
 
   }
 
-  performance =
-    Math.round(
-      Math.max(
-        220,
-        Math.min(
-          360,
-          performance
-        )
-      )
-    );
+  performance = Math.round(
+    Math.max(220, Math.min(360, performance))
+  );
 
 
   setText(
@@ -445,23 +402,15 @@ function updateFromSlider(value) {
 
 
   const baselineDifference =
-    (
-      (
-        performance -
-        SCENARIOS.baseline.performance
-      ) /
-      SCENARIOS.baseline.performance
-    ) *
+    ((performance -
+      SCENARIOS.baseline.performance) /
+      SCENARIOS.baseline.performance) *
     100;
 
 
   setText(
     "change-value",
-    `${
-      baselineDifference >= 0
-        ? "+"
-        : ""
-    }${baselineDifference.toFixed(1)}%`
+    `${baselineDifference >= 0 ? "+" : ""}${baselineDifference.toFixed(1)}%`
   );
 
 
@@ -514,13 +463,10 @@ function createCharts() {
     typeof Chart === "undefined"
   ) {
 
-    const error =
-      $("#chart-error");
+    const error = $("#chart-error");
 
     if (error) {
-      error.classList.remove(
-        "hidden"
-      );
+      error.classList.remove("hidden");
     }
 
     return;
@@ -528,7 +474,6 @@ function createCharts() {
 
 
   createEnvironmentChart();
-
   createPerformanceChart();
 
 }
@@ -536,8 +481,7 @@ function createCharts() {
 
 function createEnvironmentChart() {
 
-  const canvas =
-    $("#environmentChart");
+  const canvas = $("#environmentChart");
 
   if (!canvas) {
     return;
@@ -546,119 +490,72 @@ function createEnvironmentChart() {
   try {
 
     state.charts.environment =
-      new Chart(
-        canvas,
-        {
+      new Chart(canvas, {
 
-          type: "line",
+        type: "line",
 
-          data: {
+        data: {
+          labels: DEMO_DATA.labels,
 
-            labels:
-              DEMO_DATA.labels,
+          datasets: [{
+            label: "CO₂",
+            data: DEMO_DATA.environment,
+            borderColor: "#51d7e8",
+            backgroundColor: "rgba(81, 215, 232, 0.10)",
+            borderWidth: 2,
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
 
-            datasets: [{
+        options: {
 
-              label: "CO₂",
+          responsive: true,
 
-              data:
-                DEMO_DATA.environment,
+          maintainAspectRatio: false,
 
-              /* PINK */
-              borderColor:
-                "#ff4fa3",
-
-              /* PURPLE/PINK */
-              backgroundColor:
-                "rgba(255, 79, 163, 0.10)",
-
-              borderWidth: 2,
-
-              fill: true,
-
-              tension: 0.35,
-
-              pointRadius: 4,
-
-              pointHoverRadius: 6
-
-            }]
-
+          interaction: {
+            intersect: false,
+            mode: "index"
           },
 
-          options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            interaction: {
-
-              intersect: false,
-
-              mode: "index"
-
-            },
-
-            plugins: {
-
-              legend: {
-
-                labels: {
-
-                  color:
-                    "#fff5fb"
-
-                }
-
+          plugins: {
+            legend: {
+              labels: {
+                color: "#edf4ff"
               }
+            }
+          },
 
-            },
+          scales: {
 
-            scales: {
-
-              x: {
-
-                ticks: {
-
-                  color:
-                    "#c8aec5"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255, 117, 183, 0.08)"
-
-                }
-
+            x: {
+              ticks: {
+                color: "#8f9caf"
               },
 
-              y: {
-
-                ticks: {
-
-                  color:
-                    "#c8aec5"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255, 117, 183, 0.08)"
-
-                }
-
+              grid: {
+                color: "rgba(255,255,255,0.06)"
               }
+            },
 
+            y: {
+              ticks: {
+                color: "#8f9caf"
+              },
+
+              grid: {
+                color: "rgba(255,255,255,0.06)"
+              }
             }
 
           }
 
         }
-      );
+
+      });
 
   } catch (error) {
 
@@ -676,8 +573,7 @@ function createEnvironmentChart() {
 
 function createPerformanceChart() {
 
-  const canvas =
-    $("#performanceChart");
+  const canvas = $("#performanceChart");
 
   if (!canvas) {
     return;
@@ -692,112 +588,67 @@ function createPerformanceChart() {
   try {
 
     state.charts.performance =
-      new Chart(
-        canvas,
-        {
+      new Chart(canvas, {
 
-          type: "line",
+        type: "line",
 
-          data: {
+        data: {
+          labels: DEMO_DATA.labels,
 
-            labels:
-              DEMO_DATA.labels,
+          datasets: [{
+            label: "Reaction Time",
+            data: DEMO_DATA.performance,
+            borderColor: "#4ea1ff",
+            backgroundColor: "rgba(78, 161, 255, 0.10)",
+            borderWidth: 2,
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
 
-            datasets: [{
+        options: {
 
-              label:
-                "Reaction Time",
+          responsive: true,
 
-              data:
-                DEMO_DATA.performance,
+          maintainAspectRatio: false,
 
-              /* PINK */
-              borderColor:
-                "#ff75b7",
-
-              /* PURPLE */
-              backgroundColor:
-                "rgba(111, 45, 189, 0.14)",
-
-              borderWidth: 2,
-
-              fill: true,
-
-              tension: 0.35,
-
-              pointRadius: 4,
-
-              pointHoverRadius: 6
-
-            }]
-
+          plugins: {
+            legend: {
+              labels: {
+                color: "#edf4ff"
+              }
+            }
           },
 
-          options: {
+          scales: {
 
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            plugins: {
-
-              legend: {
-
-                labels: {
-
-                  color:
-                    "#fff5fb"
-
-                }
-
-              }
-
-            },
-
-            scales: {
-
-              x: {
-
-                ticks: {
-
-                  color:
-                    "#c8aec5"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255, 117, 183, 0.08)"
-
-                }
-
+            x: {
+              ticks: {
+                color: "#8f9caf"
               },
 
-              y: {
-
-                ticks: {
-
-                  color:
-                    "#c8aec5"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255, 117, 183, 0.08)"
-
-                }
-
+              grid: {
+                color: "rgba(255,255,255,0.06)"
               }
+            },
 
+            y: {
+              ticks: {
+                color: "#8f9caf"
+              },
+
+              grid: {
+                color: "rgba(255,255,255,0.06)"
+              }
             }
 
           }
 
         }
-      );
+
+      });
 
   } catch (error) {
 
@@ -817,26 +668,21 @@ function createPerformanceChart() {
 
 function updateEnvironmentChartForScenario() {
 
-  const chart =
-    state.charts.environment;
+  const chart = state.charts.environment;
 
   if (!chart) {
     return;
   }
 
 
-  const scenario =
-    SCENARIOS[
-      state.activeScenario
-    ];
+  const scenario = SCENARIOS[state.activeScenario];
 
   if (!scenario) {
     return;
   }
 
 
-  const base =
-    scenario.co2;
+  const base = scenario.co2;
 
   const offsets = [
     -100,
@@ -850,12 +696,8 @@ function updateEnvironmentChartForScenario() {
 
 
   chart.data.datasets[0].data =
-    offsets.map(
-      offset =>
-        Math.max(
-          0,
-          base + offset
-        )
+    offsets.map(offset =>
+      Math.max(0, base + offset)
     );
 
 
@@ -866,43 +708,27 @@ function updateEnvironmentChartForScenario() {
 
 function resizeCharts() {
 
-  setTimeout(
-    () => {
+  setTimeout(() => {
 
-      if (
-        state.charts.environment
-      ) {
+    if (state.charts.environment) {
+      state.charts.environment.resize();
+    }
 
-        state.charts.environment.resize();
+    if (state.charts.performance) {
+      state.charts.performance.resize();
+    }
 
-      }
-
-      if (
-        state.charts.performance
-      ) {
-
-        state.charts.performance.resize();
-
-      }
-
-    },
-    100
-  );
+  }, 100);
 
 }
 
 
 function showChartError() {
 
-  const error =
-    $("#chart-error");
+  const error = $("#chart-error");
 
   if (error) {
-
-    error.classList.remove(
-      "hidden"
-    );
-
+    error.classList.remove("hidden");
   }
 
 }
@@ -917,15 +743,10 @@ function calculateStatistics(values) {
   if (!values.length) {
 
     return {
-
       mean: 0,
-
       min: 0,
-
       max: 0,
-
       count: 0
-
     };
 
   }
@@ -933,10 +754,7 @@ function calculateStatistics(values) {
 
   const sum =
     values.reduce(
-      (
-        total,
-        value
-      ) =>
+      (total, value) =>
         total + value,
       0
     );
@@ -944,17 +762,13 @@ function calculateStatistics(values) {
 
   return {
 
-    mean:
-      sum / values.length,
+    mean: sum / values.length,
 
-    min:
-      Math.min(...values),
+    min: Math.min(...values),
 
-    max:
-      Math.max(...values),
+    max: Math.max(...values),
 
-    count:
-      values.length
+    count: values.length
 
   };
 
@@ -1050,23 +864,15 @@ function updateAnalysis() {
 
 
   const difference =
-    (
-      (
-        state.currentCO2 -
-        SCENARIOS.baseline.co2
-      ) /
-      SCENARIOS.baseline.co2
-    ) *
+    ((state.currentCO2 -
+      SCENARIOS.baseline.co2) /
+      SCENARIOS.baseline.co2) *
     100;
 
 
   setText(
     "baseline-result",
-    `${
-      difference >= 0
-        ? "+"
-        : ""
-    }${difference.toFixed(1)}%`
+    `${difference >= 0 ? "+" : ""}${difference.toFixed(1)}%`
   );
 
 
@@ -1109,8 +915,7 @@ function setupCSV() {
 
   browse.addEventListener(
     "click",
-    () =>
-      input.click()
+    () => input.click()
   );
 
 
@@ -1144,47 +949,43 @@ function setupCSV() {
     [
       "dragenter",
       "dragover"
-    ].forEach(
-      eventName => {
+    ].forEach(eventName => {
 
-        dropZone.addEventListener(
-          eventName,
-          event => {
+      dropZone.addEventListener(
+        eventName,
+        event => {
 
-            event.preventDefault();
+          event.preventDefault();
 
-            dropZone.classList.add(
-              "drag-active"
-            );
+          dropZone.classList.add(
+            "drag-active"
+          );
 
-          }
-        );
+        }
+      );
 
-      }
-    );
+    });
 
 
     [
       "dragleave",
       "drop"
-    ].forEach(
-      eventName => {
+    ].forEach(eventName => {
 
-        dropZone.addEventListener(
-          eventName,
-          event => {
+      dropZone.addEventListener(
+        eventName,
+        event => {
 
-            event.preventDefault();
+          event.preventDefault();
 
-            dropZone.classList.remove(
-              "drag-active"
-            );
+          dropZone.classList.remove(
+            "drag-active"
+          );
 
-          }
-        );
+        }
+      );
 
-      }
-    );
+    });
 
 
     dropZone.addEventListener(
@@ -1192,13 +993,11 @@ function setupCSV() {
       event => {
 
         const file =
-          event.dataTransfer
-            .files?.[0];
+          event.dataTransfer.files?.[0];
 
         if (!file) {
           return;
         }
-
 
         if (
           !file.name
@@ -1213,7 +1012,6 @@ function setupCSV() {
           return;
 
         }
-
 
         processCSV(file);
 
@@ -1246,92 +1044,77 @@ function processCSV(file) {
     new FileReader();
 
 
-  reader.onload =
-    event => {
+  reader.onload = event => {
 
-      try {
+    try {
 
-        const text =
-          event.target.result;
+      const text =
+        event.target.result;
 
-        const parsed =
-          parseCSV(text);
-
-
-        if (!parsed.success) {
-
-          setFileStatus(
-            parsed.message
-          );
-
-          return;
-
-        }
+      const parsed =
+        parseCSV(text);
 
 
-        state.customDataset = {
-
-          name:
-            file.name,
-
-          values:
-            parsed.values,
-
-          labels:
-            parsed.labels,
-
-          co2Column:
-            parsed.co2Column,
-
-          timeColumn:
-            parsed.timeColumn
-
-        };
-
-
-        updateDatasetInformation();
-
-        updateCustomCharts();
-
-        updateAnalysis();
-
-
-        const clear =
-          $("#clear-csv-btn");
-
-        if (clear) {
-          clear.disabled = false;
-        }
-
+      if (!parsed.success) {
 
         setFileStatus(
-          `Loaded ${file.name}: ${parsed.values.length} valid CO₂ values detected.`
+          parsed.message
         );
 
-      } catch (error) {
-
-        console.error(
-          "CSV processing error:",
-          error
-        );
-
-        setFileStatus(
-          "The CSV could not be processed. Check its formatting."
-        );
+        return;
 
       }
 
-    };
+
+      state.customDataset = {
+        name: file.name,
+        values: parsed.values,
+        labels: parsed.labels,
+        co2Column: parsed.co2Column,
+        timeColumn: parsed.timeColumn
+      };
 
 
-  reader.onerror =
-    () => {
+      updateDatasetInformation();
+      updateCustomCharts();
+      updateAnalysis();
+
+
+      const clear =
+        $("#clear-csv-btn");
+
+      if (clear) {
+        clear.disabled = false;
+      }
+
 
       setFileStatus(
-        "The browser could not read this file."
+        `Loaded ${file.name}: ${parsed.values.length} valid CO₂ values detected.`
       );
 
-    };
+    } catch (error) {
+
+      console.error(
+        "CSV processing error:",
+        error
+      );
+
+      setFileStatus(
+        "The CSV could not be processed. Check its formatting."
+      );
+
+    }
+
+  };
+
+
+  reader.onerror = () => {
+
+    setFileStatus(
+      "The browser could not read this file."
+    );
+
+  };
 
 
   reader.readAsText(file);
@@ -1352,12 +1135,9 @@ function parseCSV(text) {
   if (rows.length < 2) {
 
     return {
-
       success: false,
-
       message:
         "The CSV must contain a header row and at least one data row."
-
     };
 
   }
@@ -1375,27 +1155,17 @@ function parseCSV(text) {
       header =>
         header
           .toLowerCase()
-          .replace(
-            /[^a-z0-9]/g,
-            ""
-          )
+          .replace(/[^a-z0-9]/g, "")
     );
 
 
   const co2Keywords = [
-
     "co2",
-
     "carbon dioxide",
-
     "carbon_dioxide",
-
     "co2ppm",
-
     "co2concentration",
-
     "environment"
-
   ];
 
 
@@ -1417,16 +1187,12 @@ function parseCSV(text) {
           header.includes(
             keyword
               .toLowerCase()
-              .replace(
-                /[^a-z0-9]/g,
-                ""
-              )
+              .replace(/[^a-z0-9]/g, "")
           )
       )
     ) {
 
       co2Index = i;
-
       break;
 
     }
@@ -1448,7 +1214,6 @@ function parseCSV(text) {
       ) {
 
         co2Index = i;
-
         break;
 
       }
@@ -1461,18 +1226,15 @@ function parseCSV(text) {
   if (co2Index === -1) {
 
     return {
-
       success: false,
-
       message:
         "No CO₂ measurement column was detected. Try a column named CO2, carbon_dioxide, CO2_ppm, or environment."
-
     };
 
   }
 
 
-  const timeIndex =
+  let timeIndex =
     normalizedHeaders.findIndex(
       header =>
         header.includes("time") ||
@@ -1483,7 +1245,6 @@ function parseCSV(text) {
 
 
   const values = [];
-
   const labels = [];
 
 
@@ -1509,10 +1270,7 @@ function parseCSV(text) {
     const value =
       parseFloat(
         String(rawValue)
-          .replace(
-            /,/g,
-            ""
-          )
+          .replace(/,/g, "")
           .trim()
       );
 
@@ -1520,9 +1278,7 @@ function parseCSV(text) {
     if (
       !Number.isFinite(value)
     ) {
-
       continue;
-
     }
 
 
@@ -1552,12 +1308,9 @@ function parseCSV(text) {
   if (!values.length) {
 
     return {
-
       success: false,
-
       message:
         "A CO₂ column was found, but no valid numeric values were detected."
-
     };
 
   }
@@ -1594,9 +1347,7 @@ function parseCSVRows(text) {
   const rows = [];
 
   let row = [];
-
   let cell = "";
-
   let insideQuotes = false;
 
 
@@ -1620,9 +1371,7 @@ function parseCSVRows(text) {
     ) {
 
       cell += '"';
-
       i++;
-
       continue;
 
     }
@@ -1644,7 +1393,6 @@ function parseCSVRows(text) {
     ) {
 
       row.push(cell);
-
       cell = "";
 
       continue;
@@ -1653,10 +1401,8 @@ function parseCSVRows(text) {
 
 
     if (
-      (
-        char === "\n" ||
-        char === "\r"
-      ) &&
+      (char === "\n" ||
+       char === "\r") &&
       !insideQuotes
     ) {
 
@@ -1664,14 +1410,11 @@ function parseCSVRows(text) {
         char === "\r" &&
         next === "\n"
       ) {
-
         i++;
-
       }
 
 
       row.push(cell);
-
 
       if (
         row.some(
@@ -1684,9 +1427,7 @@ function parseCSVRows(text) {
 
       }
 
-
       row = [];
-
       cell = "";
 
       continue;
@@ -1705,7 +1446,6 @@ function parseCSVRows(text) {
   ) {
 
     row.push(cell);
-
 
     if (
       row.some(
@@ -1764,19 +1504,14 @@ function updateDatasetInformation() {
       "Demonstration dataset"
     );
 
-
     const validation =
       $("#dataset-validation");
 
-
     if (validation) {
-
       validation.classList.add(
         "safe-text"
       );
-
     }
-
 
     setText(
       "statistics-source",
@@ -1804,9 +1539,7 @@ function updateDatasetInformation() {
 
   setText(
     "dataset-rows",
-    String(
-      dataset.values.length
-    )
+    String(dataset.values.length)
   );
 
   setText(
@@ -1824,19 +1557,14 @@ function updateDatasetInformation() {
     "Format validated locally"
   );
 
-
   const validation =
     $("#dataset-validation");
 
-
   if (validation) {
-
     validation.classList.add(
       "safe-text"
     );
-
   }
-
 
   setText(
     "statistics-source",
@@ -1861,42 +1589,28 @@ function updateCustomCharts() {
   }
 
 
-  if (
-    state.charts.environment
-  ) {
+  if (state.charts.environment) {
 
-    state.charts.environment
-      .data
-      .labels =
+    state.charts.environment.data.labels =
       dataset.labels;
 
-
-    state.charts.environment
-      .data
-      .datasets[0]
-      .data =
+    state.charts.environment.data.datasets[0].data =
       dataset.values;
 
-
-    state.charts.environment
-      .update();
+    state.charts.environment.update();
 
   }
 
 
-  if (
-    state.charts.performance
-  ) {
+  if (state.charts.performance) {
 
     const estimatedReference =
       dataset.values.map(
         value => {
 
           const relative =
-            (
-              value - 1200
-            ) / 1200;
-
+            (value - 1200) /
+            1200;
 
           return Math.round(
             240 +
@@ -1907,21 +1621,13 @@ function updateCustomCharts() {
       );
 
 
-    state.charts.performance
-      .data
-      .labels =
+    state.charts.performance.data.labels =
       dataset.labels;
 
-
-    state.charts.performance
-      .data
-      .datasets[0]
-      .data =
+    state.charts.performance.data.datasets[0].data =
       estimatedReference;
 
-
-    state.charts.performance
-      .update();
+    state.charts.performance.update();
 
   }
 
@@ -1931,26 +1637,19 @@ function updateCustomCharts() {
       dataset.values.length - 1
     ];
 
-
   setText(
     "environment-value",
-    formatNumber(
-      state.currentCO2
-    )
+    formatNumber(state.currentCO2)
   );
-
 
   setText(
     "co2-slider-value",
-    `${formatNumber(
-      state.currentCO2
-    )} ppm`
+    `${formatNumber(state.currentCO2)} ppm`
   );
 
 
   const slider =
     $("#co2-slider");
-
 
   if (slider) {
 
@@ -1976,10 +1675,8 @@ function clearDataset() {
 
   state.customDataset = null;
 
-
   const input =
     $("#csv-file-input");
-
 
   if (input) {
     input.value = "";
@@ -1988,7 +1685,6 @@ function clearDataset() {
 
   const clear =
     $("#clear-csv-btn");
-
 
   if (clear) {
     clear.disabled = true;
@@ -2003,62 +1699,38 @@ function clearDataset() {
   updateDatasetInformation();
 
 
-  if (
-    state.charts.environment
-  ) {
+  if (state.charts.environment) {
 
-    state.charts.environment
-      .data
-      .labels =
+    state.charts.environment.data.labels =
       DEMO_DATA.labels;
 
-
-    state.charts.environment
-      .data
-      .datasets[0]
-      .data =
+    state.charts.environment.data.datasets[0].data =
       DEMO_DATA.environment;
 
-
-    state.charts.environment
-      .update();
+    state.charts.environment.update();
 
   }
 
 
-  if (
-    state.charts.performance
-  ) {
+  if (state.charts.performance) {
 
-    state.charts.performance
-      .data
-      .labels =
+    state.charts.performance.data.labels =
       DEMO_DATA.labels;
 
-
-    state.charts.performance
-      .data
-      .datasets[0]
-      .data =
+    state.charts.performance.data.datasets[0].data =
       DEMO_DATA.performance;
 
-
-    state.charts.performance
-      .update();
+    state.charts.performance.update();
 
   }
 
 
   state.currentCO2 =
-    SCENARIOS[
-      state.activeScenario
-    ].co2;
+    SCENARIOS[state.activeScenario].co2;
 
 
   applyScenario(
-    SCENARIOS[
-      state.activeScenario
-    ]
+    SCENARIOS[state.activeScenario]
   );
 
 
@@ -2076,12 +1748,8 @@ function setFileStatus(message) {
   const element =
     $("#file-status-msg");
 
-
   if (element) {
-
-    element.textContent =
-      message;
-
+    element.textContent = message;
   }
 
 }
@@ -2150,9 +1818,7 @@ function startPVT() {
 
 
   pvt.running = true;
-
   pvt.ready = false;
-
   pvt.startTime = null;
 
 
@@ -2208,7 +1874,6 @@ function makePVTReady() {
 
   pvt.ready = true;
 
-
   pvt.startTime =
     performance.now();
 
@@ -2245,16 +1910,11 @@ function handlePVTClick() {
   if (!pvt.ready) {
 
     if (pvt.timer) {
-
-      clearTimeout(
-        pvt.timer
-      );
-
+      clearTimeout(pvt.timer);
     }
 
 
     pvt.running = false;
-
     pvt.ready = false;
 
 
@@ -2280,7 +1940,6 @@ function handlePVTClick() {
     const button =
       $("#pvt-start-btn");
 
-
     if (button) {
       button.disabled = false;
     }
@@ -2305,17 +1964,12 @@ function handlePVTClick() {
   );
 
 
-  if (
-    reactionTime > 500
-  ) {
-
+  if (reactionTime > 500) {
     pvt.lapses++;
-
   }
 
 
   pvt.running = false;
-
   pvt.ready = false;
 
 
@@ -2337,7 +1991,6 @@ function handlePVTClick() {
 
   const button =
     $("#pvt-start-btn");
-
 
   if (button) {
     button.disabled = false;
@@ -2384,9 +2037,7 @@ function updatePVTResults() {
 
     setText(
       "pvt-lapses",
-      String(
-        state.pvt.lapses
-      )
+      String(state.pvt.lapses)
     );
 
     return;
@@ -2395,17 +2046,12 @@ function updatePVTResults() {
 
 
   const last =
-    trials[
-      trials.length - 1
-    ];
+    trials[trials.length - 1];
 
 
   const average =
     trials.reduce(
-      (
-        sum,
-        value
-      ) =>
+      (sum, value) =>
         sum + value,
       0
     ) / count;
@@ -2422,9 +2068,7 @@ function updatePVTResults() {
 
   setText(
     "pvt-average",
-    `${Math.round(
-      average
-    )} ms`
+    `${Math.round(average)} ms`
   );
 
   setText(
@@ -2434,9 +2078,7 @@ function updatePVTResults() {
 
   setText(
     "pvt-lapses",
-    String(
-      state.pvt.lapses
-    )
+    String(state.pvt.lapses)
   );
 
 }
@@ -2468,9 +2110,7 @@ function setupExport() {
 function exportSummary() {
 
   const currentScenario =
-    SCENARIOS[
-      state.activeScenario
-    ];
+    SCENARIOS[state.activeScenario];
 
 
   const originalTitle =
@@ -2485,44 +2125,27 @@ function exportSummary() {
     `Space NeuroHealth
 
 Scenario: ${currentScenario.name}
-CO₂: ${formatNumber(
-  state.currentCO2
-)} ppm
-Performance indicator: ${
-  $("#performance-value")
-    ?.textContent || "--"
-} ms
-Change from baseline: ${
-  $("#change-value")
-    ?.textContent || "--"
-}
+CO₂: ${formatNumber(state.currentCO2)} ppm
+Performance indicator: ${$("#performance-value")?.textContent || "--"} ms
+Change from baseline: ${$("#change-value")?.textContent || "--"}
 
 Dataset:
-${
-  state.customDataset
-    ? state.customDataset.name
-    : "Built-in demonstration data"
-}
+${state.customDataset
+  ? state.customDataset.name
+  : "Built-in demonstration data"}
 
 PVT trials:
 ${state.pvt.trials.length}
 
 PVT average:
-${
-  state.pvt.trials.length
-    ? `${Math.round(
-        state.pvt.trials.reduce(
-          (
-            a,
-            b
-          ) =>
-            a + b,
-          0
-        ) /
-        state.pvt.trials.length
-      )} ms`
-    : "--"
-}
+${state.pvt.trials.length
+  ? `${Math.round(
+      state.pvt.trials.reduce(
+        (a, b) => a + b,
+        0
+      ) / state.pvt.trials.length
+    )} ms`
+  : "--"}
 
 This report contains demonstration/interface data
 unless a validated dataset has been loaded.`;
@@ -2543,10 +2166,8 @@ unless a validated dataset has been loaded.`;
 
   setTimeout(
     () => {
-
       document.title =
         originalTitle;
-
     },
     1000
   );
@@ -2570,44 +2191,33 @@ function setupKeyboardNavigation() {
       ) {
 
         if (state.pvt.timer) {
-
           clearTimeout(
             state.pvt.timer
           );
-
         }
 
 
         state.pvt.running = false;
-
         state.pvt.ready = false;
 
 
         const box =
           $("#pvt-box");
 
-
         if (box) {
-
           box.textContent =
             "Test cancelled — press Start Test";
-
           box.classList.remove(
             "ready"
           );
-
         }
 
 
         const button =
           $("#pvt-start-btn");
 
-
         if (button) {
-
-          button.disabled =
-            false;
-
+          button.disabled = false;
         }
 
       }
@@ -2647,6 +2257,11 @@ function initializeApp() {
   updateDatasetInformation();
 
 
+  /*
+    Chart.js is loaded with defer before this script,
+    so DOMContentLoaded is sufficient for initialization.
+  */
+
   createCharts();
 
 
@@ -2673,4 +2288,4 @@ if (
 
   initializeApp();
 
-                   }
+}
