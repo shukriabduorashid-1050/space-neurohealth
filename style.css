@@ -1,6 +1,6 @@
 /* =========================================================
    SPACE NEUROHEALTH
-   FINAL STYLESHEET
+   FINAL RESPONSIVE STYLESHEET
    ========================================================= */
 
 :root {
@@ -19,8 +19,7 @@
   --yellow: #f2c94c;
   --red: #ff5d73;
 
-  --shadow:
-    0 18px 50px rgba(0, 0, 0, 0.25);
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
 
   --radius: 18px;
 }
@@ -74,36 +73,12 @@ body::before {
 
   background-image:
     radial-gradient(
-      rgba(255,255,255,0.5) 1px,
+      rgba(255, 255, 255, 0.5) 1px,
       transparent 1px
     );
 
   background-size: 80px 80px;
-
   opacity: 0.08;
-
-  z-index: -1;
-}
-
-.space-background {
-  position: fixed;
-  inset: 0;
-
-  pointer-events: none;
-
-  background:
-    radial-gradient(
-      circle at 20% 20%,
-      rgba(78,161,255,0.06),
-      transparent 25%
-    ),
-    radial-gradient(
-      circle at 85% 70%,
-      rgba(81,215,232,0.05),
-      transparent 25%
-    );
-
-  z-index: -2;
 }
 
 button,
@@ -119,15 +94,6 @@ button {
 button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-}
-
-button:focus-visible,
-select:focus-visible,
-input:focus-visible {
-  outline:
-    2px solid var(--cyan);
-
-  outline-offset: 3px;
 }
 
 .app {
@@ -154,11 +120,9 @@ input:focus-visible {
   align-items: center;
   justify-content: center;
 
-  border:
-    1px solid rgba(78, 161, 255, 0.35);
+  border: 1px solid rgba(78, 161, 255, 0.35);
 
-  background:
-    rgba(78, 161, 255, 0.08);
+  background: rgba(78, 161, 255, 0.08);
 
   color: var(--blue);
 
@@ -170,6 +134,8 @@ input:focus-visible {
   font-weight: 800;
 
   letter-spacing: 0.09em;
+
+  white-space: nowrap;
 }
 
 .hero h1 {
@@ -186,12 +152,12 @@ input:focus-visible {
 .subtitle {
   max-width: 720px;
   margin: 0 auto;
-
   color: var(--muted);
 }
 
 .status-row {
   display: flex;
+
   align-items: center;
   justify-content: center;
 
@@ -289,15 +255,14 @@ input:focus-visible {
 
   background: transparent;
 
-  transition:
-    0.2s ease;
+  transition: 0.2s ease;
 }
 
 .nav-btn:hover {
   color: var(--text);
 
   background:
-    rgba(255,255,255,0.04);
+    rgba(255, 255, 255, 0.04);
 }
 
 .nav-btn.active {
@@ -306,14 +271,14 @@ input:focus-visible {
   background:
     linear-gradient(
       135deg,
-      rgba(78,161,255,0.24),
-      rgba(81,215,232,0.11)
+      rgba(78, 161, 255, 0.24),
+      rgba(81, 215, 232, 0.11)
     );
 
   box-shadow:
     inset
     0 0 0 1px
-    rgba(78,161,255,0.3);
+    rgba(78, 161, 255, 0.3);
 }
 
 
@@ -329,10 +294,11 @@ input:focus-visible {
 }
 
 .section[hidden] {
-  display: none !important;
+  display: none;
 }
 
 @keyframes sectionIn {
+
   from {
     opacity: 0;
     transform: translateY(7px);
@@ -342,6 +308,7 @@ input:focus-visible {
     opacity: 1;
     transform: translateY(0);
   }
+
 }
 
 .section-heading {
@@ -411,8 +378,8 @@ p {
   background:
     linear-gradient(
       145deg,
-      rgba(20,29,42,0.96),
-      rgba(10,16,25,0.96)
+      rgba(20, 29, 42, 0.96),
+      rgba(10, 16, 25, 0.96)
     );
 
   border:
@@ -423,6 +390,8 @@ p {
 
   box-shadow:
     var(--shadow);
+
+  min-width: 0;
 }
 
 .control-card,
@@ -540,10 +509,10 @@ select:focus {
   color: var(--text);
 
   border-color:
-    rgba(78,161,255,0.55);
+    rgba(78, 161, 255, 0.55);
 
   background:
-    rgba(78,161,255,0.10);
+    rgba(78, 161, 255, 0.10);
 }
 
 .scenario-dot {
@@ -581,6 +550,8 @@ select:focus {
   justify-content: space-between;
 
   gap: 20px;
+
+  min-width: 0;
 }
 
 .slider-group {
@@ -636,6 +607,8 @@ input[type="range"] {
   color: var(--muted);
 
   font-size: 0.85rem;
+
+  min-width: 0;
 }
 
 .environment-control-grid label > span {
@@ -648,6 +621,8 @@ input[type="range"] {
   color: var(--cyan);
 
   font-weight: 700;
+
+  flex-wrap: wrap;
 }
 
 .environment-control-grid input {
@@ -680,6 +655,8 @@ input[type="range"] {
   align-items: center;
 
   gap: 10px;
+
+  min-width: 0;
 }
 
 .metric-icon {
@@ -819,6 +796,8 @@ input[type="range"] {
   font-size: 1.8rem;
 
   font-weight: 800;
+
+  overflow-wrap: anywhere;
 }
 
 .single-analysis-card {
@@ -830,8 +809,7 @@ input[type="range"] {
    STATISTICS
    ========================================================= */
 
-.statistics-grid,
-.correlation-result-grid {
+.statistics-grid {
   display: grid;
 
   grid-template-columns:
@@ -851,7 +829,11 @@ input[type="range"] {
   border-radius: 13px;
 
   background:
-    rgba(255,255,255,0.025);
+    rgba(255, 255, 255, 0.025);
+
+  min-width: 0;
+
+  overflow: hidden;
 }
 
 .stat-item span {
@@ -866,6 +848,10 @@ input[type="range"] {
   display: block;
 
   margin-top: 5px;
+
+  overflow-wrap: anywhere;
+
+  word-break: break-word;
 }
 
 
@@ -892,45 +878,83 @@ input[type="range"] {
   color: var(--muted);
 }
 
+.correlation-result-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-top: 20px;
+}
+
+.interpretation-stat {
+  min-width: 0;
+}
+
+.interpretation-stat strong {
+  line-height: 1.45;
+  white-space: normal;
+}
+
 
 /* =========================================================
    RISK PROFILE
    ========================================================= */
 
+.risk-profile-card {
+  overflow: hidden;
+}
+
 .risk-bars {
   display: grid;
 
-  gap: 15px;
+  gap: 17px;
 
-  margin-top: 22px;
+  margin-top: 25px;
+
+  width: 100%;
 }
 
 .risk-bar-row {
   display: grid;
 
   grid-template-columns:
-    100px 1fr 40px;
+    minmax(85px, 120px)
+    minmax(0, 1fr)
+    45px;
 
   align-items: center;
 
-  gap: 10px;
+  gap: 12px;
+
+  width: 100%;
+
+  min-width: 0;
 }
 
 .risk-bar-row > span {
   color: var(--muted);
 
   font-size: 0.8rem;
+
+  min-width: 0;
 }
 
-.risk-bar-row > div {
-  height: 9px;
+.risk-track {
+  height: 10px;
+
+  width: 100%;
+
+  min-width: 0;
 
   overflow: hidden;
 
   border-radius: 999px;
 
   background:
-    rgba(255,255,255,0.06);
+    rgba(255, 255, 255, 0.06);
 }
 
 .risk-bar-row i {
@@ -947,6 +971,8 @@ input[type="range"] {
 
   transition:
     width 0.35s ease;
+
+  min-width: 0;
 }
 
 .risk-bar-row strong {
@@ -955,125 +981,8 @@ input[type="range"] {
   color: var(--text);
 
   font-size: 0.78rem;
-}
 
-
-/* =========================================================
-   PVT
-   ========================================================= */
-
-.pvt-box {
-  display: grid;
-
-  place-items: center;
-
-  min-height: 190px;
-
-  margin-top: 20px;
-
-  border:
-    2px dashed var(--border);
-
-  border-radius: 16px;
-
-  background:
-    #0a1019;
-
-  color: var(--muted);
-
-  text-align: center;
-
-  user-select: none;
-
-  transition:
-    0.15s ease;
-}
-
-.pvt-box:focus {
-  outline:
-    2px solid var(--blue);
-
-  outline-offset:
-    3px;
-}
-
-.pvt-box.ready {
-  background:
-    rgba(67,209,124,0.18);
-
-  border-color:
-    var(--green);
-
-  color:
-    var(--green);
-}
-
-.pvt-box.false-start {
-  background:
-    rgba(255,93,115,0.12);
-
-  border-color:
-    var(--red);
-
-  color:
-    var(--red);
-}
-
-.pvt-controls {
-  display: flex;
-
-  align-items: center;
-
-  flex-wrap: wrap;
-
-  gap: 15px;
-
-  margin-top: 18px;
-}
-
-.pvt-score {
-  color: var(--muted);
-}
-
-.pvt-score strong {
-  color: var(--text);
-}
-
-.pvt-results {
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, 1fr);
-
-  gap: 10px;
-
-  margin-top: 20px;
-}
-
-.pvt-results div {
-  padding: 14px;
-
-  border:
-    1px solid var(--border);
-
-  border-radius: 12px;
-
-  background:
-    rgba(255,255,255,0.02);
-}
-
-.pvt-results span {
-  display: block;
-
-  color: var(--muted);
-
-  font-size: 0.72rem;
-}
-
-.pvt-results strong {
-  display: block;
-
-  margin-top: 5px;
+  min-width: 0;
 }
 
 
@@ -1117,10 +1026,10 @@ input[type="range"] {
     var(--text);
 
   background:
-    rgba(78,161,255,0.10);
+    rgba(78, 161, 255, 0.10);
 
   border-color:
-    rgba(78,161,255,0.35);
+    rgba(78, 161, 255, 0.35);
 }
 
 .ghost-btn {
@@ -1180,7 +1089,7 @@ input[type="range"] {
   color: var(--muted);
 
   background:
-    rgba(255,255,255,0.02);
+    rgba(255, 255, 255, 0.02);
 
   transition:
     0.2s ease;
@@ -1195,7 +1104,7 @@ input[type="range"] {
     var(--cyan);
 
   background:
-    rgba(81,215,232,0.08);
+    rgba(81, 215, 232, 0.08);
 }
 
 
@@ -1219,7 +1128,9 @@ input[type="range"] {
 
   border-bottom:
     1px solid
-    rgba(255,255,255,0.06);
+    rgba(255, 255, 255, 0.06);
+
+  min-width: 0;
 }
 
 .data-row:last-child {
@@ -1235,11 +1146,13 @@ input[type="range"] {
 
   overflow-wrap:
     anywhere;
+
+  word-break: break-word;
 }
 
 .limitation-card {
   border-color:
-    rgba(242,201,76,0.25);
+    rgba(242, 201, 76, 0.25);
 }
 
 .limitation-title {
@@ -1293,7 +1206,7 @@ input[type="range"] {
   border-radius: 50%;
 
   background:
-    rgba(78,161,255,0.12);
+    rgba(78, 161, 255, 0.12);
 
   color:
     var(--blue);
@@ -1327,21 +1240,7 @@ input[type="range"] {
 .context-card {
   padding: 22px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(20,29,42,0.96),
-      rgba(10,16,25,0.96)
-    );
-
-  border:
-    1px solid var(--border);
-
-  border-radius:
-    var(--radius);
-
-  box-shadow:
-    var(--shadow);
+  min-width: 0;
 }
 
 .formula-box {
@@ -1365,6 +1264,8 @@ input[type="range"] {
     SFMono-Regular,
     Menlo,
     monospace;
+
+  overflow-x: auto;
 }
 
 
@@ -1387,18 +1288,18 @@ input[type="range"] {
   background:
     linear-gradient(
       145deg,
-      rgba(20,29,42,0.96),
-      rgba(10,16,25,0.96)
+      rgba(20, 29, 42, 0.96),
+      rgba(10, 16, 25, 0.96)
     );
 
   border:
     1px solid var(--border);
 
-  border-radius:
-    var(--radius);
+  border-radius: var(--radius);
 
-  box-shadow:
-    var(--shadow);
+  box-shadow: var(--shadow);
+
+  min-width: 0;
 }
 
 .about-grid {
@@ -1418,8 +1319,8 @@ input[type="range"] {
   background:
     linear-gradient(
       145deg,
-      rgba(20,29,42,0.96),
-      rgba(10,16,25,0.96)
+      rgba(20, 29, 42, 0.96),
+      rgba(10, 16, 25, 0.96)
     );
 
   border:
@@ -1427,6 +1328,8 @@ input[type="range"] {
 
   border-radius:
     var(--radius);
+
+  min-width: 0;
 }
 
 .about-small-card > span {
@@ -1445,6 +1348,8 @@ input[type="range"] {
   justify-content: space-between;
 
   gap: 25px;
+
+  min-width: 0;
 }
 
 
@@ -1503,7 +1408,6 @@ footer strong {
   }
 
   body::before,
-  .space-background,
   .navigation,
   .scenario-container,
   .library-controls,
@@ -1564,9 +1468,7 @@ footer strong {
   .export-card,
   .limitation-card,
   .analysis-card,
-  .about-small-card,
-  .about-card,
-  .context-card {
+  .about-small-card {
     color: black;
 
     background: white;
@@ -1598,7 +1500,7 @@ footer strong {
 
 
 /* =========================================================
-   RESPONSIVE
+   TABLET
    ========================================================= */
 
 @media (max-width: 900px) {
@@ -1610,9 +1512,10 @@ footer strong {
       1fr;
   }
 
-  .statistics-grid {
+  .statistics-grid,
+  .correlation-result-grid {
     grid-template-columns:
-      repeat(2, 1fr);
+      repeat(2, minmax(0, 1fr));
   }
 
   .about-grid {
@@ -1637,8 +1540,13 @@ footer strong {
 
     justify-self: center;
   }
+
 }
 
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media (max-width: 650px) {
 
@@ -1673,7 +1581,8 @@ footer strong {
 
   .statistics-grid,
   .about-grid,
-  .pvt-results {
+  .pvt-results,
+  .correlation-result-grid {
     grid-template-columns:
       1fr;
   }
@@ -1718,14 +1627,66 @@ footer strong {
       250px;
   }
 
+  /*
+    IMPORTANT MOBILE FIX:
+    The interpretation column can no longer escape
+    horizontally because the entire correlation grid
+    becomes one flexible column.
+  */
+
   .risk-bar-row {
     grid-template-columns:
-      85px 1fr 35px;
+      82px minmax(0, 1fr) 35px;
+
+    gap: 8px;
   }
 
-  .primary-btn,
-  .secondary-btn,
-  .ghost-btn {
-    max-width: 100%;
+  .risk-profile-card {
+    padding: 20px 16px;
   }
-         }
+
+  .risk-bars {
+    gap: 15px;
+  }
+
+  .risk-bar-row > span {
+    font-size: 0.76rem;
+  }
+
+  .risk-bar-row strong {
+    font-size: 0.75rem;
+  }
+
+  .small-badge {
+    white-space: normal;
+    text-align: center;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  .app {
+    width: calc(100% - 14px);
+  }
+
+  .metric-value {
+    font-size: 2rem;
+  }
+
+  .risk-bar-row {
+    grid-template-columns:
+      72px minmax(0, 1fr) 30px;
+  }
+
+  .risk-profile-card {
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+
+   }
