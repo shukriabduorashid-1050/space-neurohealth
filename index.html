@@ -61,6 +61,7 @@
       class="nav-btn active"
       data-section="dashboard"
       aria-selected="true"
+      type="button"
     >
       Dashboard
     </button>
@@ -69,6 +70,7 @@
       class="nav-btn"
       data-section="analysis"
       aria-selected="false"
+      type="button"
     >
       Analysis
     </button>
@@ -77,6 +79,7 @@
       class="nav-btn"
       data-section="assessment"
       aria-selected="false"
+      type="button"
     >
       Assessment
     </button>
@@ -85,6 +88,7 @@
       class="nav-btn"
       data-section="data"
       aria-selected="false"
+      type="button"
     >
       Data
     </button>
@@ -93,6 +97,7 @@
       class="nav-btn"
       data-section="methodology"
       aria-selected="false"
+      type="button"
     >
       Methodology
     </button>
@@ -101,6 +106,7 @@
       class="nav-btn"
       data-section="about"
       aria-selected="false"
+      type="button"
     >
       About
     </button>
@@ -113,6 +119,7 @@
        ===================================================== -->
 
   <main>
+
 
     <!-- ===================================================
          DASHBOARD
@@ -190,6 +197,7 @@
           <button
             id="load-demo-btn"
             class="secondary-btn"
+            type="button"
           >
             Load Dataset
           </button>
@@ -206,7 +214,7 @@
       </article>
 
 
-      <!-- ENVIRONMENT SIMULATOR -->
+      <!-- ENVIRONMENT CONTROLS -->
 
       <article class="control-card">
 
@@ -233,6 +241,7 @@
           <button
             class="scenario-btn active"
             data-scenario="baseline"
+            type="button"
           >
             <span class="scenario-dot safe"></span>
             Baseline
@@ -241,6 +250,7 @@
           <button
             class="scenario-btn"
             data-scenario="elevated"
+            type="button"
           >
             <span class="scenario-dot warning"></span>
             Elevated
@@ -249,6 +259,7 @@
           <button
             class="scenario-btn"
             data-scenario="high"
+            type="button"
           >
             <span class="scenario-dot danger"></span>
             High
@@ -257,11 +268,16 @@
         </div>
 
 
+        <!-- CO2 -->
+
         <div class="slider-group">
 
           <label for="co2-slider">
             <span>CO₂ concentration</span>
-            <strong id="co2-slider-value">1200 ppm</strong>
+
+            <strong id="co2-slider-value">
+              1,200 ppm
+            </strong>
           </label>
 
           <input
@@ -281,10 +297,13 @@
         </div>
 
 
+        <!-- OTHER ENVIRONMENT VARIABLES -->
+
         <div class="environment-control-grid">
 
           <label>
             Radiation
+
             <span>
               <output id="radiation-value">1.80</output>
               mSv/day
@@ -303,6 +322,7 @@
 
           <label>
             Cabin pressure
+
             <span>
               <output id="pressure-value">101.3</output>
               kPa
@@ -321,6 +341,7 @@
 
           <label>
             Temperature
+
             <span>
               <output id="temperature-value">22.0</output>
               °C
@@ -339,6 +360,7 @@
 
           <label>
             Humidity
+
             <span>
               <output id="humidity-value">45</output>
               %
@@ -357,6 +379,7 @@
 
           <label>
             Continuous wakefulness
+
             <span>
               <output id="sleep-value">2</output>
               h
@@ -398,10 +421,7 @@
             1,200
           </div>
 
-          <div
-            id="environment-unit"
-            class="metric-unit"
-          >
+          <div class="metric-unit">
             ppm CO₂
           </div>
 
@@ -479,7 +499,7 @@
       </div>
 
 
-      <!-- BASELINE DIFFERENCE -->
+      <!-- BASELINE CHANGE -->
 
       <article class="analysis-card single-analysis-card">
 
@@ -630,6 +650,8 @@
       </div>
 
 
+      <!-- STATISTICS -->
+
       <article class="statistics-card">
 
         <div class="card-title-row">
@@ -643,7 +665,6 @@
           </div>
 
         </div>
-
 
         <div class="statistics-grid">
 
@@ -672,7 +693,7 @@
       </article>
 
 
-      <!-- DATA PATTERN -->
+      <!-- ANALYSIS CARDS -->
 
       <div class="analysis-grid">
 
@@ -740,7 +761,9 @@
               TIME-LAGGED ANALYSIS
             </div>
 
-            <h3>Environmental / Performance Correlation</h3>
+            <h3>
+              Environmental / Performance Correlation
+            </h3>
 
             <p>
               Compare environmental measurements with the
@@ -784,6 +807,7 @@
           <button
             id="calculate-correlation-btn"
             class="primary-btn"
+            type="button"
           >
             Calculate
           </button>
@@ -826,7 +850,7 @@
           </div>
 
 
-          <div class="stat-item">
+          <div class="stat-item interpretation-stat">
 
             <span>Interpretation</span>
 
@@ -849,16 +873,20 @@
 
       <!-- RISK PROFILE -->
 
-      <article class="chart-card">
+      <article class="chart-card risk-profile-card">
 
         <div class="chart-header">
 
           <div>
+
             <div class="eyebrow">
               MULTI-PARAMETRIC ASSESSMENT
             </div>
 
-            <h3>Environmental Risk Profile</h3>
+            <h3>
+              Environmental Risk Profile
+            </h3>
+
           </div>
 
           <span
@@ -874,68 +902,92 @@
         <div class="risk-bars">
 
           <div class="risk-bar-row">
+
             <span>CO₂</span>
 
-            <div>
+            <div class="risk-track">
               <i id="risk-co2-bar"></i>
             </div>
 
-            <strong id="risk-co2-score">0</strong>
+            <strong id="risk-co2-score">
+              0
+            </strong>
+
           </div>
 
 
           <div class="risk-bar-row">
+
             <span>Radiation</span>
 
-            <div>
+            <div class="risk-track">
               <i id="risk-radiation-bar"></i>
             </div>
 
-            <strong id="risk-radiation-score">0</strong>
+            <strong id="risk-radiation-score">
+              0
+            </strong>
+
           </div>
 
 
           <div class="risk-bar-row">
+
             <span>Pressure</span>
 
-            <div>
+            <div class="risk-track">
               <i id="risk-pressure-bar"></i>
             </div>
 
-            <strong id="risk-pressure-score">0</strong>
+            <strong id="risk-pressure-score">
+              0
+            </strong>
+
           </div>
 
 
           <div class="risk-bar-row">
+
             <span>Temperature</span>
 
-            <div>
+            <div class="risk-track">
               <i id="risk-temperature-bar"></i>
             </div>
 
-            <strong id="risk-temperature-score">0</strong>
+            <strong id="risk-temperature-score">
+              0
+            </strong>
+
           </div>
 
 
           <div class="risk-bar-row">
+
             <span>Humidity</span>
 
-            <div>
+            <div class="risk-track">
               <i id="risk-humidity-bar"></i>
             </div>
 
-            <strong id="risk-humidity-score">0</strong>
+            <strong id="risk-humidity-score">
+              0
+            </strong>
+
           </div>
 
 
           <div class="risk-bar-row">
+
             <span>Wakefulness</span>
 
-            <div>
+            <div class="risk-track">
               <i id="risk-sleep-bar"></i>
             </div>
 
-            <strong id="risk-sleep-score">0</strong>
+            <strong id="risk-sleep-score">
+              0
+            </strong>
+
           </div>
 
         </div>
@@ -958,11 +1010,15 @@
       <div class="section-heading">
 
         <div>
+
           <div class="eyebrow">
             HUMAN PERFORMANCE
           </div>
 
-          <h2>Psychomotor Vigilance Test</h2>
+          <h2>
+            Psychomotor Vigilance Test
+          </h2>
+
         </div>
 
       </div>
@@ -973,12 +1029,16 @@
         <div class="card-title-row">
 
           <div>
-            <h3>Interactive reaction-time assessment</h3>
+
+            <h3>
+              Interactive reaction-time assessment
+            </h3>
 
             <p>
               Complete repeated trials to obtain local
               reaction-time metrics.
             </p>
+
           </div>
 
           <span class="small-badge">
@@ -1004,6 +1064,7 @@
           <button
             id="pvt-start-btn"
             class="primary-btn"
+            type="button"
           >
             Start Test
           </button>
@@ -1011,13 +1072,18 @@
           <button
             id="pvt-reset-btn"
             class="ghost-btn"
+            type="button"
           >
             Reset Results
           </button>
 
           <div class="pvt-score">
+
             Trials:
-            <strong id="pvt-trials">0</strong>
+            <strong id="pvt-trials">
+              0
+            </strong>
+
           </div>
 
         </div>
@@ -1091,11 +1157,15 @@
       <div class="section-heading">
 
         <div>
+
           <div class="eyebrow">
             DATA MANAGEMENT
           </div>
 
-          <h2>Dataset Center</h2>
+          <h2>
+            Dataset Center
+          </h2>
+
         </div>
 
       </div>
@@ -1106,12 +1176,16 @@
         <div class="data-card-header">
 
           <div>
-            <h3>Import your own CSV</h3>
+
+            <h3>
+              Import your own CSV
+            </h3>
 
             <p>
               Upload a local time-series dataset containing
               a CO₂ measurement column.
             </p>
+
           </div>
 
           <span
@@ -1153,6 +1227,7 @@
           <button
             id="browse-csv-btn"
             class="primary-btn"
+            type="button"
           >
             Choose CSV
           </button>
@@ -1160,6 +1235,7 @@
           <button
             id="clear-csv-btn"
             class="ghost-btn"
+            type="button"
             disabled
           >
             Clear Dataset
@@ -1168,6 +1244,7 @@
           <button
             id="download-template-btn"
             class="secondary-btn"
+            type="button"
           >
             Download CSV Template
           </button>
@@ -1190,11 +1267,15 @@
         <div class="data-card-header">
 
           <div>
-            <h3>Active Dataset</h3>
+
+            <h3>
+              Active Dataset
+            </h3>
 
             <p>
               Local validation and dataset metadata.
             </p>
+
           </div>
 
         </div>
@@ -1203,42 +1284,51 @@
         <div class="data-table">
 
           <div class="data-row">
+
             <span>Name</span>
 
             <strong id="dataset-name">
               Built-in demonstration data
             </strong>
+
           </div>
 
 
           <div class="data-row">
+
             <span>Rows</span>
 
             <strong id="dataset-rows">
               7
             </strong>
+
           </div>
 
 
           <div class="data-row">
+
             <span>CO₂ column</span>
 
             <strong id="dataset-co2-column">
               environment
             </strong>
+
           </div>
 
 
           <div class="data-row">
+
             <span>Time column</span>
 
             <strong id="dataset-time-column">
               labels
             </strong>
+
           </div>
 
 
           <div class="data-row">
+
             <span>Validation</span>
 
             <strong
@@ -1247,6 +1337,7 @@
             >
               Demonstration dataset
             </strong>
+
           </div>
 
         </div>
@@ -1300,11 +1391,15 @@
       <div class="section-heading">
 
         <div>
+
           <div class="eyebrow">
             SCIENTIFIC FRAMEWORK
           </div>
 
-          <h2>Methodology</h2>
+          <h2>
+            Methodology
+          </h2>
+
         </div>
 
       </div>
@@ -1312,7 +1407,9 @@
 
       <article class="method-card">
 
-        <h3>Analytical pipeline</h3>
+        <h3>
+          Analytical pipeline
+        </h3>
 
         <div class="method-flow">
 
@@ -1366,7 +1463,9 @@
             ENVIRONMENT INDEX
           </div>
 
-          <h3>Transparent scoring model</h3>
+          <h3>
+            Transparent scoring model
+          </h3>
 
           <p>
             The Environmental Risk Index is a prototype
@@ -1404,7 +1503,9 @@
             ✓
           </div>
 
-          <h3>0–29</h3>
+          <h3>
+            0–29
+          </h3>
 
           <p>
             Nominal demonstration state.
@@ -1419,7 +1520,9 @@
             !
           </div>
 
-          <h3>30–59</h3>
+          <h3>
+            30–59
+          </h3>
 
           <p>
             Caution state requiring closer review.
@@ -1434,7 +1537,9 @@
             ▲
           </div>
 
-          <h3>60–100</h3>
+          <h3>
+            60–100
+          </h3>
 
           <p>
             Elevated-risk demonstration state.
@@ -1457,7 +1562,9 @@
             CORRELATION
           </div>
 
-          <h3>Lagged Pearson correlation</h3>
+          <h3>
+            Lagged Pearson correlation
+          </h3>
 
           <p>
             The analysis shifts the environmental series relative
@@ -1488,7 +1595,9 @@
             BEHAVIORAL MEASUREMENT
           </div>
 
-          <h3>PVT metrics</h3>
+          <h3>
+            PVT metrics
+          </h3>
 
           <p>
             Reaction time is recorded in milliseconds.
@@ -1521,11 +1630,15 @@
       <div class="section-heading">
 
         <div>
+
           <div class="eyebrow">
             PROJECT
           </div>
 
-          <h2>About Space NeuroHealth</h2>
+          <h2>
+            About Space NeuroHealth
+          </h2>
+
         </div>
 
       </div>
@@ -1567,7 +1680,9 @@
         <article class="about-small-card">
           <span>◈</span>
 
-          <h3>Environment</h3>
+          <h3>
+            Environment
+          </h3>
 
           <p>
             Multi-variable cabin environment monitoring.
@@ -1578,7 +1693,9 @@
         <article class="about-small-card">
           <span>∿</span>
 
-          <h3>Time Series</h3>
+          <h3>
+            Time Series
+          </h3>
 
           <p>
             Temporal patterns and configurable lag analysis.
@@ -1589,7 +1706,9 @@
         <article class="about-small-card">
           <span>RT</span>
 
-          <h3>Human Performance</h3>
+          <h3>
+            Human Performance
+          </h3>
 
           <p>
             Interactive reaction-time assessment.
@@ -1600,7 +1719,9 @@
         <article class="about-small-card">
           <span>CSV</span>
 
-          <h3>Open Data Workflow</h3>
+          <h3>
+            Open Data Workflow
+          </h3>
 
           <p>
             Local data ingestion and export-ready analysis.
@@ -1618,7 +1739,9 @@
             RESEARCH DELIVERABLE
           </div>
 
-          <h3>Export Project Summary</h3>
+          <h3>
+            Export Project Summary
+          </h3>
 
           <p>
             Generate a clean print-ready summary containing
@@ -1631,6 +1754,7 @@
         <button
           id="export-btn"
           class="primary-btn"
+          type="button"
         >
           Export Project Summary
         </button>
@@ -1644,7 +1768,9 @@
           FUTURE RESEARCH
         </div>
 
-        <h3>Potential next-stage integration</h3>
+        <h3>
+          Potential next-stage integration
+        </h3>
 
         <p>
           A future validated implementation could connect
@@ -1667,7 +1793,10 @@
   <footer>
 
     <div>
-      <strong>Space NeuroHealth</strong>
+      <strong>
+        Space NeuroHealth
+      </strong>
+
       NASA Space Apps research prototype
     </div>
 
@@ -1680,7 +1809,11 @@
 </div>
 
 
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
 <script src="script.js"></script>
 
 </body>
-  </html>
+          </html>
