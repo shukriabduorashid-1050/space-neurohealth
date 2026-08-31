@@ -81,6 +81,29 @@ body::before {
   background-size: 80px 80px;
 
   opacity: 0.08;
+
+  z-index: -1;
+}
+
+.space-background {
+  position: fixed;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(78,161,255,0.06),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 85% 70%,
+      rgba(81,215,232,0.05),
+      transparent 25%
+    );
+
+  z-index: -2;
 }
 
 button,
@@ -96,6 +119,15 @@ button {
 button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline:
+    2px solid var(--cyan);
+
+  outline-offset: 3px;
 }
 
 .app {
@@ -297,7 +329,7 @@ button:disabled {
 }
 
 .section[hidden] {
-  display: none;
+  display: none !important;
 }
 
 @keyframes sectionIn {
@@ -1294,6 +1326,22 @@ input[type="range"] {
 
 .context-card {
   padding: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20,29,42,0.96),
+      rgba(10,16,25,0.96)
+    );
+
+  border:
+    1px solid var(--border);
+
+  border-radius:
+    var(--radius);
+
+  box-shadow:
+    var(--shadow);
 }
 
 .formula-box {
@@ -1335,6 +1383,22 @@ input[type="range"] {
   padding: 24px;
 
   margin-top: 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20,29,42,0.96),
+      rgba(10,16,25,0.96)
+    );
+
+  border:
+    1px solid var(--border);
+
+  border-radius:
+    var(--radius);
+
+  box-shadow:
+    var(--shadow);
 }
 
 .about-grid {
@@ -1439,6 +1503,7 @@ footer strong {
   }
 
   body::before,
+  .space-background,
   .navigation,
   .scenario-container,
   .library-controls,
@@ -1499,7 +1564,9 @@ footer strong {
   .export-card,
   .limitation-card,
   .analysis-card,
-  .about-small-card {
+  .about-small-card,
+  .about-card,
+  .context-card {
     color: black;
 
     background: white;
@@ -1655,4 +1722,10 @@ footer strong {
     grid-template-columns:
       85px 1fr 35px;
   }
-}
+
+  .primary-btn,
+  .secondary-btn,
+  .ghost-btn {
+    max-width: 100%;
+  }
+         }
