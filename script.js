@@ -1,89 +1,119 @@
+"use strict";
+
 /* =========================================================
    SPACE NEUROHEALTH
-   APPLICATION JAVASCRIPT
+   ADVANCED APPLICATION JAVASCRIPT
    ========================================================= */
-
-"use strict";
 
 
 /* =========================================================
    DEMONSTRATION DATA
    ========================================================= */
 
-const DEMO_DATA = {
+const DEMO_DATASETS = {
 
-  labels: [
-    "T-6h",
-    "T-5h",
-    "T-4h",
-    "T-3h",
-    "T-2h",
-    "T-1h",
-    "Current"
-  ],
+  baseline: {
+    name: "Synthetic baseline",
+    labels: [
+      "T-6h",
+      "T-5h",
+      "T-4h",
+      "T-3h",
+      "T-2h",
+      "T-1h",
+      "Current"
+    ],
 
-  environment: [
-    1100,
-    1150,
-    1180,
-    1200,
-    1210,
-    1190,
-    1200
-  ],
+    environment: [
+      1100,
+      1150,
+      1180,
+      1200,
+      1210,
+      1190,
+      1200
+    ],
 
-  performance: [
-    235,
-    238,
-    240,
-    242,
-    244,
-    241,
-    240
-  ]
-
-};
-
-
-/* =========================================================
-   DEMONSTRATION COHORT
-   ========================================================= */
-
-const COHORT_DATA = {
-
-  "sub-01": {
-    subject: "Subject 01",
-    role: "Crew Lead"
+    performance: [
+      235,
+      238,
+      240,
+      242,
+      244,
+      241,
+      240
+    ]
   },
 
-  "sub-02": {
-    subject: "Subject 02",
-    role: "Payload Spec"
+
+  elevated: {
+    name: "Synthetic elevated environment",
+
+    labels: [
+      "T-6h",
+      "T-5h",
+      "T-4h",
+      "T-3h",
+      "T-2h",
+      "T-1h",
+      "Current"
+    ],
+
+    environment: [
+      1500,
+      1700,
+      1900,
+      2200,
+      2400,
+      2600,
+      2800
+    ],
+
+    performance: [
+      240,
+      245,
+      248,
+      252,
+      258,
+      263,
+      268
+    ]
+  },
+
+
+  fatigue: {
+    name: "Synthetic fatigue pattern",
+
+    labels: [
+      "T-6h",
+      "T-5h",
+      "T-4h",
+      "T-3h",
+      "T-2h",
+      "T-1h",
+      "Current"
+    ],
+
+    environment: [
+      1150,
+      1180,
+      1200,
+      1300,
+      1450,
+      1600,
+      1750
+    ],
+
+    performance: [
+      235,
+      240,
+      244,
+      250,
+      258,
+      270,
+      282
+    ]
   }
-
-};
-
-
-/*
-  This is interface-level demonstration metadata.
-  It is intentionally not presented as real crew data.
-*/
-
-const FILTER_LABELS = {
-
-  all: "All Subjects",
-
-  "sub-01":
-    "Subject 01 • Crew Lead",
-
-  "sub-02":
-    "Subject 02 • Payload Spec",
-
-  nominal:
-    "Nominal Sleep Cycle",
-
-  shifted:
-    "Shift-Shifted Night Phase"
 
 };
 
@@ -95,71 +125,27 @@ const FILTER_LABELS = {
 const SCENARIOS = {
 
   baseline: {
-
     name: "Baseline",
-
     co2: 1200,
-
-    pressure: 101.3,
-
     performance: 240,
-
-    status: "Nominal Baseline",
-
-    statusClass: "safe-text",
-
-    interpretationTitle:
-      "Baseline environmental condition",
-
-    interpretationText:
-      "This demonstration represents a baseline environmental condition. The simulated performance value is an interface reference and is not a validated physiological model."
-
+    status: "Nominal Demonstration",
+    statusClass: "safe-text"
   },
-
 
   elevated: {
-
     name: "Elevated",
-
     co2: 2500,
-
-    pressure: 95,
-
     performance: 275,
-
     status: "Elevated Demonstration",
-
-    statusClass: "warning-text",
-
-    interpretationTitle:
-      "Elevated demonstration condition",
-
-    interpretationText:
-      "The simulator represents a higher environmental measurement together with a modest cabin-pressure change. The associated performance value is illustrative and should not be interpreted as evidence of a physiological effect."
-
+    statusClass: ""
   },
 
-
   high: {
-
     name: "High",
-
     co2: 4000,
-
-    pressure: 82,
-
     performance: 330,
-
     status: "High Demonstration",
-
-    statusClass: "danger-text",
-
-    interpretationTitle:
-      "High demonstration condition",
-
-    interpretationText:
-      "This scenario represents a substantially elevated demonstration value and a lower cabin-pressure setting. A validated dataset and documented scientific model would be required before drawing conclusions about human performance."
-
+    statusClass: ""
   }
 
 };
@@ -173,32 +159,25 @@ const state = {
 
   activeScenario: "baseline",
 
-  currentCO2: 1200,
+  environment: {
 
-  currentPressure: 101.3,
+    co2: 1200,
 
-  currentPerformance: 240,
+    radiation: 1.8,
+
+    wakefulness: 8,
+
+    circadianOffset: 0,
+
+    temperature: 22,
+
+    humidity: 45
+
+  },
 
   customDataset: null,
 
-  filters: {
-
-    subject: "all",
-
-    phase: "all"
-
-  },
-
-  alert: {
-
-    level: "nominal",
-
-    title: "Environmental Conditions Within Demonstration Range",
-
-    message:
-      "Current CO₂ and cabin-pressure settings remain within the simulator's nominal demonstration range."
-
-  },
+  selectedLag: 3,
 
   pvt: {
 
@@ -232,16 +211,12 @@ const state = {
    ========================================================= */
 
 function $(selector) {
-
   return document.querySelector(selector);
-
 }
 
 
 function $all(selector) {
-
   return document.querySelectorAll(selector);
-
 }
 
 
@@ -275,11 +250,7 @@ function formatNumber(value) {
 
 function setupNavigation() {
 
-  const buttons =
-    $all(".nav-btn");
-
-
-  buttons.forEach(button => {
+  $all(".nav-btn").forEach(button => {
 
     button.addEventListener(
       "click",
@@ -288,62 +259,49 @@ function setupNavigation() {
         const sectionId =
           button.dataset.section;
 
-
         if (!sectionId) {
           return;
         }
 
+        $all(".nav-btn").forEach(
+          btn => {
 
-        buttons.forEach(btn => {
+            const active =
+              btn === button;
 
-          const active =
-            btn === button;
+            btn.classList.toggle(
+              "active",
+              active
+            );
 
+            btn.setAttribute(
+              "aria-selected",
+              String(active)
+            );
 
-          btn.classList.toggle(
-            "active",
-            active
-          );
-
-
-          btn.setAttribute(
-            "aria-selected",
-            String(active)
-          );
-
-        });
-
-
-        $all(".section").forEach(section => {
-
-          const active =
-            section.id === sectionId;
+          }
+        );
 
 
-          section.hidden =
-            !active;
+        $all(".section").forEach(
+          section => {
 
+            section.hidden =
+              section.id !== sectionId;
 
-          section.classList.toggle(
-            "active-section",
-            active
-          );
-
-        });
+          }
+        );
 
 
         if (sectionId === "analysis") {
           updateAnalysis();
         }
 
-
         if (sectionId === "data") {
           updateDatasetInformation();
         }
 
-
         resizeCharts();
-
 
         window.scrollTo({
           top: 0,
@@ -364,329 +322,287 @@ function setupNavigation() {
 
 function setupScenarios() {
 
-  $all(".scenario-btn").forEach(button => {
+  $all(".scenario-btn").forEach(
+    button => {
 
-    button.addEventListener(
-      "click",
-      () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        const scenarioName =
-          button.dataset.scenario;
+          const name =
+            button.dataset.scenario;
 
+          if (!SCENARIOS[name]) {
+            return;
+          }
 
-        if (!SCENARIOS[scenarioName]) {
-          return;
-        }
+          state.activeScenario =
+            name;
 
+          $all(".scenario-btn")
+            .forEach(btn => {
 
-        state.activeScenario =
-          scenarioName;
+              btn.classList.toggle(
+                "active",
+                btn === button
+              );
 
+            });
 
-        $all(".scenario-btn").forEach(btn => {
-
-          btn.classList.toggle(
-            "active",
-            btn === button
+          applyScenario(
+            SCENARIOS[name]
           );
 
-        });
+        }
+      );
 
-
-        applyScenario(
-          SCENARIOS[scenarioName]
-        );
-
-      }
-    );
-
-  });
+    }
+  );
 
 }
 
 
 function applyScenario(scenario) {
 
-  state.currentCO2 =
+  state.environment.co2 =
     scenario.co2;
 
-  state.currentPressure =
-    scenario.pressure;
+  updateEnvironmentControls();
 
-  state.currentPerformance =
-    scenario.performance;
+  updateDashboardMetrics();
 
-
-  const co2Slider =
-    $("#co2-slider");
-
-
-  if (co2Slider) {
-    co2Slider.value =
-      scenario.co2;
-  }
-
-
-  const pressureSlider =
-    $("#pressure-slider");
-
-
-  if (pressureSlider) {
-    pressureSlider.value =
-      scenario.pressure;
-  }
-
-
-  setText(
-    "co2-slider-value",
-    `${formatNumber(scenario.co2)} ppm`
-  );
-
-
-  setText(
-    "pressure-slider-value",
-    `${formatNumber(scenario.pressure)} kPa`
-  );
-
-
-  setText(
-    "environment-value",
-    formatNumber(scenario.co2)
-  );
-
-
-  setText(
-    "environment-unit",
-    "ppm CO₂"
-  );
-
-
-  setText(
-    "environment-status",
-    scenario.status
-  );
-
-
-  updateStatusClass(
-    $("#environment-status"),
-    scenario.statusClass
-  );
-
-
-  setText(
-    "performance-value",
-    formatNumber(scenario.performance)
-  );
-
-
-  setText(
-    "performance-status",
-    "Demonstration reference"
-  );
-
-
-  updateBaselineDifference(
-    scenario.performance
-  );
-
-
-  setText(
-    "science-title",
-    scenario.interpretationTitle
-  );
-
-
-  setText(
-    "science-text",
-    scenario.interpretationText
-  );
-
-
-  updateEnvironmentChartForScenario();
-
-  updatePerformanceChartForScenario();
-
-  updateEnvironmentalAlert();
-
-  updateSimulationState();
+  updateScenarioChart();
 
   updateAnalysis();
 
 }
 
 
-function updateStatusClass(
-  element,
-  className
-) {
+/* =========================================================
+   ENVIRONMENT CONTROLS
+   ========================================================= */
 
-  if (!element) {
-    return;
-  }
+function setupEnvironmentControls() {
+
+  const controls = {
+
+    "co2-slider": value => {
+      state.environment.co2 =
+        Number(value);
+    },
+
+    "radiation-slider": value => {
+      state.environment.radiation =
+        Number(value);
+    },
+
+    "wake-slider": value => {
+      state.environment.wakefulness =
+        Number(value);
+    },
+
+    "circadian-slider": value => {
+      state.environment.circadianOffset =
+        Number(value);
+    },
+
+    "temperature-slider": value => {
+      state.environment.temperature =
+        Number(value);
+    },
+
+    "humidity-slider": value => {
+      state.environment.humidity =
+        Number(value);
+    }
+
+  };
 
 
-  element.classList.remove(
-    "safe-text",
-    "warning-text",
-    "danger-text"
+  Object.entries(controls)
+    .forEach(([id, handler]) => {
+
+      const slider =
+        document.getElementById(id);
+
+      if (!slider) {
+        return;
+      }
+
+      slider.addEventListener(
+        "input",
+        event => {
+
+          handler(
+            event.target.value
+          );
+
+          updateEnvironmentControls();
+
+          updateDashboardMetrics();
+
+          updateAnalysis();
+
+        }
+      );
+
+    });
+
+}
+
+
+function updateEnvironmentControls() {
+
+  const e =
+    state.environment;
+
+
+  setText(
+    "co2-slider-value",
+    `${formatNumber(e.co2)} ppm`
+  );
+
+  setText(
+    "radiation-value",
+    `${formatNumber(e.radiation)} mSv/day`
+  );
+
+  setText(
+    "wake-value",
+    `${formatNumber(e.wakefulness)} h`
+  );
+
+  setText(
+    "circadian-value",
+    `${e.circadianOffset >= 0 ? "+" : ""}${formatNumber(e.circadianOffset)} h`
+  );
+
+  setText(
+    "temperature-value",
+    `${formatNumber(e.temperature)} °C`
+  );
+
+  setText(
+    "humidity-value",
+    `${formatNumber(e.humidity)}%`
   );
 
 
-  if (className) {
-    element.classList.add(
-      className
-    );
+  setSliderValue(
+    "co2-slider",
+    e.co2
+  );
+
+  setSliderValue(
+    "radiation-slider",
+    e.radiation
+  );
+
+  setSliderValue(
+    "wake-slider",
+    e.wakefulness
+  );
+
+  setSliderValue(
+    "circadian-slider",
+    e.circadianOffset
+  );
+
+  setSliderValue(
+    "temperature-slider",
+    e.temperature
+  );
+
+  setSliderValue(
+    "humidity-slider",
+    e.humidity
+  );
+
+}
+
+
+function setSliderValue(id, value) {
+
+  const slider =
+    document.getElementById(id);
+
+  if (slider) {
+    slider.value = value;
   }
 
 }
 
 
 /* =========================================================
-   SLIDERS
+   DEMONSTRATION ENVIRONMENT MODEL
    ========================================================= */
 
-function setupSlider() {
+function calculatePerformanceIndicator() {
 
-  const slider =
-    $("#co2-slider");
-
-
-  if (!slider) {
-    return;
-  }
+  const e =
+    state.environment;
 
 
-  slider.addEventListener(
-    "input",
-    () => {
-
-      const value =
-        Number(slider.value);
-
-
-      state.currentCO2 =
-        value;
-
-
-      setText(
-        "co2-slider-value",
-        `${formatNumber(value)} ppm`
-      );
-
-
-      setText(
-        "environment-value",
-        formatNumber(value)
-      );
-
-
-      state.currentPerformance =
-        calculatePerformance(
-          value,
-          state.currentPressure
-        );
-
-
-      updateDynamicSimulation();
-
-    }
-  );
-
-}
-
-
-function setupPressureSlider() {
-
-  const slider =
-    $("#pressure-slider");
-
-
-  if (!slider) {
-    return;
-  }
-
-
-  slider.addEventListener(
-    "input",
-    () => {
-
-      const value =
-        Number(slider.value);
-
-
-      state.currentPressure =
-        value;
-
-
-      setText(
-        "pressure-slider-value",
-        `${formatNumber(value)} kPa`
-      );
-
-
-      state.currentPerformance =
-        calculatePerformance(
-          state.currentCO2,
-          value
-        );
-
-
-      updateDynamicSimulation();
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   SIMULATION CALCULATIONS
-   ========================================================= */
-
-function calculatePerformance(
-  co2,
-  pressure
-) {
-
-  let performance;
-
-
-  if (co2 <= 1200) {
-
-    performance =
-      240 -
-      ((co2 - 400) / 800) * 5;
-
-  } else {
-
-    performance =
-      240 +
-      ((co2 - 1200) / 3800) * 110;
-
-  }
+  let result = 240;
 
 
   /*
-    Pressure is treated as an interface simulation parameter.
-    It is not a validated physiological relationship.
+    This is intentionally an interface model.
+    It is NOT a physiological prediction.
   */
 
-  const pressureDeviation =
+  result +=
+    Math.max(
+      0,
+      e.co2 - 1200
+    ) / 3800 * 55;
+
+
+  result +=
+    Math.max(
+      0,
+      e.wakefulness - 8
+    ) * 3;
+
+
+  result +=
     Math.abs(
-      pressure - 101.3
+      e.circadianOffset
+    ) * 2;
+
+
+  result +=
+    Math.max(
+      0,
+      e.radiation - 2
+    ) * 1.5;
+
+
+  const temperatureDeviation =
+    Math.abs(
+      e.temperature - 22
     );
 
+  result +=
+    temperatureDeviation * 1.5;
 
-  performance +=
-    pressureDeviation * 0.55;
+
+  const humidityDeviation =
+    Math.max(
+      0,
+      Math.abs(e.humidity - 45) - 10
+    );
+
+  result +=
+    humidityDeviation * 0.25;
 
 
   return Math.round(
     Math.max(
       220,
       Math.min(
-        380,
-        performance
+        360,
+        result
       )
     )
   );
@@ -694,69 +610,118 @@ function calculatePerformance(
 }
 
 
-function calculateEnvironmentScore(
-  co2,
-  pressure
-) {
+/* =========================================================
+   ENVIRONMENTAL RISK INDEX
+   ========================================================= */
 
-  let score = 100;
+function calculateEnvironmentalIndex() {
+
+  const e =
+    state.environment;
 
 
-  if (co2 > 1000) {
+  let score = 0;
 
-    score -= Math.min(
+
+  if (e.co2 > 1500) {
+    score += Math.min(
       30,
-      ((co2 - 1000) / 3000) * 30
+      (e.co2 - 1500) / 100
     );
-
   }
 
 
-  if (pressure < 95) {
+  if (e.radiation > 2) {
+    score += Math.min(
+      20,
+      (e.radiation - 2) * 2
+    );
+  }
 
-    score -= Math.min(
+
+  if (e.wakefulness > 12) {
+    score += Math.min(
       25,
-      ((95 - pressure) / 25) * 25
+      (e.wakefulness - 12) * 2
     );
-
   }
 
 
-  if (pressure > 105) {
-
-    score -= Math.min(
+  score +=
+    Math.min(
       15,
-      ((pressure - 105) / 5) * 15
+      Math.abs(
+        e.circadianOffset
+      ) * 1.25
     );
+
+
+  score +=
+    Math.min(
+      10,
+      Math.abs(
+        e.temperature - 22
+      )
+    );
+
+
+  if (e.humidity > 65) {
+    score += Math.min(
+      10,
+      (e.humidity - 65) / 2
+    );
+  }
+
+
+  if (score < 25) {
+
+    return {
+      score,
+      label: "Low",
+      className: "risk-low"
+    };
 
   }
 
 
-  return Math.round(
-    Math.max(
-      0,
-      Math.min(
-        100,
-        score
-      )
-    )
-  );
+  if (score < 55) {
+
+    return {
+      score,
+      label: "Moderate",
+      className: "risk-moderate"
+    };
+
+  }
+
+
+  return {
+    score,
+    label: "High",
+    className: "risk-high"
+  };
 
 }
 
 
-function updateDynamicSimulation() {
+/* =========================================================
+   DASHBOARD METRICS
+   ========================================================= */
+
+function updateDashboardMetrics() {
+
+  const e =
+    state.environment;
+
 
   const performance =
-    calculatePerformance(
-      state.currentCO2,
-      state.currentPressure
-    );
+    calculatePerformanceIndicator();
 
 
-  state.currentPerformance =
-    performance;
-
+  setText(
+    "environment-value",
+    formatNumber(e.co2)
+  );
 
   setText(
     "performance-value",
@@ -764,48 +729,10 @@ function updateDynamicSimulation() {
   );
 
 
-  updateBaselineDifference(
-    performance
-  );
-
-
-  updateEnvironmentalStatus();
-
-  updateEnvironmentalAlert();
-
-  updateSimulationState();
-
-  updateEnvironmentChartFromCurrent();
-
-  updatePerformanceChartFromCurrent();
-
-  updateAnalysis();
-
-
-  setText(
-    "science-title",
-    "Interactive environmental adjustment"
-  );
-
-
-  setText(
-    "science-text",
-    "The simulator combines CO₂ concentration and cabin pressure to produce an illustrative performance indicator. These relationships are interface demonstrations and are not validated physiological predictions."
-
-  );
-
-}
-
-
-function updateBaselineDifference(
-  performance
-) {
-
   const difference =
     (
-      (performance -
-        SCENARIOS.baseline.performance) /
-      SCENARIOS.baseline.performance
+      (performance - 240) /
+      240
     ) * 100;
 
 
@@ -815,338 +742,40 @@ function updateBaselineDifference(
   );
 
 
+  let status =
+    "Nominal Demonstration";
+
+
+  if (e.co2 > 3000) {
+
+    status =
+      "High Demonstration";
+
+  } else if (e.co2 > 1500) {
+
+    status =
+      "Elevated Demonstration";
+
+  }
+
+
+  setText(
+    "environment-status",
+    status
+  );
+
+
+  setText(
+    "performance-status",
+    "Demonstration reference"
+  );
+
+
   setText(
     "change-status",
     difference === 0
       ? "No change"
       : "Demonstration difference"
-  );
-
-
-  const changeStatus =
-    $("#change-status");
-
-
-  updateStatusClass(
-    changeStatus,
-    difference > 0
-      ? "warning-text"
-      : "safe-text"
-  );
-
-}
-
-
-/* =========================================================
-   ENVIRONMENTAL STATUS
-   ========================================================= */
-
-function getEnvironmentLevel(
-  co2,
-  pressure
-) {
-
-  const criticalCO2 =
-    co2 >= 3500;
-
-
-  const criticalPressure =
-    pressure <= 80 ||
-    pressure >= 108;
-
-
-  if (
-    criticalCO2 ||
-    criticalPressure
-  ) {
-    return "critical";
-  }
-
-
-  const warningCO2 =
-    co2 > 1000;
-
-
-  const warningPressure =
-    pressure < 95 ||
-    pressure > 105;
-
-
-  if (
-    warningCO2 ||
-    warningPressure
-  ) {
-    return "warning";
-  }
-
-
-  return "nominal";
-
-}
-
-
-function updateEnvironmentalStatus() {
-
-  const level =
-    getEnvironmentLevel(
-      state.currentCO2,
-      state.currentPressure
-    );
-
-
-  const status =
-    $("#environment-status");
-
-
-  if (!status) {
-    return;
-  }
-
-
-  updateStatusClass(
-    status,
-    level === "nominal"
-      ? "safe-text"
-      : level === "warning"
-        ? "warning-text"
-        : "danger-text"
-  );
-
-
-  if (level === "nominal") {
-
-    setText(
-      "environment-status",
-      "Nominal Demonstration"
-    );
-
-  } else if (level === "warning") {
-
-    setText(
-      "environment-status",
-      "Elevated Demonstration"
-    );
-
-  } else {
-
-    setText(
-      "environment-status",
-      "High Demonstration"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   ENVIRONMENTAL ALERT
-   ========================================================= */
-
-function updateEnvironmentalAlert() {
-
-  const alert =
-    $("#anomaly-alert");
-
-
-  if (!alert) {
-    return;
-  }
-
-
-  const level =
-    getEnvironmentLevel(
-      state.currentCO2,
-      state.currentPressure
-    );
-
-
-  alert.classList.remove(
-    "nominal-alert",
-    "warning-alert",
-    "critical-alert"
-  );
-
-
-  const icon =
-    $("#alert-icon");
-
-
-  const title =
-    $("#alert-title");
-
-
-  const message =
-    $("#alert-message");
-
-
-  if (level === "nominal") {
-
-    alert.classList.add(
-      "nominal-alert"
-    );
-
-
-    state.alert.level =
-      "nominal";
-
-
-    state.alert.title =
-      "Environmental Conditions Within Demonstration Range";
-
-
-    state.alert.message =
-      `CO₂ is ${formatNumber(state.currentCO2)} ppm and cabin pressure is ${formatNumber(state.currentPressure)} kPa. Current simulator settings are within the nominal demonstration range.`;
-
-
-    if (icon) {
-      icon.textContent = "✓";
-    }
-
-
-    if (title) {
-      title.textContent =
-        state.alert.title;
-    }
-
-
-    if (message) {
-      message.textContent =
-        state.alert.message;
-    }
-
-
-    return;
-  }
-
-
-  if (level === "warning") {
-
-    alert.classList.add(
-      "warning-alert"
-    );
-
-
-    state.alert.level =
-      "warning";
-
-
-    state.alert.title =
-      "Environmental Threshold Exceeded";
-
-
-    const pressureText =
-      state.currentPressure < 95
-        ? "Reduced cabin pressure"
-        : state.currentPressure > 105
-          ? "Elevated cabin pressure"
-          : "Cabin pressure near nominal";
-
-
-    state.alert.message =
-      `${pressureText}; CO₂ is ${formatNumber(state.currentCO2)} ppm. The simulator marks this condition as elevated. No clinical risk estimate is implied.`;
-
-
-    if (icon) {
-      icon.textContent = "⚠️";
-    }
-
-
-    if (title) {
-      title.textContent =
-        state.alert.title;
-    }
-
-
-    if (message) {
-      message.textContent =
-        state.alert.message;
-    }
-
-
-    return;
-  }
-
-
-  alert.classList.add(
-    "critical-alert"
-  );
-
-
-  state.alert.level =
-    "critical";
-
-
-  state.alert.title =
-    "High Environmental Simulation State";
-
-
-  state.alert.message =
-    `CO₂ is ${formatNumber(state.currentCO2)} ppm and cabin pressure is ${formatNumber(state.currentPressure)} kPa. The simulator has entered its high-alert demonstration range. This is not a medical or physiological risk assessment.`;
-
-
-  if (icon) {
-    icon.textContent = "!";
-  }
-
-
-  if (title) {
-    title.textContent =
-      state.alert.title;
-  }
-
-
-  if (message) {
-    message.textContent =
-      state.alert.message;
-  }
-
-}
-
-
-/* =========================================================
-   SIMULATION STATE DISPLAY
-   ========================================================= */
-
-function updateSimulationState() {
-
-  const score =
-    calculateEnvironmentScore(
-      state.currentCO2,
-      state.currentPressure
-    );
-
-
-  setText(
-    "environment-score",
-    `${score} / 100`
-  );
-
-
-  const level =
-    getEnvironmentLevel(
-      state.currentCO2,
-      state.currentPressure
-    );
-
-
-  let stateLabel =
-    "Nominal";
-
-
-  if (level === "warning") {
-    stateLabel = "Elevated";
-  }
-
-
-  if (level === "critical") {
-    stateLabel = "High Alert";
-  }
-
-
-  setText(
-    "simulation-state",
-    stateLabel
   );
 
 }
@@ -1162,20 +791,14 @@ function createCharts() {
     typeof Chart === "undefined"
   ) {
 
-    const error =
-      $("#chart-error");
-
-
-    if (error) {
-      error.classList.remove(
-        "hidden"
-      );
-    }
-
+    showChartError();
 
     return;
+
   }
 
+
+  destroyCharts();
 
   createEnvironmentChart();
 
@@ -1184,11 +807,40 @@ function createCharts() {
 }
 
 
+function destroyCharts() {
+
+  Object.keys(
+    state.charts
+  ).forEach(key => {
+
+    const chart =
+      state.charts[key];
+
+    if (chart) {
+
+      try {
+        chart.destroy();
+      } catch (error) {
+        console.warn(
+          "Chart cleanup failed:",
+          error
+        );
+      }
+
+      state.charts[key] =
+        null;
+
+    }
+
+  });
+
+}
+
+
 function createEnvironmentChart() {
 
   const canvas =
     $("#environmentChart");
-
 
   if (!canvas) {
     return;
@@ -1200,114 +852,7 @@ function createEnvironmentChart() {
     state.charts.environment =
       new Chart(
         canvas,
-        {
-
-          type: "line",
-
-          data: {
-
-            labels:
-              DEMO_DATA.labels,
-
-            datasets: [{
-
-              label: "CO₂",
-
-              data:
-                DEMO_DATA.environment,
-
-              borderColor:
-                "#51d7e8",
-
-              backgroundColor:
-                "rgba(81, 215, 232, 0.10)",
-
-              borderWidth: 2,
-
-              fill: true,
-
-              tension: 0.35,
-
-              pointRadius: 4,
-
-              pointHoverRadius: 6
-
-            }]
-
-          },
-
-          options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            interaction: {
-
-              intersect: false,
-
-              mode: "index"
-
-            },
-
-            plugins: {
-
-              legend: {
-
-                labels: {
-
-                  color:
-                    "#edf4ff"
-
-                }
-
-              }
-
-            },
-
-            scales: {
-
-              x: {
-
-                ticks: {
-
-                  color:
-                    "#8f9caf"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255,255,255,0.06)"
-
-                }
-
-              },
-
-              y: {
-
-                ticks: {
-
-                  color:
-                    "#8f9caf"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255,255,255,0.06)"
-
-                }
-
-              }
-
-            }
-
-          }
-
-        }
+        buildEnvironmentChartConfig()
       );
 
   } catch (error) {
@@ -1317,10 +862,64 @@ function createEnvironmentChart() {
       error
     );
 
-
     showChartError();
 
   }
+
+}
+
+
+function buildEnvironmentChartConfig() {
+
+  const dataset =
+    state.customDataset ||
+    DEMO_DATASETS.baseline;
+
+
+  return {
+
+    type: "line",
+
+    data: {
+
+      labels:
+        dataset.labels,
+
+      datasets: [
+
+        {
+
+          label:
+            "CO₂",
+
+          data:
+            dataset.environment,
+
+          borderColor:
+            "#51d7e8",
+
+          backgroundColor:
+            "rgba(81,215,232,0.10)",
+
+          borderWidth: 2,
+
+          fill: true,
+
+          tension: 0.35,
+
+          pointRadius: 4,
+
+          pointHoverRadius: 6
+
+        }
+
+      ]
+
+    },
+
+    options: chartOptions()
+
+  };
 
 }
 
@@ -1330,15 +929,7 @@ function createPerformanceChart() {
   const canvas =
     $("#performanceChart");
 
-
   if (!canvas) {
-    return;
-  }
-
-
-  if (
-    typeof Chart === "undefined"
-  ) {
     return;
   }
 
@@ -1348,115 +939,7 @@ function createPerformanceChart() {
     state.charts.performance =
       new Chart(
         canvas,
-        {
-
-          type: "line",
-
-          data: {
-
-            labels:
-              DEMO_DATA.labels,
-
-            datasets: [{
-
-              label:
-                "Reaction Time",
-
-              data:
-                DEMO_DATA.performance,
-
-              borderColor:
-                "#4ea1ff",
-
-              backgroundColor:
-                "rgba(78, 161, 255, 0.10)",
-
-              borderWidth: 2,
-
-              fill: true,
-
-              tension: 0.35,
-
-              pointRadius: 4,
-
-              pointHoverRadius: 6
-
-            }]
-
-          },
-
-          options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            interaction: {
-
-              intersect: false,
-
-              mode: "index"
-
-            },
-
-            plugins: {
-
-              legend: {
-
-                labels: {
-
-                  color:
-                    "#edf4ff"
-
-                }
-
-              }
-
-            },
-
-            scales: {
-
-              x: {
-
-                ticks: {
-
-                  color:
-                    "#8f9caf"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255,255,255,0.06)"
-
-                }
-
-              },
-
-              y: {
-
-                ticks: {
-
-                  color:
-                    "#8f9caf"
-
-                },
-
-                grid: {
-
-                  color:
-                    "rgba(255,255,255,0.06)"
-
-                }
-
-              }
-
-            }
-
-          }
-
-        }
+        buildPerformanceChartConfig()
       );
 
   } catch (error) {
@@ -1471,238 +954,307 @@ function createPerformanceChart() {
 }
 
 
-/* =========================================================
-   CHART UPDATE
-   ========================================================= */
+function buildPerformanceChartConfig() {
 
-function updateEnvironmentChartForScenario() {
-
-  const chart =
-    state.charts.environment;
+  const dataset =
+    state.customDataset ||
+    DEMO_DATASETS.baseline;
 
 
-  if (!chart) {
-    return;
-  }
+  return {
 
+    type: "line",
 
-  const scenario =
-    SCENARIOS[
-      state.activeScenario
-    ];
+    data: {
 
+      labels:
+        dataset.labels,
 
-  if (!scenario) {
-    return;
-  }
+      datasets: [
 
+        {
 
-  const base =
-    scenario.co2;
+          label:
+            "Reaction Time",
 
+          data:
+            dataset.performance,
 
-  const offsets = [
-    -100,
-    -50,
-    -20,
-    0,
-    10,
-    -10,
-    0
-  ];
+          borderColor:
+            "#4ea1ff",
 
+          backgroundColor:
+            "rgba(78,161,255,0.10)",
 
-  chart.data.datasets[0].data =
-    offsets.map(
-      offset =>
-        Math.max(
-          0,
-          base + offset
-        )
-    );
+          borderWidth: 2,
 
+          fill: true,
 
-  chart.update();
+          tension: 0.35,
 
-}
+          pointRadius: 4,
 
+          pointHoverRadius: 6
 
-function updateEnvironmentChartFromCurrent() {
+        }
 
-  const chart =
-    state.charts.environment;
+      ]
 
+    },
 
-  if (!chart) {
-    return;
-  }
+    options: chartOptions()
 
-
-  const base =
-    state.currentCO2;
-
-
-  const offsets = [
-    -100,
-    -50,
-    -20,
-    0,
-    10,
-    -10,
-    0
-  ];
-
-
-  chart.data.datasets[0].data =
-    offsets.map(
-      offset =>
-        Math.max(
-          0,
-          base + offset
-        )
-    );
-
-
-  chart.update();
+  };
 
 }
 
 
-function updatePerformanceChartForScenario() {
+function chartOptions() {
 
-  const chart =
-    state.charts.performance;
+  return {
 
+    responsive: true,
 
-  if (!chart) {
-    return;
-  }
+    maintainAspectRatio: false,
 
+    interaction: {
 
-  const scenario =
-    SCENARIOS[
-      state.activeScenario
-    ];
+      intersect: false,
 
+      mode: "index"
 
-  if (!scenario) {
-    return;
-  }
+    },
 
+    plugins: {
 
-  const base =
-    scenario.performance;
+      legend: {
 
+        labels: {
 
-  const offsets = [
-    -5,
-    -2,
-    0,
-    3,
-    5,
-    2,
-    0
-  ];
+          color:
+            "#edf4ff"
 
-
-  chart.data.datasets[0].data =
-    offsets.map(
-      offset =>
-        Math.max(
-          0,
-          base + offset
-        )
-    );
-
-
-  chart.update();
-
-}
-
-
-function updatePerformanceChartFromCurrent() {
-
-  const chart =
-    state.charts.performance;
-
-
-  if (!chart) {
-    return;
-  }
-
-
-  const base =
-    state.currentPerformance;
-
-
-  const offsets = [
-    -5,
-    -2,
-    0,
-    3,
-    5,
-    2,
-    0
-  ];
-
-
-  chart.data.datasets[0].data =
-    offsets.map(
-      offset =>
-        Math.max(
-          0,
-          base + offset
-        )
-    );
-
-
-  chart.update();
-
-}
-
-
-function resizeCharts() {
-
-  setTimeout(
-    () => {
-
-      if (
-        state.charts.environment
-      ) {
-
-        state.charts.environment.resize();
-
-      }
-
-
-      if (
-        state.charts.performance
-      ) {
-
-        state.charts.performance.resize();
+        }
 
       }
 
     },
-    100
+
+    scales: {
+
+      x: {
+
+        ticks: {
+          color:
+            "#8f9caf"
+        },
+
+        grid: {
+          color:
+            "rgba(255,255,255,0.06)"
+        }
+
+      },
+
+      y: {
+
+        ticks: {
+          color:
+            "#8f9caf"
+        },
+
+        grid: {
+          color:
+            "rgba(255,255,255,0.06)"
+        }
+
+      }
+
+    }
+
+  };
+
+}
+
+
+/* =========================================================
+   CHART UPDATE
+   ========================================================= */
+
+function updateScenarioChart() {
+
+  if (
+    state.customDataset
+  ) {
+    return;
+  }
+
+
+  const dataset =
+    DEMO_DATASETS[
+      getCurrentDemoDataset()
+    ] ||
+    DEMO_DATASETS.baseline;
+
+
+  updateChartData(
+    state.charts.environment,
+    dataset.labels,
+    dataset.environment
+  );
+
+
+  updateChartData(
+    state.charts.performance,
+    dataset.labels,
+    dataset.performance
   );
 
 }
 
 
-function showChartError() {
+function updateChartData(
+  chart,
+  labels,
+  values
+) {
 
-  const error =
-    $("#chart-error");
+  if (!chart) {
+    return;
+  }
 
 
-  if (error) {
+  chart.data.labels =
+    labels;
 
-    error.classList.remove(
-      "hidden"
+  chart.data.datasets[0].data =
+    values;
+
+  chart.update(
+    "none"
+  );
+
+}
+
+
+/* =========================================================
+   DATASET SWITCHING
+   ========================================================= */
+
+function setupDemoDatasetSelector() {
+
+  const select =
+    $("#demo-dataset-select");
+
+  const load =
+    $("#load-demo-dataset-btn");
+
+
+  if (select) {
+
+    select.addEventListener(
+      "change",
+      () => {
+
+        loadDemoDataset(
+          select.value
+        );
+
+      }
     );
 
   }
+
+
+  if (load) {
+
+    load.addEventListener(
+      "click",
+      () => {
+
+        loadDemoDataset(
+          select?.value ||
+          "baseline"
+        );
+
+      }
+    );
+
+  }
+
+}
+
+
+function getCurrentDemoDataset() {
+
+  const select =
+    $("#demo-dataset-select");
+
+  if (
+    select &&
+    DEMO_DATASETS[
+      select.value
+    ]
+  ) {
+
+    return select.value;
+
+  }
+
+
+  return "baseline";
+
+}
+
+
+function loadDemoDataset(name) {
+
+  const dataset =
+    DEMO_DATASETS[name];
+
+  if (!dataset) {
+    return;
+  }
+
+
+  state.customDataset = null;
+
+
+  state.environment.co2 =
+    dataset.environment[
+      dataset.environment.length - 1
+    ];
+
+
+  updateEnvironmentControls();
+
+
+  updateDashboardMetrics();
+
+
+  updateChartData(
+    state.charts.environment,
+    dataset.labels,
+    dataset.environment
+  );
+
+
+  updateChartData(
+    state.charts.performance,
+    dataset.labels,
+    dataset.performance
+  );
+
+
+  updateDatasetInformation();
+
+
+  updateAnalysis();
+
+
+  setFileStatus(
+    `${dataset.name} loaded locally. This is synthetic demonstration data.`
+  );
 
 }
 
@@ -1713,18 +1265,16 @@ function showChartError() {
 
 function calculateStatistics(values) {
 
-  if (!values.length) {
+  if (
+    !Array.isArray(values) ||
+    !values.length
+  ) {
 
     return {
-
       mean: 0,
-
       min: 0,
-
       max: 0,
-
       count: 0
-
     };
 
   }
@@ -1733,7 +1283,7 @@ function calculateStatistics(values) {
   const sum =
     values.reduce(
       (total, value) =>
-        total + value,
+        total + Number(value),
       0
     );
 
@@ -1790,239 +1340,30 @@ function updateStatistics(values) {
 
 
 /* =========================================================
-   FILTERS
-   ========================================================= */
-
-function setupFilters() {
-
-  const subject =
-    $("#filter-subject");
-
-
-  const phase =
-    $("#filter-phase");
-
-
-  if (subject) {
-
-    subject.addEventListener(
-      "change",
-      () => {
-
-        state.filters.subject =
-          subject.value;
-
-        updateAnalysis();
-
-      }
-    );
-
-  }
-
-
-  if (phase) {
-
-    phase.addEventListener(
-      "change",
-      () => {
-
-        state.filters.phase =
-          phase.value;
-
-        updateAnalysis();
-
-      }
-    );
-
-  }
-
-}
-
-
-function getFilteredDemoValues() {
-
-  let values =
-    [...DEMO_DATA.environment];
-
-
-  /*
-    The filters operate on demonstration slices.
-    This gives the interface functional cohort behavior
-    without pretending these are real crew measurements.
-  */
-
-  if (
-    state.filters.subject === "sub-01"
-  ) {
-
-    values =
-      values.map(
-        value =>
-          value - 20
-      );
-
-  }
-
-
-  if (
-    state.filters.subject === "sub-02"
-  ) {
-
-    values =
-      values.map(
-        value =>
-          value + 25
-      );
-
-  }
-
-
-  if (
-    state.filters.phase === "nominal"
-  ) {
-
-    values =
-      values.filter(
-        (_, index) =>
-          index % 2 === 0
-      );
-
-  }
-
-
-  if (
-    state.filters.phase === "shifted"
-  ) {
-
-    values =
-      values.filter(
-        (_, index) =>
-          index % 2 === 1
-      );
-
-  }
-
-
-  return values;
-
-}
-
-
-function updateFilterDisplay(
-  values
-) {
-
-  const count =
-    $("#filter-count");
-
-
-  const description =
-    $("#filter-description");
-
-
-  const subject =
-    FILTER_LABELS[
-      state.filters.subject
-    ];
-
-
-  const phase =
-    state.filters.phase === "all"
-      ? "All phases"
-      : FILTER_LABELS[
-          state.filters.phase
-        ];
-
-
-  const activeFilters = [];
-
-
-  if (
-    state.filters.subject !== "all"
-  ) {
-
-    activeFilters.push(
-      subject
-    );
-
-  }
-
-
-  if (
-    state.filters.phase !== "all"
-  ) {
-
-    activeFilters.push(
-      phase
-    );
-
-  }
-
-
-  if (!activeFilters.length) {
-
-    if (count) {
-      count.textContent =
-        "ALL SUBJECTS";
-    }
-
-
-    if (description) {
-
-      description.textContent =
-        "Showing the complete demonstration cohort.";
-
-    }
-
-
-    return;
-
-  }
-
-
-  if (count) {
-
-    count.textContent =
-      `${activeFilters.length} FILTER${
-        activeFilters.length > 1
-          ? "S"
-          : ""
-      } ACTIVE`;
-
-  }
-
-
-  if (description) {
-
-    description.textContent =
-      `Active filter: ${activeFilters.join(
-        " • "
-      )}. ${values.length} demonstration time points are included in the current analysis view.`;
-
-  }
-
-}
-
-
-/* =========================================================
-   ANALYSIS
+   TREND
    ========================================================= */
 
 function calculateTrend(values) {
 
-  if (values.length < 2) {
+  if (
+    !values ||
+    values.length < 2
+  ) {
+
     return "Insufficient data";
+
   }
 
 
   const first =
-    values[0];
-
+    Number(values[0]);
 
   const last =
-    values[
-      values.length - 1
-    ];
+    Number(
+      values[
+        values.length - 1
+      ]
+    );
 
 
   const difference =
@@ -2036,15 +1377,21 @@ function calculateTrend(values) {
     );
 
 
-  if (difference > threshold) {
+  if (
+    difference > threshold
+  ) {
+
     return "Increasing";
+
   }
 
 
   if (
     difference < -threshold
   ) {
+
     return "Decreasing";
+
   }
 
 
@@ -2053,16 +1400,222 @@ function calculateTrend(values) {
 }
 
 
+/* =========================================================
+   PEARSON CORRELATION
+   ========================================================= */
+
+function pearsonCorrelation(
+  x,
+  y
+) {
+
+  const n =
+    Math.min(
+      x.length,
+      y.length
+    );
+
+
+  if (n < 2) {
+    return null;
+  }
+
+
+  const xs =
+    x.slice(0, n)
+      .map(Number);
+
+  const ys =
+    y.slice(0, n)
+      .map(Number);
+
+
+  const meanX =
+    xs.reduce(
+      (a, b) => a + b,
+      0
+    ) / n;
+
+
+  const meanY =
+    ys.reduce(
+      (a, b) => a + b,
+      0
+    ) / n;
+
+
+  let numerator = 0;
+
+  let denominatorX = 0;
+
+  let denominatorY = 0;
+
+
+  for (
+    let i = 0;
+    i < n;
+    i++
+  ) {
+
+    const dx =
+      xs[i] - meanX;
+
+    const dy =
+      ys[i] - meanY;
+
+
+    numerator +=
+      dx * dy;
+
+    denominatorX +=
+      dx * dx;
+
+    denominatorY +=
+      dy * dy;
+
+  }
+
+
+  const denominator =
+    Math.sqrt(
+      denominatorX *
+      denominatorY
+    );
+
+
+  if (
+    denominator === 0
+  ) {
+    return null;
+  }
+
+
+  return (
+    numerator /
+    denominator
+  );
+
+}
+
+
+/* =========================================================
+   LAGGED CORRELATION
+   ========================================================= */
+
+function laggedCorrelation(
+  environment,
+  performance,
+  lag
+) {
+
+  if (
+    environment.length <= lag ||
+    performance.length <= lag
+  ) {
+
+    return null;
+
+  }
+
+
+  const x =
+    environment.slice(
+      0,
+      environment.length - lag
+    );
+
+
+  const y =
+    performance.slice(
+      lag
+    );
+
+
+  return pearsonCorrelation(
+    x,
+    y
+  );
+
+}
+
+
+/* =========================================================
+   PREDICTIVE LATENCY
+   ========================================================= */
+
+function predictLatency() {
+
+  const baseline =
+    240;
+
+
+  const current =
+    calculatePerformanceIndicator();
+
+
+  const difference =
+    current - baseline;
+
+
+  const lagFactor =
+    1 -
+    Math.exp(
+      -state.selectedLag / 3
+    );
+
+
+  const prediction =
+    baseline +
+    difference *
+    lagFactor;
+
+
+  return Math.round(
+    prediction
+  );
+
+}
+
+
+/* =========================================================
+   ANALYSIS
+   ========================================================= */
+
 function updateAnalysis() {
 
+  const dataset =
+    state.customDataset ||
+    DEMO_DATASETS[
+      getCurrentDemoDataset()
+    ];
+
+
   const values =
-    state.customDataset
-      ? state.customDataset.values
-      : getFilteredDemoValues();
+    dataset.environment;
+
+
+  const performance =
+    dataset.performance;
 
 
   const trend =
     calculateTrend(values);
+
+
+  const correlation =
+    laggedCorrelation(
+      values,
+      performance,
+      state.selectedLag
+    );
+
+
+  const prediction =
+    predictLatency();
+
+
+  const risk =
+    calculateEnvironmentalIndex();
 
 
   setText(
@@ -2071,34 +1624,69 @@ function updateAnalysis() {
   );
 
 
-  const difference =
-    (
-      (state.currentCO2 -
-        SCENARIOS.baseline.co2) /
-      SCENARIOS.baseline.co2
-    ) * 100;
-
-
   setText(
-    "baseline-result",
-    `${difference >= 0 ? "+" : ""}${difference.toFixed(1)}%`
+    "pearson-result",
+    correlation === null
+      ? "--"
+      : correlation.toFixed(3)
   );
 
 
   setText(
-    "analysis-result",
-    state.customDataset
-      ? "User dataset"
-      : "Exploratory"
+    "correlation-result",
+    correlation === null
+      ? "Insufficient data"
+      : correlation.toFixed(3)
   );
+
+
+  setText(
+    "lag-result",
+    `${state.selectedLag} h`
+  );
+
+
+  setText(
+    "prediction-result",
+    `${prediction} ms`
+  );
+
+
+  setText(
+    "prediction-change",
+    `${(
+      ((prediction - 240) /
+        240) *
+      100
+    ).toFixed(1)}%`
+  );
+
+
+  setText(
+    "risk-index-result",
+    risk.label
+  );
+
+
+  const riskElement =
+    $("#risk-index-result");
+
+  if (riskElement) {
+
+    riskElement.classList.remove(
+      "risk-low",
+      "risk-moderate",
+      "risk-high"
+    );
+
+    riskElement.classList.add(
+      risk.className
+    );
+
+  }
 
 
   updateStatistics(
-    values
-  );
-
-
-  updateFilterDisplay(
     values
   );
 
@@ -2114,45 +1702,42 @@ function setupCSV() {
   const browse =
     $("#browse-csv-btn");
 
-
   const input =
     $("#csv-file-input");
 
-
   const clear =
     $("#clear-csv-btn");
-
 
   const dropZone =
     $("#drop-zone");
 
 
-  if (!browse || !input) {
-    return;
-  }
+  if (
+    browse &&
+    input
+  ) {
+
+    browse.addEventListener(
+      "click",
+      () => input.click()
+    );
 
 
-  browse.addEventListener(
-    "click",
-    () =>
-      input.click()
-  );
+    input.addEventListener(
+      "change",
+      event => {
 
+        const file =
+          event.target.files?.[0];
 
-  input.addEventListener(
-    "change",
-    event => {
+        if (file) {
+          processCSV(file);
+        }
 
-      const file =
-        event.target.files?.[0];
-
-
-      if (file) {
-        processCSV(file);
       }
+    );
 
-    }
-  );
+  }
 
 
   if (clear) {
@@ -2218,27 +1803,11 @@ function setupCSV() {
       event => {
 
         const file =
-          event.dataTransfer.files?.[0];
-
+          event.dataTransfer
+            .files?.[0];
 
         if (!file) {
           return;
-        }
-
-
-        if (
-          !file.name
-            .toLowerCase()
-            .endsWith(".csv")
-        ) {
-
-          setFileStatus(
-            "Please upload a CSV file."
-          );
-
-
-          return;
-
         }
 
 
@@ -2252,6 +1821,10 @@ function setupCSV() {
 }
 
 
+/* =========================================================
+   CSV PROCESSING
+   ========================================================= */
+
 function processCSV(file) {
 
   if (
@@ -2261,9 +1834,8 @@ function processCSV(file) {
   ) {
 
     setFileStatus(
-      "Invalid file. Please select a CSV file."
+      "Please upload a CSV file."
     );
-
 
     return;
 
@@ -2279,12 +1851,10 @@ function processCSV(file) {
 
       try {
 
-        const text =
-          event.target.result;
-
-
         const parsed =
-          parseCSV(text);
+          parseCSV(
+            event.target.result
+          );
 
 
         if (!parsed.success) {
@@ -2292,7 +1862,6 @@ function processCSV(file) {
           setFileStatus(
             parsed.message
           );
-
 
           return;
 
@@ -2310,6 +1879,9 @@ function processCSV(file) {
           labels:
             parsed.labels,
 
+          performance:
+            parsed.performance,
+
           co2Column:
             parsed.co2Column,
 
@@ -2319,15 +1891,21 @@ function processCSV(file) {
         };
 
 
-        updateDatasetInformation();
+        state.environment.co2 =
+          parsed.values[
+            parsed.values.length - 1
+          ];
+
+
+        updateEnvironmentControls();
+
+        updateDashboardMetrics();
 
         updateCustomCharts();
 
+        updateDatasetInformation();
+
         updateAnalysis();
-
-
-        const clear =
-          $("#clear-csv-btn");
 
 
         if (clear) {
@@ -2345,7 +1923,6 @@ function processCSV(file) {
           "CSV processing error:",
           error
         );
-
 
         setFileStatus(
           "The CSV could not be processed. Check its formatting."
@@ -2381,7 +1958,9 @@ function parseCSV(text) {
     parseCSVRows(text);
 
 
-  if (rows.length < 2) {
+  if (
+    rows.length < 2
+  ) {
 
     return {
 
@@ -2402,7 +1981,7 @@ function parseCSV(text) {
     );
 
 
-  const normalizedHeaders =
+  const normalized =
     headers.map(
       header =>
         header
@@ -2414,89 +1993,25 @@ function parseCSV(text) {
     );
 
 
-  const co2Keywords = [
-
-    "co2",
-
-    "carbondioxide",
-
-    "co2ppm",
-
-    "co2concentration",
-
-    "environment"
-
-  ];
-
-
   let co2Index =
-    -1;
+    normalized.findIndex(
+      header =>
+        header.includes("co2") ||
+        header.includes("carbondioxide") ||
+        header.includes("environment")
+    );
 
 
-  for (
-    let i = 0;
-    i < normalizedHeaders.length;
-    i++
+  if (
+    co2Index === -1
   ) {
-
-    const header =
-      normalizedHeaders[i];
-
-
-    if (
-      co2Keywords.some(
-        keyword =>
-          header.includes(
-            keyword
-          )
-      )
-    ) {
-
-      co2Index =
-        i;
-
-
-      break;
-
-    }
-
-  }
-
-
-  if (co2Index === -1) {
-
-    for (
-      let i = 0;
-      i < normalizedHeaders.length;
-      i++
-    ) {
-
-      if (
-        normalizedHeaders[i]
-          .includes("carbon")
-      ) {
-
-        co2Index =
-          i;
-
-
-        break;
-
-      }
-
-    }
-
-  }
-
-
-  if (co2Index === -1) {
 
     return {
 
       success: false,
 
       message:
-        "No CO₂ measurement column was detected. Try a column named CO2, carbon_dioxide, CO2_ppm, or environment."
+        "No CO₂ column detected. Use CO2, CO2_ppm, carbon_dioxide, or environment."
 
     };
 
@@ -2504,7 +2019,7 @@ function parseCSV(text) {
 
 
   const timeIndex =
-    normalizedHeaders.findIndex(
+    normalized.findIndex(
       header =>
         header.includes("time") ||
         header.includes("date") ||
@@ -2513,33 +2028,37 @@ function parseCSV(text) {
     );
 
 
+  const performanceIndex =
+    normalized.findIndex(
+      header =>
+        header.includes("reactiontime") ||
+        header.includes("performance") ||
+        header.includes("rt")
+    );
+
+
   const values = [];
 
   const labels = [];
 
+  const performance = [];
+
 
   for (
-    let rowIndex = 1;
-    rowIndex < rows.length;
-    rowIndex++
+    let i = 1;
+    i < rows.length;
+    i++
   ) {
 
     const row =
-      rows[rowIndex];
-
-
-    if (!row.length) {
-      continue;
-    }
-
-
-    const rawValue =
-      row[co2Index];
+      rows[i];
 
 
     const value =
       parseFloat(
-        String(rawValue)
+        String(
+          row[co2Index] ?? ""
+        )
           .replace(
             /,/g,
             ""
@@ -2551,28 +2070,42 @@ function parseCSV(text) {
     if (
       !Number.isFinite(value)
     ) {
-
       continue;
-
     }
 
 
     values.push(value);
 
 
-    if (
+    labels.push(
       timeIndex >= 0 &&
       row[timeIndex]
+        ? row[timeIndex].trim()
+        : `Row ${values.length}`
+    );
+
+
+    if (
+      performanceIndex >= 0
     ) {
 
-      labels.push(
-        row[timeIndex]
-      );
+      const rt =
+        parseFloat(
+          String(
+            row[performanceIndex]
+          )
+            .replace(
+              /,/g,
+              ""
+            )
+            .trim()
+        );
 
-    } else {
 
-      labels.push(
-        `Row ${values.length}`
+      performance.push(
+        Number.isFinite(rt)
+          ? rt
+          : null
       );
 
     }
@@ -2580,18 +2113,38 @@ function parseCSV(text) {
   }
 
 
-  if (!values.length) {
+  if (
+    !values.length
+  ) {
 
     return {
 
       success: false,
 
       message:
-        "A CO₂ column was found, but no valid numeric values were detected."
+        "The CO₂ column was found, but no numeric values were detected."
 
     };
 
   }
+
+
+  const cleanedPerformance =
+    performance.length === values.length
+      ? performance.map(
+          (value, index) =>
+            value ??
+            values[index] * 0.05
+        )
+      : values.map(
+          value =>
+            Math.round(
+              240 +
+              ((value - 1200) /
+                1200) *
+              70
+            )
+        );
 
 
   return {
@@ -2601,6 +2154,9 @@ function parseCSV(text) {
     values,
 
     labels,
+
+    performance:
+      cleanedPerformance,
 
     co2Column:
       headers[co2Index],
@@ -2616,8 +2172,7 @@ function parseCSV(text) {
 
 
 /* =========================================================
-   SIMPLE CSV ROW PARSER
-   Handles quoted commas.
+   CSV ROW PARSER
    ========================================================= */
 
 function parseCSVRows(text) {
@@ -2628,8 +2183,7 @@ function parseCSVRows(text) {
 
   let cell = "";
 
-  let insideQuotes =
-    false;
+  let insideQuotes = false;
 
 
   for (
@@ -2640,7 +2194,6 @@ function parseCSVRows(text) {
 
     const char =
       text[i];
-
 
     const next =
       text[i + 1];
@@ -2661,7 +2214,9 @@ function parseCSVRows(text) {
     }
 
 
-    if (char === '"') {
+    if (
+      char === '"'
+    ) {
 
       insideQuotes =
         !insideQuotes;
@@ -2760,6 +2315,103 @@ function parseCSVRows(text) {
 
 
 /* =========================================================
+   CUSTOM CHARTS
+   ========================================================= */
+
+function updateCustomCharts() {
+
+  const dataset =
+    state.customDataset;
+
+  if (!dataset) {
+    return;
+  }
+
+
+  updateChartData(
+    state.charts.environment,
+    dataset.labels,
+    dataset.values
+  );
+
+
+  updateChartData(
+    state.charts.performance,
+    dataset.labels,
+    dataset.performance
+  );
+
+}
+
+
+/* =========================================================
+   CLEAR DATASET
+   ========================================================= */
+
+function clearDataset() {
+
+  state.customDataset =
+    null;
+
+
+  const input =
+    $("#csv-file-input");
+
+  if (input) {
+    input.value = "";
+  }
+
+
+  const clear =
+    $("#clear-csv-btn");
+
+  if (clear) {
+    clear.disabled = true;
+  }
+
+
+  const dataset =
+    DEMO_DATASETS.baseline;
+
+
+  state.environment.co2 =
+    dataset.environment[
+      dataset.environment.length - 1
+    ];
+
+
+  updateEnvironmentControls();
+
+  updateDashboardMetrics();
+
+
+  updateChartData(
+    state.charts.environment,
+    dataset.labels,
+    dataset.environment
+  );
+
+
+  updateChartData(
+    state.charts.performance,
+    dataset.labels,
+    dataset.performance
+  );
+
+
+  updateDatasetInformation();
+
+  updateAnalysis();
+
+
+  setFileStatus(
+    "Custom dataset cleared. Synthetic demonstration dataset restored."
+  );
+
+}
+
+
+/* =========================================================
    DATASET INFORMATION
    ========================================================= */
 
@@ -2767,21 +2419,29 @@ function updateDatasetInformation() {
 
   if (!state.customDataset) {
 
+    const dataset =
+      DEMO_DATASETS[
+        getCurrentDemoDataset()
+      ];
+
+
     setText(
       "dataset-badge",
-      "DEMONSTRATION"
+      "SYNTHETIC DEMO"
     );
 
 
     setText(
       "dataset-name",
-      "Built-in demonstration data"
+      dataset.name
     );
 
 
     setText(
       "dataset-rows",
-      "7"
+      String(
+        dataset.environment.length
+      )
     );
 
 
@@ -2799,26 +2459,13 @@ function updateDatasetInformation() {
 
     setText(
       "dataset-validation",
-      "Demonstration dataset"
+      "Synthetic demonstration dataset"
     );
-
-
-    const validation =
-      $("#dataset-validation");
-
-
-    if (validation) {
-
-      validation.classList.add(
-        "safe-text"
-      );
-
-    }
 
 
     setText(
       "statistics-source",
-      "Demonstration dataset"
+      "Synthetic local dataset"
     );
 
 
@@ -2869,19 +2516,6 @@ function updateDatasetInformation() {
   );
 
 
-  const validation =
-    $("#dataset-validation");
-
-
-  if (validation) {
-
-    validation.classList.add(
-      "safe-text"
-    );
-
-  }
-
-
   setText(
     "statistics-source",
     "Custom local dataset"
@@ -2891,260 +2525,7 @@ function updateDatasetInformation() {
 
 
 /* =========================================================
-   CUSTOM CHARTS
-   ========================================================= */
-
-function updateCustomCharts() {
-
-  const dataset =
-    state.customDataset;
-
-
-  if (!dataset) {
-    return;
-  }
-
-
-  if (
-    state.charts.environment
-  ) {
-
-    state.charts.environment.data.labels =
-      dataset.labels;
-
-
-    state.charts.environment.data.datasets[0].data =
-      dataset.values;
-
-
-    state.charts.environment.update();
-
-  }
-
-
-  if (
-    state.charts.performance
-  ) {
-
-    const estimatedReference =
-      dataset.values.map(
-        value => {
-
-          const relative =
-            (
-              value - 1200
-            ) / 1200;
-
-
-          return Math.round(
-            240 +
-            relative * 70
-          );
-
-        }
-      );
-
-
-    state.charts.performance.data.labels =
-      dataset.labels;
-
-
-    state.charts.performance.data.datasets[0].data =
-      estimatedReference;
-
-
-    state.charts.performance.update();
-
-  }
-
-
-  state.currentCO2 =
-    dataset.values[
-      dataset.values.length - 1
-    ];
-
-
-  setText(
-    "environment-value",
-    formatNumber(
-      state.currentCO2
-    )
-  );
-
-
-  setText(
-    "co2-slider-value",
-    `${formatNumber(
-      state.currentCO2
-    )} ppm`
-  );
-
-
-  const slider =
-    $("#co2-slider");
-
-
-  if (slider) {
-
-    slider.value =
-      Math.min(
-        Number(slider.max),
-        Math.max(
-          Number(slider.min),
-          state.currentCO2
-        )
-      );
-
-  }
-
-
-  state.currentPerformance =
-    calculatePerformance(
-      state.currentCO2,
-      state.currentPressure
-    );
-
-
-  setText(
-    "performance-value",
-    formatNumber(
-      state.currentPerformance
-    )
-  );
-
-
-  updateBaselineDifference(
-    state.currentPerformance
-  );
-
-
-  updateEnvironmentalStatus();
-
-  updateEnvironmentalAlert();
-
-  updateSimulationState();
-
-}
-
-
-/* =========================================================
-   CLEAR DATASET
-   ========================================================= */
-
-function clearDataset() {
-
-  state.customDataset =
-    null;
-
-
-  const input =
-    $("#csv-file-input");
-
-
-  if (input) {
-    input.value = "";
-  }
-
-
-  const clear =
-    $("#clear-csv-btn");
-
-
-  if (clear) {
-    clear.disabled = true;
-  }
-
-
-  setFileStatus(
-    "Custom dataset cleared. Demonstration dataset restored."
-  );
-
-
-  updateDatasetInformation();
-
-
-  if (
-    state.charts.environment
-  ) {
-
-    state.charts.environment.data.labels =
-      DEMO_DATA.labels;
-
-
-    state.charts.environment.data.datasets[0].data =
-      DEMO_DATA.environment;
-
-
-    state.charts.environment.update();
-
-  }
-
-
-  if (
-    state.charts.performance
-  ) {
-
-    state.charts.performance.data.labels =
-      DEMO_DATA.labels;
-
-
-    state.charts.performance.data.datasets[0].data =
-      DEMO_DATA.performance;
-
-
-    state.charts.performance.update();
-
-  }
-
-
-  const scenario =
-    SCENARIOS[
-      state.activeScenario
-    ];
-
-
-  state.currentCO2 =
-    scenario.co2;
-
-
-  state.currentPressure =
-    scenario.pressure;
-
-
-  state.currentPerformance =
-    scenario.performance;
-
-
-  applyScenario(
-    scenario
-  );
-
-
-  updateAnalysis();
-
-}
-
-
-/* =========================================================
-   FILE STATUS
-   ========================================================= */
-
-function setFileStatus(message) {
-
-  const element =
-    $("#file-status-msg");
-
-
-  if (element) {
-    element.textContent =
-      message;
-  }
-
-}
-
-
-/* =========================================================
-   PVT TEST
+   PVT
    ========================================================= */
 
 function setupPVT() {
@@ -3152,12 +2533,14 @@ function setupPVT() {
   const startButton =
     $("#pvt-start-btn");
 
-
   const box =
     $("#pvt-box");
 
 
-  if (!startButton || !box) {
+  if (
+    !startButton ||
+    !box
+  ) {
     return;
   }
 
@@ -3209,10 +2592,8 @@ function startPVT() {
   pvt.running =
     true;
 
-
   pvt.ready =
     false;
-
 
   pvt.startTime =
     null;
@@ -3220,7 +2601,6 @@ function startPVT() {
 
   const box =
     $("#pvt-box");
-
 
   const button =
     $("#pvt-start-btn");
@@ -3232,7 +2612,6 @@ function startPVT() {
       "ready",
       "false-start"
     );
-
 
     box.textContent =
       "Wait for green...";
@@ -3248,7 +2627,8 @@ function startPVT() {
 
   const delay =
     1200 +
-    Math.random() * 3000;
+    Math.random() *
+    3000;
 
 
   pvt.timer =
@@ -3289,7 +2669,6 @@ function makePVTReady() {
       "ready"
     );
 
-
     box.textContent =
       "CLICK NOW";
 
@@ -3323,10 +2702,8 @@ function handlePVTClick() {
     pvt.running =
       false;
 
-
     pvt.ready =
       false;
-
 
     pvt.lapses++;
 
@@ -3341,25 +2718,15 @@ function handlePVTClick() {
         "false-start"
       );
 
-
       box.textContent =
         "False start — press Start Test";
 
     }
 
 
-    const button =
-      $("#pvt-start-btn");
-
-
-    if (button) {
-      button.disabled =
-        false;
-    }
-
+    enablePVTButton();
 
     updatePVTResults();
-
 
     return;
 
@@ -3378,14 +2745,17 @@ function handlePVTClick() {
   );
 
 
-  if (reactionTime > 500) {
+  if (
+    reactionTime > 500
+  ) {
+
     pvt.lapses++;
+
   }
 
 
   pvt.running =
     false;
-
 
   pvt.ready =
     false;
@@ -3401,27 +2771,35 @@ function handlePVTClick() {
       "ready"
     );
 
-
     box.textContent =
       `${reactionTime} ms — press Start Test for another trial`;
 
   }
 
 
+  enablePVTButton();
+
+  updatePVTResults();
+
+}
+
+
+function enablePVTButton() {
+
   const button =
     $("#pvt-start-btn");
-
 
   if (button) {
     button.disabled =
       false;
   }
 
-
-  updatePVTResults();
-
 }
 
+
+/* =========================================================
+   PVT RESULTS + RECIPROCAL REACTION TIME
+   ========================================================= */
 
 function updatePVTResults() {
 
@@ -3439,6 +2817,14 @@ function updatePVTResults() {
   );
 
 
+  setText(
+    "pvt-lapses",
+    String(
+      state.pvt.lapses
+    )
+  );
+
+
   if (!count) {
 
     setText(
@@ -3446,26 +2832,25 @@ function updatePVTResults() {
       "-- ms"
     );
 
-
     setText(
       "pvt-average",
       "-- ms"
     );
-
 
     setText(
       "pvt-best",
       "-- ms"
     );
 
-
     setText(
-      "pvt-lapses",
-      String(
-        state.pvt.lapses
-      )
+      "pvt-rrt",
+      "-- s⁻¹"
     );
 
+    setText(
+      "mean-rrt",
+      "-- s⁻¹"
+    );
 
     return;
 
@@ -3473,9 +2858,7 @@ function updatePVTResults() {
 
 
   const last =
-    trials[
-      trials.length - 1
-    ];
+    trials[count - 1];
 
 
   const average =
@@ -3490,6 +2873,29 @@ function updatePVTResults() {
     Math.min(...trials);
 
 
+  /*
+    RRT = 1000 / RT(ms)
+  */
+
+  const rrtValues =
+    trials.map(
+      rt =>
+        1000 / rt
+    );
+
+
+  const meanRRT =
+    rrtValues.reduce(
+      (sum, value) =>
+        sum + value,
+      0
+    ) / rrtValues.length;
+
+
+  const lastRRT =
+    1000 / last;
+
+
   setText(
     "pvt-score",
     `${last} ms`
@@ -3498,9 +2904,7 @@ function updatePVTResults() {
 
   setText(
     "pvt-average",
-    `${Math.round(
-      average
-    )} ms`
+    `${Math.round(average)} ms`
   );
 
 
@@ -3511,23 +2915,27 @@ function updatePVTResults() {
 
 
   setText(
-    "pvt-lapses",
-    String(
-      state.pvt.lapses
-    )
+    "pvt-rrt",
+    `${lastRRT.toFixed(3)} s⁻¹`
+  );
+
+
+  setText(
+    "mean-rrt",
+    `${meanRRT.toFixed(3)} s⁻¹`
   );
 
 }
 
 
 /* =========================================================
-   EXPORT / PRINT
+   CSV TEMPLATE
    ========================================================= */
 
-function setupExport() {
+function setupTemplateDownload() {
 
   const button =
-    $("#export-btn");
+    $("#download-template-btn");
 
 
   if (!button) {
@@ -3537,99 +2945,265 @@ function setupExport() {
 
   button.addEventListener(
     "click",
-    exportSummary
+    downloadCSVTemplate
   );
+
+}
+
+
+function downloadCSVTemplate() {
+
+  const csv =
+`time,CO2_ppm,reaction_time_ms
+T-6h,1100,235
+T-5h,1150,238
+T-4h,1180,240
+T-3h,1200,242
+T-2h,1210,244
+T-1h,1190,241
+Current,1200,240
+`;
+
+
+  const blob =
+    new Blob(
+      [csv],
+      {
+        type:
+          "text/csv;charset=utf-8;"
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const link =
+    document.createElement(
+      "a"
+    );
+
+
+  link.href =
+    url;
+
+  link.download =
+    "space-neurohealth-template.csv";
+
+
+  document.body.appendChild(
+    link
+  );
+
+  link.click();
+
+  link.remove();
+
+
+  URL.revokeObjectURL(
+    url
+  );
+
+}
+
+
+/* =========================================================
+   FILE STATUS
+   ========================================================= */
+
+function setFileStatus(
+  message
+) {
+
+  const element =
+    $("#file-status-msg");
+
+  if (element) {
+    element.textContent =
+      message;
+  }
+
+}
+
+
+/* =========================================================
+   EXPORT
+   ========================================================= */
+
+function setupExport() {
+
+  const button =
+    $("#export-btn");
+
+
+  if (button) {
+
+    button.addEventListener(
+      "click",
+      exportSummary
+    );
+
+  }
 
 }
 
 
 function exportSummary() {
 
-  const currentScenario =
-    SCENARIOS[
-      state.activeScenario
-    ];
+  const e =
+    state.environment;
 
 
-  const originalTitle =
-    document.title;
+  const performance =
+    calculatePerformanceIndicator();
 
 
-  document.title =
-    "Space NeuroHealth Research Summary";
+  const risk =
+    calculateEnvironmentalIndex();
 
 
-  const message =
-    `Space NeuroHealth
+  const trials =
+    state.pvt.trials;
 
-Scenario: ${currentScenario.name}
 
-CO₂:
-${formatNumber(state.currentCO2)} ppm
+  const average =
+    trials.length
+      ? trials.reduce(
+          (a, b) => a + b,
+          0
+        ) / trials.length
+      : null;
 
-Cabin pressure:
-${formatNumber(state.currentPressure)} kPa
 
-Performance indicator:
-${$("#performance-value")?.textContent || "--"} ms
+  const rrt =
+    trials.length
+      ? trials.map(
+          rt =>
+            1000 / rt
+        ).reduce(
+          (a, b) => a + b,
+          0
+        ) / trials.length
+      : null;
 
-Change from baseline:
-${$("#change-value")?.textContent || "--"}
 
-Environment state:
-${$("#simulation-state")?.textContent || "--"}
+  const report =
+`SPACE NEUROHEALTH
+Research Prototype Summary
 
-Environment score:
-${$("#environment-score")?.textContent || "--"}
+ENVIRONMENT
+CO₂: ${formatNumber(e.co2)} ppm
+Radiation exposure: ${formatNumber(e.radiation)} mSv/day
+Continuous wakefulness: ${formatNumber(e.wakefulness)} h
+Circadian offset: ${e.circadianOffset >= 0 ? "+" : ""}${formatNumber(e.circadianOffset)} h
+Temperature: ${formatNumber(e.temperature)} °C
+Humidity: ${formatNumber(e.humidity)}%
 
-Alert:
-${state.alert.title}
+ANALYSIS
+Demonstration performance indicator: ${performance} ms
+Environmental index: ${risk.label}
+Environmental index score: ${risk.score.toFixed(1)}
+Lag window: ${state.selectedLag} h
 
-Dataset:
+DATASET
 ${state.customDataset
   ? state.customDataset.name
-  : "Built-in demonstration data"}
+  : DEMO_DATASETS[getCurrentDemoDataset()].name}
 
-PVT trials:
-${state.pvt.trials.length}
+PVT
+Trials: ${trials.length}
+Lapses: ${state.pvt.lapses}
+Average RT: ${average ? Math.round(average) + " ms" : "--"}
+Mean RRT: ${rrt ? rrt.toFixed(3) + " s⁻¹" : "--"}
 
-PVT average:
-${
-  state.pvt.trials.length
-    ? `${Math.round(
-        state.pvt.trials.reduce(
-          (a, b) =>
-            a + b,
-          0
-        ) /
-        state.pvt.trials.length
-      )} ms`
-    : "--"
-}
-
-This report contains demonstration/interface data unless a validated dataset has been loaded.`;
+DATA STATUS
+This prototype distinguishes synthetic demonstration data
+from user-loaded data. Demonstration performance relationships
+are illustrative and are not validated physiological predictions.
+`;
 
 
-  const shouldPrint =
+  const confirmed =
     window.confirm(
-      `${message}\n\nOpen the print dialog to save this summary as PDF?`
+      `${report}\n\nOpen the browser print dialog to save this report as PDF?`
     );
 
 
-  if (shouldPrint) {
+  if (confirmed) {
+
+    const oldTitle =
+      document.title;
+
+
+    document.title =
+      "Space NeuroHealth Research Summary";
+
+
     window.print();
+
+
+    setTimeout(
+      () => {
+
+        document.title =
+          oldTitle;
+
+      },
+      1000
+    );
+
   }
 
+}
+
+
+/* =========================================================
+   CHART RESIZE
+   ========================================================= */
+
+function resizeCharts() {
 
   setTimeout(
     () => {
 
-      document.title =
-        originalTitle;
+      Object.values(
+        state.charts
+      ).forEach(
+        chart => {
+
+          if (chart) {
+            chart.resize();
+          }
+
+        }
+      );
 
     },
-    1000
+    150
   );
+
+}
+
+
+/* =========================================================
+   ERROR HANDLING
+   ========================================================= */
+
+function showChartError() {
+
+  const error =
+    $("#chart-error");
+
+  if (error) {
+
+    error.classList.remove(
+      "hidden"
+    );
+
+  }
 
 }
 
@@ -3661,7 +3235,6 @@ function setupKeyboardNavigation() {
         state.pvt.running =
           false;
 
-
         state.pvt.ready =
           false;
 
@@ -3675,7 +3248,6 @@ function setupKeyboardNavigation() {
           box.textContent =
             "Test cancelled — press Start Test";
 
-
           box.classList.remove(
             "ready"
           );
@@ -3683,14 +3255,7 @@ function setupKeyboardNavigation() {
         }
 
 
-        const button =
-          $("#pvt-start-btn");
-
-
-        if (button) {
-          button.disabled =
-            false;
-        }
+        enablePVTButton();
 
       }
 
@@ -3710,41 +3275,33 @@ function initializeApp() {
 
   setupScenarios();
 
-  setupSlider();
-
-  setupPressureSlider();
-
-  setupFilters();
+  setupEnvironmentControls();
 
   setupCSV();
 
+  setupDemoDatasetSelector();
+
   setupPVT();
+
+  setupTemplateDownload();
 
   setupExport();
 
   setupKeyboardNavigation();
 
 
-  updateStatistics(
-    DEMO_DATA.environment
-  );
+  updateEnvironmentControls();
 
+  updateStatistics(
+    DEMO_DATASETS.baseline.environment
+  );
 
   updateDatasetInformation();
 
 
-  /*
-    Chart.js is loaded with defer before this script,
-    so initialization occurs after the deferred dependency.
-  */
-
   createCharts();
 
-
-  applyScenario(
-    SCENARIOS.baseline
-  );
-
+  updateDashboardMetrics();
 
   updateAnalysis();
 
